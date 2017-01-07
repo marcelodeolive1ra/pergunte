@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1041430695894",
+    "firebase_url": "https://pergunte-d36a5.firebaseio.com",
+    "project_id": "pergunte-d36a5",
+    "storage_bucket": "pergunte-d36a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041430695894:android:d843f6dc2d8738f3",
+        "android_client_info": {
+          "package_name": "mds.ufscar.pergunte"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041430695894-mu38121ehgonlf2l252bbovl7q2e21s0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAV2CNZApQD5gwxBhoP86nAjLBxVdRDSFA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
