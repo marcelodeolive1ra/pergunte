@@ -24,7 +24,7 @@ public class AccountActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser() == null){
-                    startActivity(new Intent(AccountActivity.this,MainActivity.class));
+                    startActivity(new Intent(AccountActivity.this, MainActivity.class));
                 }
             }
         };
