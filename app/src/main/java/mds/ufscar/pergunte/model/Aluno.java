@@ -25,7 +25,7 @@ public class Aluno extends Pessoa {
         return null;
     }
 
-    public Turma[] consultarTurmasInscritas() {
+    public Materia[] consultarTurmasInscritas() {
         return null;
     }
 }

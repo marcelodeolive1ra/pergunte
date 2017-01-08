@@ -20,11 +20,11 @@ public class Professor extends Pessoa {
 
     }
 
-    public void notificarTurma(Turma turma) {
+    public void notificarTurma(Materia materia) {
 
     }
 
-    public Turma[] consultarDisciplinasVinculadas() {
+    public Materia[] consultarDisciplinasVinculadas() {
         return null;
     }
 

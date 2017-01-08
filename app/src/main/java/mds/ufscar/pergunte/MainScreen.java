@@ -32,7 +32,6 @@ public class MainScreen extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -114,14 +113,14 @@ public class MainScreen extends AppCompatActivity {
             // return the current tab
             switch (position) {
                 case 0:
-                    Tab1 tab1 = new Tab1();
-                    return tab1;
+                    Tab1_Respondidas tab1Respondidas = new Tab1_Respondidas();
+                    return tab1Respondidas;
                 case 1:
-                    Tab2 tab2 = new Tab2();
-                    return tab2;
+                    Tab2_Materias tab2Materias = new Tab2_Materias();
+                    return tab2Materias;
                 case 2:
-                    Tab3 tab3 = new Tab3();
-                    return tab3;
+                    Tab3_Estatisticas tab3Estatisticas = new Tab3_Estatisticas();
+                    return tab3Estatisticas;
                 default:
                     return null;
             }
@@ -141,7 +140,7 @@ public class MainScreen extends AppCompatActivity {
                 case 1:
                     return "Matérias";
                 case 2:
-                    return "Esqueci";
+                    return "Estatísticas";
             }
             return null;
         }
