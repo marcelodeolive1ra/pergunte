@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,9 +12,55 @@
     tools:context="mds.ufscar.pergunte.MainActivity">
 
     <com.google.android.gms.common.SignInButton
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/googleBtn">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/googleBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true">
     </com.google.android.gms.common.SignInButton>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/bald_head_with_question_mark"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+
+    <RadioGroup
+        android:id="@+id/radio_group_perfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@+id/googleBtn"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="49dp">
+
+        <RadioButton
+            android:id="@+id/radioAluno"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Aluno" />
+
+        <RadioButton
+            android:id="@+id/radioProfessor"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Professor" />
+    </RadioGroup>
+
+    <TextView
+        android:text="Selecione seu perfil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_above="@+id/radio_group_perfil"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

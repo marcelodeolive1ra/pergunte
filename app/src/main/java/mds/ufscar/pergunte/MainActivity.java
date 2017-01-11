@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -30,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static final String TAG = "MAIN_ACTIVITY";
     private FirebaseAuth.AuthStateListener mAuthListener;
+    // seleção do perfil
+    private RadioGroup radioGroupPerfil;
+    private RadioButton radioButtonPerfil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 signIn();
             }
         });
-
     }
 
     @Override
@@ -81,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        // seleção do perfil
+        radioGroupPerfil = (RadioGroup) findViewById(R.id.radio_group_perfil);
+        int selectedId = radioGroupPerfil.getCheckedRadioButtonId();
+        radioButtonPerfil = (RadioButton) findViewById(selectedId);
+        signInIntent.putExtra("perfil", radioButtonPerfil.getText().toString());
+        Toast.makeText(this, radioButtonPerfil.getText(), Toast.LENGTH_SHORT).show();
+//        setResult(RESULT_OK, signInIntent);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
