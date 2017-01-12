@@ -45,7 +45,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser() != null){
-                    startActivity(new Intent(MainActivity.this, MainScreen.class));
+                    Intent tabsScreen = new Intent(MainActivity.this, MainScreen.class);
+                    // seleção do perfil
+                    radioGroupPerfil = (RadioGroup) findViewById(R.id.radio_group_perfil);
+                    int selectedId = radioGroupPerfil.getCheckedRadioButtonId();
+                    radioButtonPerfil = (RadioButton) findViewById(selectedId);
+                    tabsScreen.putExtra("perfil", radioButtonPerfil.getText().toString());
+//                    Toast.makeText(MainActivity.this, radioButtonPerfil.getText(), Toast.LENGTH_SHORT).show();
+                    startActivity(tabsScreen);
                 } else
                     Log.w("firebase", "firebaseAuth.getCurrentUser is null");
             }
@@ -85,13 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        // seleção do perfil
-        radioGroupPerfil = (RadioGroup) findViewById(R.id.radio_group_perfil);
-        int selectedId = radioGroupPerfil.getCheckedRadioButtonId();
-        radioButtonPerfil = (RadioButton) findViewById(selectedId);
-        signInIntent.putExtra("perfil", radioButtonPerfil.getText().toString());
-        Toast.makeText(this, radioButtonPerfil.getText(), Toast.LENGTH_SHORT).show();
-//        setResult(RESULT_OK, signInIntent);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 

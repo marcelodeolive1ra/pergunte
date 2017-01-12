@@ -37,11 +37,21 @@ public class MainScreen extends AppCompatActivity {
     private ViewPager mViewPager;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private String mPerfil;
+    private boolean mProfessor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
+
+        // setting selected profile
+        mPerfil = this.getIntent().getStringExtra("perfil");
+        Toast.makeText(this, "Bem vindo(a) " + mPerfil, Toast.LENGTH_SHORT).show();
+        if (mPerfil.equalsIgnoreCase("professor(a)"))
+            mProfessor = true;
+        else
+            mProfessor = false;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,6 +65,7 @@ public class MainScreen extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.setCurrentItem(1);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -75,12 +86,7 @@ public class MainScreen extends AppCompatActivity {
                 }
             }
         };
-
-        // taking selected perfil
-        String perfil = this.getIntent().getStringExtra("perfil");
-        Toast.makeText(this, perfil, Toast.LENGTH_SHORT).show();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -142,7 +148,7 @@ public class MainScreen extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Respondidas";
+                    return mProfessor ? "Realizadas" : "Respondidas";
                 case 1:
                     return "Matérias";
                 case 2:
