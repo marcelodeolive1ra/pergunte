@@ -65,7 +65,7 @@ public class MainScreen extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(1);   // tab Materias is the default tab
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +148,7 @@ public class MainScreen extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return mProfessor ? "Realizadas" : "Respondidas";
+                    return mProfessor ? "Histórico" : "Respondidas";
                 case 1:
                     return "Matérias";
                 case 2:
