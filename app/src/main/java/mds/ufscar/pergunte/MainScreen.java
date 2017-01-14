@@ -1,6 +1,8 @@
 package mds.ufscar.pergunte;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -19,11 +21,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import java.util.concurrent.ExecutionException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import android.os.AsyncTask;
+
+import org.json.JSONException;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MainScreen extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
@@ -131,23 +153,55 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
 
     @Override
     public void handleResult(Result result) {
-        Log.v("handleResult", result.getText());
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Scan");
-        builder.setMessage(result.getText());
-        AlertDialog alert = builder.create();
-        alert.show();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                mScanner.stopCamera();
-                finish();
-                startActivity(getIntent());
-            }
-        }, 2000);
+        String nome_materia = "";
+        //Log.v("handleResult", result.getText());
+        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+        try {
+            String retorno_requisicao = requisicao.execute("buscarmateriaporqr", result.getText()).get();
+            JSONObject retorno_requisicao_json = new JSONObject(retorno_requisicao);
+
+            nome_materia = retorno_requisicao_json.getString("nome_materia");
+
+            // System.out.println(nome_materia);
+        } catch (InterruptedException | ExecutionException | JSONException e) {
 
 
+        }
+        if (nome_materia.equals("")) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Erro na leitura. Tente novamente!")
 
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            mScanner.stopCamera();
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle("Tem certeza que deseja se cadastrar nessa materia?")
+                    .setMessage(nome_materia)
+                    .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            mScanner.stopCamera();
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    })
+                    .setNegativeButton("Nao", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            mScanner.stopCamera();
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+
+        }
     }
 
     /**
