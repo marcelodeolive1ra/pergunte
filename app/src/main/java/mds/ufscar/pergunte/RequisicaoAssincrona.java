@@ -13,31 +13,62 @@ import mds.ufscar.pergunte.model.Professor;
 
 public class RequisicaoAssincrona extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
+        Map<String, String> data = new HashMap<>();
         int response = -1;
 
-        try {
-            Map<String, String> data = new HashMap<String, String>();
-            data.put("email", "marcelodeoliveira@outlook.com");
-            data.put("tipo", "aluno");
+        switch (params[0]) {
 
-            System.out.println(data);
+            case "buscaraluno":
+                response = -1;
 
-            HttpRequest request = HttpRequest.post("http://mds.secompufscar.com.br/buscarmaterias/").form(data);
-//            HttpRequest request = HttpRequest.post("http://mds.secompufscar.com.br/buscaraluno/").
-//                    send("email=marcelodeoliveira@outlook.com").code();
+                try {
+                    data.put("email", params[1]);
+                    data.put("tipo", "aluno");
 
-            response = request.code();
+                    System.out.println(data);
 
-            System.out.println("REQUEST CODE = " + response);
-            System.out.println(request.contentType());
-            System.out.println(request.body());
-            System.out.println(request.getParams("status"));
-            return null;
+                    HttpRequest request = HttpRequest.post("http://mds.secompufscar.com.br/buscaraluno/").form(data);
+                    response = request.code();
 
-        } catch (Exception exception) {
-            System.err.println("ERROR CODE = " + response);
-            return null;
+                    System.out.println("REQUEST CODE = " + response);
+                    System.out.println(request.contentType());
+                    System.out.println(request.body());
+                    System.out.println(request.getParams("status"));
+
+                } catch (Exception exception) {
+                    System.err.println("ERROR CODE = " + response);
+                    return null;
+                }
+
+                break;
+
+            case "buscarmateriaporqr":
+                response = -1;
+
+                try {
+                    data.put("codigo", params[1]);
+
+                    System.out.println(data);
+
+                    HttpRequest request = HttpRequest.post("http://mds.secompufscar.com.br/buscarmateriaporqr/").form(data);
+                    response = request.code();
+
+                    System.out.println("REQUEST CODE = " + response);
+                    System.out.println(request.contentType());
+                    System.out.println(request.body());
+                    System.out.println(request.getParams("status"));
+
+                } catch (Exception exception) {
+                    System.err.println("ERROR CODE = " + response);
+                    return null;
+                }
+
+                break;
+            default:
+                break;
         }
+
+        return "";
     }
 
     protected void onPostExecute(String param) {

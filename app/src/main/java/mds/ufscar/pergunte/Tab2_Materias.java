@@ -31,7 +31,11 @@ public class Tab2_Materias extends Fragment {
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
 
         RequisicaoAssincrona a = new RequisicaoAssincrona();
-        a.execute();
+        a.execute("buscaraluno", "marcelodeoliveira@outlook.com");
+
+
+        RequisicaoAssincrona b = new RequisicaoAssincrona();
+        b.execute("buscarmateriaporqr", "MDS20162");
 
         // Depois pegar as materias de um Json ou algo do tipo
         final ArrayList<Materia> materias = new ArrayList<>();
