@@ -164,9 +164,9 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
 
             // System.out.println(nome_materia);
         } catch (InterruptedException | ExecutionException | JSONException e) {
-
-
+            e.printStackTrace();
         }
+
         if (nome_materia.equals("")) {
             new AlertDialog.Builder(this)
                     .setTitle("Erro na leitura. Tente novamente!")
@@ -182,7 +182,7 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
                     .show();
         } else {
             new AlertDialog.Builder(this)
-                    .setTitle("Tem certeza que deseja se cadastrar nessa materia?")
+                    .setTitle("Tem certeza que deseja se cadastrar nessa matéria?")
                     .setMessage(nome_materia)
                     .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -191,7 +191,7 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
                             startActivity(getIntent());
                         }
                     })
-                    .setNegativeButton("Nao", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("Não", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             mScanner.stopCamera();
                             finish();
