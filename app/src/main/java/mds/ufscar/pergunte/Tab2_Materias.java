@@ -1,5 +1,6 @@
 package mds.ufscar.pergunte;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import mds.ufscar.pergunte.model.Materia;
 import mds.ufscar.pergunte.model.Professor;
@@ -26,6 +29,9 @@ public class Tab2_Materias extends Fragment {
         View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
+
+        RequisicaoAssincrona a = new RequisicaoAssincrona();
+        a.execute();
 
         // Depois pegar as materias de um Json ou algo do tipo
         final ArrayList<Materia> materias = new ArrayList<>();

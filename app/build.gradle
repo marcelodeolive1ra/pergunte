@@ -69,5 +69,6 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:9.6.1'
     compile 'com.google.android.gms:play-services-auth:9.6.1'
     compile "com.squareup.picasso:picasso:2.4.0"
+    compile 'com.google.code.gson:gson:2.8.0'
 }
 apply plugin: 'com.google.gms.google-services'
