@@ -7,7 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
 import mds.ufscar.pergunte.model.Professor;
@@ -27,8 +32,41 @@ public class Tab2_Materias extends Fragment {
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
 
-        // Depois pegar as materias de um Json ou algo do tipo
         final ArrayList<Materia> materias = new ArrayList<>();
+        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+
+        try {
+            String retorno_requisicao = requisicao.execute("buscarmaterias", "marcelodeoliveira@outlook.com", "aluno").get();
+            JSONObject retorno_requisicao_json = new JSONObject(retorno_requisicao);
+            JSONArray materias_json = retorno_requisicao_json.getJSONArray("materias");
+            System.out.println(retorno_requisicao_json);
+
+            for (int i = 0; i < materias_json.length(); i++) {
+                JSONObject materia_json = materias_json.getJSONObject(i);
+                JSONObject professor_json = materia_json.getJSONObject("professor");
+
+                Professor professor = new Professor(
+                        professor_json.getString("nome"),
+                        professor_json.getString("sobrenome"),
+                        professor_json.getString("email"),
+                        professor_json.getString("universidade")
+                );
+
+                Materia materia = new Materia(
+                        materia_json.getString("turma").charAt(0),
+                        materia_json.getInt("ano"),
+                        materia_json.getInt("semestre"),
+                        materia_json.getString("nome_materia"),
+                        professor
+                );
+
+                materias.add(materia);
+            }
+
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            e.printStackTrace();
+        }
+
         // Criando mock data
         Professor helio = new Professor("Helio", "Guardia", "helio@dc.ufscar.br", "UFSCar Sao Carlos");
         Professor marilde = new Professor("Marilde", "Dos Santos", "marilde@dc.ufscar.br", "UFSCar Sao Carlos");
@@ -38,6 +76,7 @@ public class Tab2_Materias extends Fragment {
         materias.add(sistemasDistribuidos);
         Materia labbd = new Materia('C', 2015, 2, "Laboratório de Banco de Dados", marilde);
         materias.add(labbd);
+
         // Populando lista com adapter customizado
         MateriaAdapter adapter = new MateriaAdapter(getActivity(), materias);
         mListView.setAdapter(adapter);
