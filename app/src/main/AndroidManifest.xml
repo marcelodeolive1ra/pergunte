@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".MainScreen"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".CadastroMateria"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
