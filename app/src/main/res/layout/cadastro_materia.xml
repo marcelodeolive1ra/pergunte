@@ -35,21 +35,21 @@
             <TextView android:id="@+id/label_ano"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:layout_marginBottom="5dp"
                 android:text="Ano"
                 android:textSize="16dip"/>
             <TextView android:id="@+id/label_semestre"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_marginBottom="5dp"
                 android:text="Semestre"
                 android:textSize="16dip"/>
             <TextView android:id="@+id/label_turma"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_marginBottom="5dp"
                 android:text="Turma"
                 android:textSize="16dip"/>
@@ -65,21 +65,21 @@
                 android:id="@+id/spinner_ano"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:background="@android:drawable/btn_dropdown"
                 android:spinnerMode="dropdown" />
             <Spinner
                 android:id="@+id/spinner_semestre"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:background="@android:drawable/btn_dropdown"
                 android:spinnerMode="dropdown" />
             <Spinner
                 android:id="@+id/spinner_turma"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:background="@android:drawable/btn_dropdown"
                 android:spinnerMode="dropdown" />
         </LinearLayout>
