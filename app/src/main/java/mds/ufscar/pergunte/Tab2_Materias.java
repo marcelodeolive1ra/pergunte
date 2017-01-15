@@ -1,6 +1,7 @@
 package mds.ufscar.pergunte;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +28,7 @@ import mds.ufscar.pergunte.model.Professor;
 public class Tab2_Materias extends Fragment {
 
     private ListView mListView;
+    private boolean mProfessor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,6 +36,7 @@ public class Tab2_Materias extends Fragment {
         View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
+        mProfessor = ((MainScreen)this.getActivity()).isProfessor();
 
         final ArrayList<Materia> materias = new ArrayList<>();
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
@@ -84,6 +87,19 @@ public class Tab2_Materias extends Fragment {
         final MateriaAdapter adapter = new MateriaAdapter(getActivity(), materias);
         mListView.setAdapter(adapter);
 
+        // setting one click on an item of the list view
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3)
+            {
+                if (mProfessor) {
+                    Intent cadastroPergunta = new Intent(Tab2_Materias.this.getActivity(), CadastroPergunta.class);
+                    startActivity(cadastroPergunta);
+                }
+            }
+        });
+
         // setting option to remove an item for a long press
         mListView.setLongClickable(true);
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -92,14 +108,21 @@ public class Tab2_Materias extends Fragment {
                 // removing from the interface:
                 AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
                 adb.setTitle("Remover?");
-                adb.setMessage("Tem certeza que deseja descadastrar-se de " + materias.get(pos).getNomeDisciplina());
+                if (mProfessor)
+                    adb.setMessage("Tem certeza que deseja apagar " + materias.get(pos).getNomeDisciplina());
+                else
+                    adb.setMessage("Tem certeza que deseja sair de " + materias.get(pos).getNomeDisciplina());
                 final int positionToRemove = pos;
                 adb.setNegativeButton("Cancelar", null);
                 adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        materias.remove(positionToRemove);
+                        Materia materiaASerRemovida = materias.remove(positionToRemove);
                         adapter.notifyDataSetChanged();
-                        // TODO: Marcelo remova também do BD por favore
+                        if (mProfessor) {
+                            // TODO: Caso Professor - Marcelo desabilite ou remova a matéria (materiaASerRemovida) do BD por favore
+                        } else {
+                            // TODO: Caso Aluno - Marcelo descadastre o aluno do BD por favore
+                        }
                     }});
                 adb.show();
                 return true;    // true means it won't call another click listener

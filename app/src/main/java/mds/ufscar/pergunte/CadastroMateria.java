@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -110,9 +111,9 @@ public class CadastroMateria extends AppCompatActivity {
                     System.out.println(resultado_json);
 
                     if (status.equals("ok")) {
-                        // TODO: Danilo, um toast aqui confirmando o cadastro, grato :-)
+                        Toast.makeText(CadastroMateria.this, "Matéria cadastrada com sucesso", Toast.LENGTH_LONG).show();
                     } else {
-                        // TODO: Danilo, outro toast aqui informando erro no cadastro, grato novamente :-)
+                        Toast.makeText(CadastroMateria.this, "Erro ao cadastrar matéria", Toast.LENGTH_LONG).show();
                     }
 
                 } catch (InterruptedException | ExecutionException | JSONException e) {
