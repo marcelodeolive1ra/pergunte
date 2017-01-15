@@ -58,10 +58,11 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
         // setting selected profile
         mPerfil = this.getIntent().getStringExtra("perfil");
         Toast.makeText(this, "Bem vindo(a) " + mPerfil, Toast.LENGTH_SHORT).show();
-        if (mPerfil.equalsIgnoreCase("professor(a)"))
+        if (mPerfil.equalsIgnoreCase("professor(a)")) {
             mProfessor = true;
-        else
+        } else {
             mProfessor = false;
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
