@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="mds.ufscar.pergunte">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,8 +24,11 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".CadastroMateria"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".CadastroPergunta"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            tools:replace="screenOrientation" />
+
     </application>
 
 </manifest>

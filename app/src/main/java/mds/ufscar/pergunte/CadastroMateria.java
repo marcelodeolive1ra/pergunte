@@ -11,9 +11,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
+
+import mds.ufscar.pergunte.model.Materia;
 
 /**
  * Created by Danilo on 14/01/2017.
@@ -77,11 +84,41 @@ public class CadastroMateria extends AppCompatActivity {
             public void onClick(View v) {
                 String turma = mSpinLetter.getSelectedItem().toString();
                 int ano = Integer.valueOf(mSpinYear.getSelectedItem().toString());
-                int sem = Integer.valueOf(mSpinSemester.getSelectedItem().toString());
-                String nomeDisc = mClassName.getText().toString();
-                String codigoDisc = mClassCode.getText().toString();
-//                Materia materia = new Materia();
-                // TODO: Marcelo coloque no BD, grato. haha
+                int semestre = Integer.valueOf(mSpinSemester.getSelectedItem().toString());
+                String nomeDisciplina = mClassName.getText().toString();
+                String codigoDisciplina = mClassCode.getText().toString();
+                Materia materia = new Materia(
+                        turma,
+                        ano,
+                        semestre,
+                        nomeDisciplina,
+                        codigoDisciplina
+                );
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String email = (user != null) ? user.getEmail() : "";
+
+                RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+                requisicao.setObject(materia);
+
+                try {
+                    String resultado = requisicao.execute("cadastrarmateria", email).get();
+                    System.out.println(resultado);
+
+                    JSONObject resultado_json = new JSONObject(resultado);
+                    String status = resultado_json.getString("status");
+                    System.out.println(resultado_json);
+
+                    if (status.equals("ok")) {
+                        // TODO: Danilo, um toast aqui confirmando o cadastro, grato :-)
+                    } else {
+                        // TODO: Danilo, outro toast aqui informando erro no cadastro, grato novamente :-)
+                    }
+
+                } catch (InterruptedException | ExecutionException | JSONException e) {
+                    e.printStackTrace();
+                }
+
                 finish();
             }
         });
