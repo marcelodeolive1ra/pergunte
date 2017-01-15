@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,8 +44,11 @@ public class Tab2_Materias extends Fragment {
         final ArrayList<Materia> materias = new ArrayList<>();
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String email = (user != null) ? user.getEmail() : "";
+
         try {
-            String retorno_requisicao = requisicao.execute("buscarmaterias", "marcelodeoliveira@outlook.com", "aluno").get();
+            String retorno_requisicao = requisicao.execute("buscarmaterias", email, "aluno").get();
             JSONObject retorno_requisicao_json = new JSONObject(retorno_requisicao);
             JSONArray materias_json = retorno_requisicao_json.getJSONArray("materias");
             System.out.println(retorno_requisicao_json);
@@ -96,7 +102,7 @@ public class Tab2_Materias extends Fragment {
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                // removing from the interface:
+
                 AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
                 adb.setTitle("Remover?");
                 if (mProfessor)
@@ -107,13 +113,37 @@ public class Tab2_Materias extends Fragment {
                 adb.setNegativeButton("Cancelar", null);
                 adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Materia materiaASerRemovida = materias.remove(positionToRemove);
-                        adapter.notifyDataSetChanged();
+
                         if (mProfessor) {
                             // TODO: Caso Professor - Marcelo desabilite ou remova a matéria (materiaASerRemovida) do BD por favore
                         } else {
-                            // TODO: Caso Aluno - Marcelo descadastre o aluno do BD por favore
+                            RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            String email = (user != null) ? user.getEmail() : "";
+
+                            try {
+                                String resultado = requisicao.execute("cancelarinscricaoemmateria",
+                                        email, Integer.toString(materias.get(positionToRemove).getCodigo())).get();
+
+                                JSONObject resultado_json = new JSONObject(resultado);
+                                String status = resultado_json.getString("status");
+
+                                System.out.println(resultado);
+
+                                if (status.equals("ok")) {
+                                    materias.remove(positionToRemove); // removing from the interface
+
+                                    // TODO: Danilo, mais um toast aqui confirmando o cancelamento
+                                } else {
+                                    // TODO: E outro aqui informando eventual erro
+                                }
+
+                            } catch (InterruptedException | ExecutionException | JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
+                        adapter.notifyDataSetChanged();
                     }});
                 adb.show();
                 return true;    // true means it won't call another click listener
