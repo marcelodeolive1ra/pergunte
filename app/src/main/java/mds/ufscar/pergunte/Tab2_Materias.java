@@ -59,6 +59,7 @@ public class Tab2_Materias extends Fragment {
                 );
 
                 Materia materia = new Materia(
+                        materia_json.getInt("codigo"),
                         materia_json.getString("turma"),
                         materia_json.getInt("ano"),
                         materia_json.getInt("semestre"),
@@ -73,16 +74,6 @@ public class Tab2_Materias extends Fragment {
         } catch (InterruptedException | ExecutionException | JSONException e) {
             e.printStackTrace();
         }
-
-        // Criando mock data
-        Professor helio = new Professor("Helio", "Guardia", "helio@dc.ufscar.br", "UFSCar Sao Carlos");
-        Professor marilde = new Professor("Marilde", "Dos Santos", "marilde@dc.ufscar.br", "UFSCar Sao Carlos");
-        Materia so2 = new Materia("A", 2016, 1, "Sistemas Operacionais 2", helio, "SO220161");
-        materias.add(so2);
-        Materia sistemasDistribuidos = new Materia("B", 2016, 2, "Sistemas Distribuídos", helio, "SD20162");
-        materias.add(sistemasDistribuidos);
-        Materia labbd = new Materia("C", 2015, 2, "Laboratório de Banco de Dados", marilde, "LBD20152");
-        materias.add(labbd);
 
         final MateriaAdapter adapter = new MateriaAdapter(getActivity(), materias);
         mListView.setAdapter(adapter);

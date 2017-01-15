@@ -56,6 +56,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, String> {
             case "cadastrarmateria":
                 Materia materia = (Materia)objetoGenerico;
 
+                // Não é necessário passar o código, pois este será gerado automaticamente no banco
                 data.put("email", params[1]);
                 data.put("turma", materia.getTurma());
                 data.put("ano", Integer.toString(materia.getAno()));

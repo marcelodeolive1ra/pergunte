@@ -3,6 +3,7 @@ package mds.ufscar.pergunte.model;
 import java.util.ArrayList;
 
 public class Materia {
+    private int codigo;
     private String turma;
     private int ano;
     private int semestre;
@@ -13,8 +14,9 @@ public class Materia {
     private ArrayList<Aluno> alunos;
     private String imageUrl;
 
-    public Materia(String turma, int ano, int semestre, String nomeDisciplina,
+    public Materia(int codigo, String turma, int ano, int semestre, String nomeDisciplina,
                    Professor professor, String codigoInscricao) {
+        this.setCodigo(codigo);
         this.setTurma(turma);
         this.setAno(ano);
         this.setSemestre(semestre);
@@ -26,9 +28,17 @@ public class Materia {
         imageUrl = "https://pt.wikipedia.org/wiki/Turma_da_M%C3%B4nica#/media/File:Turma_da_M%C3%B4nica.jpg";
     }
 
-    public Materia(String turma, int ano, int semestre, String nomeDisciplina,
+    public Materia(int codigo, String turma, int ano, int semestre, String nomeDisciplina,
                    String codigoInscricao) {
-        this(turma, ano, semestre, nomeDisciplina, null, codigoInscricao);
+        this(codigo, turma, ano, semestre, nomeDisciplina, null, codigoInscricao);
+    }
+
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
+    }
+
+    public int getCodigo() {
+        return codigo;
     }
 
     public String getTurma() {

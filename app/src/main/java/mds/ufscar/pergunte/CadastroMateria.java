@@ -89,6 +89,7 @@ public class CadastroMateria extends AppCompatActivity {
                 String nomeDisciplina = mClassName.getText().toString();
                 String codigoDisciplina = mClassCode.getText().toString();
                 Materia materia = new Materia(
+                        0, // código irrelevante aqui, pois será gerado automaticamente no banco
                         turma,
                         ano,
                         semestre,
