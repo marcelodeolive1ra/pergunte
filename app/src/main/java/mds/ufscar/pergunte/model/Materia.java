@@ -13,17 +13,22 @@ public class Materia {
     private ArrayList<Aluno> alunos;
     private String imageUrl;
 
-    public Materia(String turma, int ano, int semestre, String nome_disciplina,
+    public Materia(String turma, int ano, int semestre, String nomeDisciplina,
                    Professor professor, String codigoInscricao) {
         this.setTurma(turma);
         this.setAno(ano);
         this.setSemestre(semestre);
-        this.setNomeDisciplina(nome_disciplina);
+        this.setNomeDisciplina(nomeDisciplina);
         this.setProfessor(professor);
         this.setCodigoInscricao(codigoInscricao);
         perguntas = new ArrayList<>();
         alunos = new ArrayList<>();
         imageUrl = "https://pt.wikipedia.org/wiki/Turma_da_M%C3%B4nica#/media/File:Turma_da_M%C3%B4nica.jpg";
+    }
+
+    public Materia(String turma, int ano, int semestre, String nomeDisciplina,
+                   String codigoInscricao) {
+        this(turma, ano, semestre, nomeDisciplina, null, codigoInscricao);
     }
 
     public String getTurma() {
