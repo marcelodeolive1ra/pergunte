@@ -113,7 +113,7 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
     @Override
     protected void onPause(){
         super.onPause();
-        mScanner.stopCamera();
+//        mScanner.stopCamera();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
