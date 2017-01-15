@@ -54,4 +54,6 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String param) {
         //onPostExecute
     }
+
 }
+
