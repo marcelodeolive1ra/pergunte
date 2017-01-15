@@ -82,6 +82,7 @@ public class CadastroMateria extends AppCompatActivity {
                 String codigoDisc = mClassCode.getText().toString();
 //                Materia materia = new Materia();
                 // TODO: Marcelo coloque no BD, grato. haha
+                finish();
             }
         });
     }

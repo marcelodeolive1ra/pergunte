@@ -1,10 +1,13 @@
 package mds.ufscar.pergunte;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -78,9 +81,31 @@ public class Tab2_Materias extends Fragment {
         Materia labbd = new Materia("C", 2015, 2, "Laboratório de Banco de Dados", marilde, "LBD20152");
         materias.add(labbd);
 
-        // Populando lista com adapter customizado
-        MateriaAdapter adapter = new MateriaAdapter(getActivity(), materias);
+        final MateriaAdapter adapter = new MateriaAdapter(getActivity(), materias);
         mListView.setAdapter(adapter);
+
+        // setting option to remove an item for a long press
+        mListView.setLongClickable(true);
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                // removing from the interface:
+                AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
+                adb.setTitle("Remover?");
+                adb.setMessage("Tem certeza que deseja descadastrar-se de " + materias.get(pos).getNomeDisciplina());
+                final int positionToRemove = pos;
+                adb.setNegativeButton("Cancelar", null);
+                adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        materias.remove(positionToRemove);
+                        adapter.notifyDataSetChanged();
+                        // TODO: Marcelo remova também do BD por favore
+                    }});
+                adb.show();
+                return true;    // true means it won't call another click listener
+            }
+        });
+
         return rootView;
     }
 }
