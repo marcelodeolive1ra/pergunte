@@ -81,7 +81,12 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scan();
+                if (mProfessor) {
+                    Intent cadastroMateria = new Intent(MainScreen.this, CadastroMateria.class);
+                    startActivity(cadastroMateria);
+                } else {
+                    scan();
+                }
             }
         });
 
