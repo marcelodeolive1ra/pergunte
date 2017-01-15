@@ -1,5 +1,6 @@
 package mds.ufscar.pergunte;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.Result;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class MainScreen extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+public class MainScreen extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -77,7 +80,7 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         mViewPager.setCurrentItem(1);   // tab Materias is the default tab
-
+        final Activity activity = this;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +89,13 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
                     Intent cadastroMateria = new Intent(MainScreen.this, CadastroMateria.class);
                     startActivity(cadastroMateria);
                 } else {
-                    scan();
+                    IntentIntegrator integrator = new IntentIntegrator(activity);
+                    integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                    integrator.setPrompt("Scan");
+                    integrator.setCameraId(0);
+                    integrator.setBeepEnabled(false);
+                    integrator.setBarcodeImageEnabled(false);
+                    integrator.initiateScan();
                 }
             }
         });
@@ -102,13 +111,61 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
             }
         };
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null){
+            if(result.getContents()==null){
+                Toast.makeText(this, "Voce cancelou o scanning", Toast.LENGTH_LONG).show();
+            }
+            else {
+                String nome_materia = "";
 
-    private void scan() {
-        mScanner = new ZXingScannerView(this);
-        setContentView(mScanner);
-        mScanner.setResultHandler(this);
-        mScanner.startCamera();
+                RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+                try {
+                    String retorno_requisicao = requisicao.execute("buscarmateriaporqr", result.getContents()).get();
+                    JSONObject retorno_requisicao_json = new JSONObject(retorno_requisicao);
+                    nome_materia = retorno_requisicao_json.getString("nome_materia");
+                } catch (InterruptedException | ExecutionException | JSONException e) {
+                    e.printStackTrace();
+                }
+                if (nome_materia.equals("")) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Erro na leitura. Tente novamente!")
+
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                } else {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Tem certeza que deseja se cadastrar nessa matéria?")
+                            .setMessage(nome_materia)
+                            .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }
+
+            }
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
+
 
     @Override
     protected void onPause(){
@@ -135,59 +192,6 @@ public class MainScreen extends AppCompatActivity implements ZXingScannerView.Re
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void handleResult(Result result) {
-        String nome_materia = "";
-        //Log.v("handleResult", result.getText());
-        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
-        try {
-            String retorno_requisicao = requisicao.execute("buscarmateriaporqr", result.getText()).get();
-            JSONObject retorno_requisicao_json = new JSONObject(retorno_requisicao);
-
-            nome_materia = retorno_requisicao_json.getString("nome_materia");
-
-            // System.out.println(nome_materia);
-        } catch (InterruptedException | ExecutionException | JSONException e) {
-            e.printStackTrace();
-        }
-
-        if (nome_materia.equals("")) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Erro na leitura. Tente novamente!")
-
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            mScanner.stopCamera();
-                            finish();
-                            startActivity(getIntent());
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        } else {
-            new AlertDialog.Builder(this)
-                    .setTitle("Tem certeza que deseja se cadastrar nessa matéria?")
-                    .setMessage(nome_materia)
-                    .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            mScanner.stopCamera();
-                            finish();
-                            startActivity(getIntent());
-                        }
-                    })
-                    .setNegativeButton("Não", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            mScanner.stopCamera();
-                            finish();
-                            startActivity(getIntent());
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-
-        }
     }
 
     /**
