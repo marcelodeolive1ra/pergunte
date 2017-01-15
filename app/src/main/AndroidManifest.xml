@@ -23,6 +23,8 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".CadastroMateria"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".CadastroPergunta"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

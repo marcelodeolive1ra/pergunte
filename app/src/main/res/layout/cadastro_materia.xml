@@ -86,12 +86,11 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2">
+            android:layout_height="wrap_content">
             <EditText android:id="@+id/input_codigo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textNoSuggestions"
                 android:hint="Código da disciplina" />
         </android.support.design.widget.TextInputLayout>
 
