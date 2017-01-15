@@ -93,6 +93,7 @@ public class MainScreen extends AppCompatActivity {
                     integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
                     integrator.setPrompt("Scan");
                     integrator.setCameraId(0);
+                    integrator.setOrientationLocked(false);
                     integrator.setBeepEnabled(false);
                     integrator.setBarcodeImageEnabled(false);
                     integrator.initiateScan();
