@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -133,10 +134,11 @@ public class Tab2_Materias extends Fragment {
 
                                 if (status.equals("ok")) {
                                     materias.remove(positionToRemove); // removing from the interface
-
-                                    // TODO: Danilo, mais um toast aqui confirmando o cancelamento
+                                    Toast.makeText(Tab2_Materias.this.getActivity(),
+                                            "Matéria cancelada - você não receberá mais notificações dela", Toast.LENGTH_LONG).show();
                                 } else {
-                                    // TODO: E outro aqui informando eventual erro
+                                    Toast.makeText(Tab2_Materias.this.getActivity(),
+                                            "Ocorreu um erro na operação com status: " + status, Toast.LENGTH_LONG).show();
                                 }
 
                             } catch (InterruptedException | ExecutionException | JSONException e) {

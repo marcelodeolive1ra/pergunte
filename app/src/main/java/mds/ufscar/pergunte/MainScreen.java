@@ -146,7 +146,10 @@ public class MainScreen extends AppCompatActivity {
                             .setMessage(nome_materia)
                             .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-
+                                    //TODO: cadastrar aluno na matéria - para Marcelo. =p
+                                    // PS: talvez tenha que dar um reload no código para aparecer na UI
+                                    // código parecido com o load que dá em tab2_materia acho
+                                    // fale comigo se for isso mesmo que estou pensando, tenho uma ideia
                                 }
                             })
                             .setNegativeButton("Não", new DialogInterface.OnClickListener() {

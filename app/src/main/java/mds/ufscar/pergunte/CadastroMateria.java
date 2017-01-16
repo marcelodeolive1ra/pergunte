@@ -57,7 +57,7 @@ public class CadastroMateria extends AppCompatActivity {
         for (int i = thisYear; i >= thisYear-5; i--) {
             years.add(Integer.toString(i));
         }
-        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, years);
         Spinner spinYear = (Spinner)findViewById(R.id.spinner_ano);
         spinYear.setAdapter(yearAdapter);
 
@@ -65,7 +65,7 @@ public class CadastroMateria extends AppCompatActivity {
         ArrayList<Integer> semesters = new ArrayList<>();
         semesters.add(1);
         semesters.add(2);
-        ArrayAdapter<Integer> semAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, semesters);
+        ArrayAdapter<Integer> semAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_dropdown_item, semesters);
         Spinner spinSem = (Spinner)findViewById(R.id.spinner_semestre);
         spinSem.setAdapter(semAdapter);
 
@@ -75,7 +75,7 @@ public class CadastroMateria extends AppCompatActivity {
         for (char c : str.toCharArray()) {
             chars.add(c);
         }
-        ArrayAdapter<Character> turmaAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, chars);
+        ArrayAdapter<Character> turmaAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, chars);
         Spinner spinTurma = (Spinner)findViewById(R.id.spinner_turma);
         spinTurma.setAdapter(turmaAdapter);
 

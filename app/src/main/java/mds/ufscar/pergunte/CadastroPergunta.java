@@ -6,16 +6,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by Danilo on 15/01/2017.
@@ -40,6 +45,7 @@ public class CadastroPergunta extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cadastro_pergunta);
+        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.CANADA);
 
         // linking UI components
         mInputTitle = (EditText)findViewById(R.id.input_title);
@@ -48,6 +54,24 @@ public class CadastroPergunta extends AppCompatActivity {
         mNRight = (Spinner)findViewById(R.id.spinner_nRight);
         mDateSelector = (Button)findViewById(R.id.btn_dateSelector);
         mSelectedDate = (TextView)findViewById(R.id.input_selectedDate);
+
+        // filling spinners
+        final ArrayList<Integer> numbersFrom1 = new ArrayList<>();
+        for (int i = 1; i<=5; i++)
+            numbersFrom1.add(i);
+        ArrayAdapter<Integer> nAlternativesAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_dropdown_item, numbersFrom1);
+        mNAlternatives.setAdapter(nAlternativesAdapter);
+        // check what user selected
+        mNAlternatives.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Toast.makeText(CadastroPergunta.this, "Numero de alternativas: " + numbersFrom1.get(position), Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // nothing so far
+            }
+        });
 
         setCurrentDateOnView();
 
