@@ -120,19 +120,7 @@ public class MainScreen extends AppCompatActivity {
                 try {
                     JSONObject resultado_requisicao = requisicao.execute("buscarmateriaporqr", codigoInscricao).get();
                     nome_materia = resultado_requisicao.getString("nome_materia");
-                    JSONObject professor_json = resultado_requisicao.getJSONObject("professor");
-                    materiaScanneada = new Materia(
-                            resultado_requisicao.getInt("codigo"),
-                            resultado_requisicao.getString("turma"),
-                            resultado_requisicao.getInt("ano"),
-                            resultado_requisicao.getInt("semestre"),
-                            resultado_requisicao.getString("nome_materia"),
-                            new Professor(professor_json.getString("nome"),
-                                    professor_json.getString("sobrenome"),
-                                    professor_json.getString("email"),
-                                    professor_json.getString("universidade")),
-                            resultado_requisicao.getString("codigo_inscricao")
-                    );
+
                 } catch (InterruptedException | ExecutionException | JSONException e) {
                     e.printStackTrace();
                 }
@@ -164,6 +152,20 @@ public class MainScreen extends AppCompatActivity {
                                                 requisicao.execute("inscreveralunoemmateria", email, codigoInscricao).get();
 
                                         if (resultado_requisicao.getString("status").equals("ok")) {
+                                            JSONObject professor_json = resultado_requisicao.getJSONObject("professor");
+                                            materiaScanneada = new Materia(
+                                                    resultado_requisicao.getInt("codigo"),
+                                                    resultado_requisicao.getString("turma"),
+                                                    resultado_requisicao.getInt("ano"),
+                                                    resultado_requisicao.getInt("semestre"),
+                                                    resultado_requisicao.getString("nome_materia"),
+                                                    new Professor(professor_json.getString("nome"),
+                                                            professor_json.getString("sobrenome"),
+                                                            professor_json.getString("email"),
+                                                            professor_json.getString("universidade")),
+                                                    resultado_requisicao.getString("codigo_inscricao")
+                                            );
+
                                             int index = mViewPager.getCurrentItem();
                                             SectionsPagerAdapter adapter = ((SectionsPagerAdapter)mViewPager.getAdapter());
                                             Tab2_Materias fragment = (Tab2_Materias)adapter.getFragment(1);
