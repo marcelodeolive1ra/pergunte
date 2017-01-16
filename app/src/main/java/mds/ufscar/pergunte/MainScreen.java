@@ -29,6 +29,8 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
+import mds.ufscar.pergunte.model.Materia;
+import mds.ufscar.pergunte.model.Professor;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class MainScreen extends AppCompatActivity {
@@ -52,6 +54,7 @@ public class MainScreen extends AppCompatActivity {
     private String mPerfil;
     private boolean mProfessor;
     private ZXingScannerView mScanner;
+    private Materia materiaScanneada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,9 +115,11 @@ public class MainScreen extends AppCompatActivity {
             }
         };
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
         if(result != null){
             if(result.getContents()==null){
                 Toast.makeText(this, "Voce cancelou o scanning", Toast.LENGTH_LONG).show();
@@ -124,10 +129,24 @@ public class MainScreen extends AppCompatActivity {
 
                 RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
                 final String codigoInscricao = result.getContents();
+
                 try {
                     String retorno_requisicao = requisicao.execute("buscarmateriaporqr", codigoInscricao).get();
                     JSONObject retorno_requisicao_json = new JSONObject(retorno_requisicao);
                     nome_materia = retorno_requisicao_json.getString("nome_materia");
+                    JSONObject professor_json = retorno_requisicao_json.getJSONObject("professor");
+                    materiaScanneada = new Materia(
+                            retorno_requisicao_json.getInt("codigo"),
+                            retorno_requisicao_json.getString("turma"),
+                            retorno_requisicao_json.getInt("ano"),
+                            retorno_requisicao_json.getInt("semestre"),
+                            retorno_requisicao_json.getString("nome_materia"),
+                            new Professor(professor_json.getString("nome"),
+                                    professor_json.getString("sobrenome"),
+                                    professor_json.getString("email"),
+                                    professor_json.getString("universidade")),
+                            retorno_requisicao_json.getString("codigo_inscricao")
+                    );
                 } catch (InterruptedException | ExecutionException | JSONException e) {
                     e.printStackTrace();
                 }
@@ -163,6 +182,7 @@ public class MainScreen extends AppCompatActivity {
                                         System.out.println(resultado_json);
 
                                         if (status.equals("ok")) {
+                                            Tab2_Materias.materias.add(materiaScanneada);
                                             // TODO: Danilo, um toast aqui, o de sempre
                                         } else {
                                             // TODO: Outro aqui :-)
@@ -175,7 +195,12 @@ public class MainScreen extends AppCompatActivity {
                                     // PS: talvez tenha que dar um reload no código para aparecer na UI
                                     // código parecido com o load que dá em tab2_materia acho
                                     // fale comigo se for isso mesmo que estou pensando, tenho uma ideia
-                                    // TODO: de fato precisa notificar a interface que o dataset foi atualizado
+
+                                    // TODO: verificar a necessidade de notificação da alteração do vetor para a interface
+                                    // PS: Talvez não seja mais necessário notificar a interface.
+                                    // Quando sai da câmera, me parece que o código chama a activity
+                                    // da Tab2 novamente, o que faria que o vetor (já atualizado) seja
+                                    // lido novamente para renderizar a interface
                                 }
                             })
                             .setNegativeButton("Não", new DialogInterface.OnClickListener() {

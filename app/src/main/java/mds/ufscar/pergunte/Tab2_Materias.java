@@ -34,15 +34,18 @@ public class Tab2_Materias extends Fragment {
     private ListView mListView;
     private boolean mProfessor;
 
+    static ArrayList<Materia> materias;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
+//        final ArrayList<Materia> materias = new ArrayList<>();
+        materias = new ArrayList<>();
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
 
-        final ArrayList<Materia> materias = new ArrayList<>();
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
