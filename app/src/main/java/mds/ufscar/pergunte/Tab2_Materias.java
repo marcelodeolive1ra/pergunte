@@ -37,6 +37,7 @@ public class Tab2_Materias extends Fragment {
     private ListView mListView;
     private boolean mProfessor;
 //    private final ArrayList<Materia> materias =  new ArrayList<>();
+    private String emailUsuarioAtual;
 
     static ArrayList<Materia> materias;
 
@@ -49,17 +50,13 @@ public class Tab2_Materias extends Fragment {
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
+        emailUsuarioAtual = ((MainScreen)this.getActivity()).getEmailDoUsuarioAtual();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String email = (user != null) ? user.getEmail() : "";
-
         try {
-            String retorno_requisicao = requisicao.execute("buscarmaterias", email, "aluno").get();
-            JSONObject retorno_requisicao_json = new JSONObject(retorno_requisicao);
-            JSONArray materias_json = retorno_requisicao_json.getJSONArray("materias");
-            System.out.println(retorno_requisicao_json);
+            JSONObject resultado_requisicao = requisicao.execute("buscarmaterias", emailUsuarioAtual, "aluno").get();
+            JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
 
             for (int i = 0; i < materias_json.length(); i++) {
                 JSONObject materia_json = materias_json.getJSONObject(i);
@@ -135,39 +132,40 @@ public class Tab2_Materias extends Fragment {
 
                 AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
                 adb.setTitle("Remover?");
-                if (mProfessor)
-                    adb.setMessage("Tem certeza que deseja apagar " + materias.get(pos).getNomeDisciplina());
-                else
-                    adb.setMessage("Tem certeza que deseja sair de " + materias.get(pos).getNomeDisciplina());
+                if (mProfessor) {
+                    adb.setMessage("Tem certeza que deseja apagar a disciplina \"" +
+                            materias.get(pos).getNomeDisciplina() + "\"?");
+                } else {
+                    adb.setMessage("Tem certeza que deseja sair da disciplina \"" +
+                            materias.get(pos).getNomeDisciplina() + "\"?");
+                }
                 final int positionToRemove = pos;
                 adb.setNegativeButton("Cancelar", null);
                 adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
+                        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        String email = (user != null) ? user.getEmail() : "";
+
                         if (mProfessor) {
                             // TODO: Caso Professor - Marcelo desabilite ou remova a matéria (materiaASerRemovida) do BD por favore
                         } else {
-                            RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
-
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            String email = (user != null) ? user.getEmail() : "";
-
                             try {
-                                String resultado = requisicao.execute("cancelarinscricaoemmateria",
+                                JSONObject resultado_requisicao = requisicao.execute("cancelarinscricaoemmateria",
                                         email, Integer.toString(materias.get(positionToRemove).getCodigo())).get();
 
-                                JSONObject resultado_json = new JSONObject(resultado);
-                                String status = resultado_json.getString("status");
-
-                                System.out.println(resultado);
-
-                                if (status.equals("ok")) {
+                                if (resultado_requisicao.getString("status").equals("ok")) {
                                     materias.remove(positionToRemove); // removing from the interface
                                     Toast.makeText(Tab2_Materias.this.getActivity(),
-                                            "Matéria cancelada - você não receberá mais notificações dela", Toast.LENGTH_LONG).show();
+                                            "Matéria cancelada - você não receberá mais notificações dela",
+                                            Toast.LENGTH_LONG).show();
                                 } else {
                                     Toast.makeText(Tab2_Materias.this.getActivity(),
-                                            "Ocorreu um erro na operação com status: " + status, Toast.LENGTH_LONG).show();
+                                            "Ocorreu um erro na operação com status: " +
+                                                    resultado_requisicao.getString("descricao"),
+                                            Toast.LENGTH_LONG).show();
                                 }
 
                             } catch (InterruptedException | ExecutionException | JSONException e) {
