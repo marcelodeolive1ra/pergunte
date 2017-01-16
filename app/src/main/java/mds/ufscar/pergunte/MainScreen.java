@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +26,8 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
@@ -55,11 +56,13 @@ public class MainScreen extends AppCompatActivity {
     private boolean mProfessor;
     private ZXingScannerView mScanner;
     private Materia materiaScanneada;
+    private Map<Integer, Fragment> mPageReferenceMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
+        mPageReferenceMap = new HashMap<>();
 
         // setting selected profile
         mPerfil = this.getIntent().getStringExtra("perfil");
@@ -84,25 +87,6 @@ public class MainScreen extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
         mViewPager.setCurrentItem(1);   // tab Materias is the default tab
         final Activity activity = this;
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mProfessor) {
-                    Intent cadastroMateria = new Intent(MainScreen.this, CadastroMateria.class);
-                    startActivity(cadastroMateria);
-                } else {
-                    IntentIntegrator integrator = new IntentIntegrator(activity);
-                    integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-                    integrator.setPrompt("Scan");
-                    integrator.setCameraId(0);
-                    integrator.setOrientationLocked(false);
-                    integrator.setBeepEnabled(false);
-                    integrator.setBarcodeImageEnabled(false);
-                    integrator.initiateScan();
-                }
-            }
-        });
 
         // authentication code
         mAuth = FirebaseAuth.getInstance();
@@ -183,24 +167,23 @@ public class MainScreen extends AppCompatActivity {
 
                                         if (status.equals("ok")) {
                                             Tab2_Materias.materias.add(materiaScanneada);
-                                            // TODO: Danilo, um toast aqui, o de sempre
+                                            Toast.makeText(MainScreen.this, "Cadastro feito com sucesso", Toast.LENGTH_SHORT).show();
                                         } else {
-                                            // TODO: Outro aqui :-)
+                                            Toast.makeText(MainScreen.this, "Erro ao cadastrar, status: " + status, Toast.LENGTH_SHORT).show();
                                         }
 
                                     } catch (InterruptedException | ExecutionException | JSONException e) {
                                         e.printStackTrace();
                                     }
+                                    // TODO: Marcelo por favor monte o objeto Materia já pronto para ser adicionado. Grato.
 
-                                    // PS: talvez tenha que dar um reload no código para aparecer na UI
-                                    // código parecido com o load que dá em tab2_materia acho
-                                    // fale comigo se for isso mesmo que estou pensando, tenho uma ideia
-
-                                    // TODO: verificar a necessidade de notificação da alteração do vetor para a interface
-                                    // PS: Talvez não seja mais necessário notificar a interface.
-                                    // Quando sai da câmera, me parece que o código chama a activity
-                                    // da Tab2 novamente, o que faria que o vetor (já atualizado) seja
-                                    // lido novamente para renderizar a interface
+                                    int index = mViewPager.getCurrentItem();
+                                    SectionsPagerAdapter adapter = ((SectionsPagerAdapter)mViewPager.getAdapter());
+                                    Tab2_Materias fragment = (Tab2_Materias)adapter.getFragment(1);
+                                    if (fragment != null)
+                                        fragment.addMateria();
+                                    else
+                                        Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton("Não", new DialogInterface.OnClickListener() {
@@ -258,18 +241,25 @@ public class MainScreen extends AppCompatActivity {
             super(fm);
         }
 
+        public Fragment getFragment(int key) {
+            return mPageReferenceMap.get(key);
+        }
+
         @Override
         public Fragment getItem(int position) {
             // return the current tab
             switch (position) {
                 case 0:
                     Tab1_Respondidas tab1Respondidas = new Tab1_Respondidas();
+                    mPageReferenceMap.put(position, tab1Respondidas);
                     return tab1Respondidas;
                 case 1:
                     Tab2_Materias tab2Materias = new Tab2_Materias();
+                    mPageReferenceMap.put(position, tab2Materias);
                     return tab2Materias;
                 case 2:
                     Tab3_Estatisticas tab3Estatisticas = new Tab3_Estatisticas();
+                    mPageReferenceMap.put(position, tab3Estatisticas);
                     return tab3Estatisticas;
                 default:
                     return null;
@@ -286,13 +276,30 @@ public class MainScreen extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return mProfessor ? "Histórico" : "Respondidas";
+                    return isProfessor() ? "Histórico" : "Respondidas";
                 case 1:
                     return "Matérias";
                 case 2:
                     return "Estatísticas";
             }
             return null;
+        }
+
+        /**
+         * After an orientation change, the fragments are saved in the adapter, and
+         * I don't want to double save them: I will retrieve them and put them in my
+         * list again here.
+         */
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            mPageReferenceMap.put(position, fragment);
+            return fragment;
+        }
+
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            super.destroyItem(container, position, object);
+            mPageReferenceMap.remove(position);
         }
     }
 

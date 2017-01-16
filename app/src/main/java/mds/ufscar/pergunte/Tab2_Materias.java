@@ -1,8 +1,10 @@
 package mds.ufscar.pergunte;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +36,7 @@ public class Tab2_Materias extends Fragment {
 
     private ListView mListView;
     private boolean mProfessor;
+//    private final ArrayList<Materia> materias =  new ArrayList<>();
 
     static ArrayList<Materia> materias;
 
@@ -87,6 +91,28 @@ public class Tab2_Materias extends Fragment {
 
         final MateriaAdapter adapter = new MateriaAdapter(getActivity(), materias);
         mListView.setAdapter(adapter);
+
+        // fab button
+        final Activity activity = this.getActivity();
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mProfessor) {
+                    Intent cadastroMateria = new Intent(Tab2_Materias.this.getActivity(), CadastroMateria.class);
+                    startActivity(cadastroMateria);
+                } else {
+                    IntentIntegrator integrator = new IntentIntegrator(activity);
+                    integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                    integrator.setPrompt("Scan");
+                    integrator.setCameraId(0);
+                    integrator.setOrientationLocked(false);
+                    integrator.setBeepEnabled(false);
+                    integrator.setBarcodeImageEnabled(false);
+                    integrator.initiateScan();
+                }
+            }
+        });
 
         // setting one click on an item of the list view
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -156,5 +182,10 @@ public class Tab2_Materias extends Fragment {
         });
 
         return rootView;
+    }
+
+    public void addMateria(){
+        Toast.makeText(Tab2_Materias.this.getActivity(),
+                "Consegui acessar esse metodo em Tab2 de MainScreen", Toast.LENGTH_LONG).show();
     }
 }
