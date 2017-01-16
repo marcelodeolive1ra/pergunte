@@ -47,14 +47,15 @@ public class Tab2_Materias extends Fragment {
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
-        emailUsuarioAtual = ((MainScreen)this.getActivity()).getEmailDoUsuarioAtual();
+//        emailUsuarioAtual = ((MainScreen)this.getActivity()).getEmailDoUsuarioAtual();
+        emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
         mMaterias =  new ArrayList<>();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
         try {
             JSONObject resultado_requisicao = requisicao.execute("buscarmaterias", emailUsuarioAtual, "aluno").get();
-            JSONArray materias_json = resultado_requisicao.getJSONArray("mMaterias");
+            JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
 
             for (int i = 0; i < materias_json.length(); i++) {
                 JSONObject materia_json = materias_json.getJSONObject(i);
