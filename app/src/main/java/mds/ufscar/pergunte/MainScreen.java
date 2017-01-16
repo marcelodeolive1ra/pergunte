@@ -167,7 +167,7 @@ public class MainScreen extends AppCompatActivity {
                                             Tab2_Materias.materias.add(materiaScanneada);
                                             Toast.makeText(MainScreen.this, "Cadastro feito com sucesso", Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Toast.makeText(MainScreen.this, "Erro ao cadastrar, status: " + status, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainScreen.this, "Erro ao cadastrar, status: ", Toast.LENGTH_SHORT).show();
                                         }
 
                                     } catch (InterruptedException | ExecutionException | JSONException e) {
