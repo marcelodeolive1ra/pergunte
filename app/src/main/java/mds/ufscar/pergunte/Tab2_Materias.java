@@ -36,27 +36,25 @@ public class Tab2_Materias extends Fragment {
 
     private ListView mListView;
     private boolean mProfessor;
-//    private final ArrayList<Materia> materias =  new ArrayList<>();
+    private ArrayList<Materia> mMaterias;
+    private MateriaAdapter adapter;
     private String emailUsuarioAtual;
-
-    static ArrayList<Materia> materias;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
-//        final ArrayList<Materia> materias = new ArrayList<>();
-        materias = new ArrayList<>();
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
         emailUsuarioAtual = ((MainScreen)this.getActivity()).getEmailDoUsuarioAtual();
+        mMaterias =  new ArrayList<>();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
         try {
             JSONObject resultado_requisicao = requisicao.execute("buscarmaterias", emailUsuarioAtual, "aluno").get();
-            JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
+            JSONArray materias_json = resultado_requisicao.getJSONArray("mMaterias");
 
             for (int i = 0; i < materias_json.length(); i++) {
                 JSONObject materia_json = materias_json.getJSONObject(i);
@@ -79,14 +77,14 @@ public class Tab2_Materias extends Fragment {
                         materia_json.getString("codigo_inscricao")
                 );
 
-                materias.add(materia);
+                mMaterias.add(materia);
             }
 
         } catch (InterruptedException | ExecutionException | JSONException e) {
             e.printStackTrace();
         }
 
-        final MateriaAdapter adapter = new MateriaAdapter(getActivity(), materias);
+        adapter = new MateriaAdapter(getActivity(), mMaterias);
         mListView.setAdapter(adapter);
 
         // fab button
@@ -134,10 +132,10 @@ public class Tab2_Materias extends Fragment {
                 adb.setTitle("Remover?");
                 if (mProfessor) {
                     adb.setMessage("Tem certeza que deseja apagar a disciplina \"" +
-                            materias.get(pos).getNomeDisciplina() + "\"?");
+                            mMaterias.get(pos).getNomeDisciplina() + "\"?");
                 } else {
                     adb.setMessage("Tem certeza que deseja sair da disciplina \"" +
-                            materias.get(pos).getNomeDisciplina() + "\"?");
+                            mMaterias.get(pos).getNomeDisciplina() + "\"?");
                 }
                 final int positionToRemove = pos;
                 adb.setNegativeButton("Cancelar", null);
@@ -154,10 +152,10 @@ public class Tab2_Materias extends Fragment {
                         } else {
                             try {
                                 JSONObject resultado_requisicao = requisicao.execute("cancelarinscricaoemmateria",
-                                        email, Integer.toString(materias.get(positionToRemove).getCodigo())).get();
+                                        email, Integer.toString(mMaterias.get(positionToRemove).getCodigo())).get();
 
                                 if (resultado_requisicao.getString("status").equals("ok")) {
-                                    materias.remove(positionToRemove); // removing from the interface
+                                    mMaterias.remove(positionToRemove); // removing from the interface
                                     Toast.makeText(Tab2_Materias.this.getActivity(),
                                             "Matéria cancelada - você não receberá mais notificações dela",
                                             Toast.LENGTH_LONG).show();
@@ -182,8 +180,41 @@ public class Tab2_Materias extends Fragment {
         return rootView;
     }
 
-    public void addMateria(){
-        Toast.makeText(Tab2_Materias.this.getActivity(),
-                "Consegui acessar esse metodo em Tab2 de MainScreen", Toast.LENGTH_LONG).show();
+    public void addMateria(Materia materiaAdicionada){
+        int index = 0;
+        boolean adicionada = false;
+        for (Materia materia : mMaterias) {
+            // verify year
+            if (materia.getAno() < materiaAdicionada.getAno()){
+                mMaterias.add(index, materiaAdicionada);
+                adicionada = true;
+                break;
+            }
+            else if (materia.getAno() == materiaAdicionada.getAno()){
+                //verify semester
+                if (materia.getSemestre() < materiaAdicionada.getSemestre()) {
+                    mMaterias.add(index, materiaAdicionada);
+                    adicionada = true;
+                    break;
+                }
+                else if (materia.getSemestre() == materiaAdicionada.getSemestre()) {
+                    // verify alphabet
+                    if (materia.getNomeDisciplina().compareToIgnoreCase(materiaAdicionada.getNomeDisciplina()) > 0){
+                        mMaterias.add(index, materiaAdicionada);
+                        adicionada = true;
+                        break;
+                    }
+                    else {
+                        mMaterias.add(index+1, materiaAdicionada);
+                        adicionada = true;
+                        break;
+                    }
+                }
+            }
+            index++;
+        }
+        if (!adicionada)
+            mMaterias.add(materiaAdicionada);
+        adapter.notifyDataSetChanged();
     }
 }

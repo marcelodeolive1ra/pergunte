@@ -164,7 +164,13 @@ public class MainScreen extends AppCompatActivity {
                                                 requisicao.execute("inscreveralunoemmateria", email, codigoInscricao).get();
 
                                         if (resultado_requisicao.getString("status").equals("ok")) {
-                                            Tab2_Materias.materias.add(materiaScanneada);
+                                            int index = mViewPager.getCurrentItem();
+                                            SectionsPagerAdapter adapter = ((SectionsPagerAdapter)mViewPager.getAdapter());
+                                            Tab2_Materias fragment = (Tab2_Materias)adapter.getFragment(1);
+                                            if (fragment != null)
+                                                fragment.addMateria(materiaScanneada);
+                                            else
+                                                Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias", Toast.LENGTH_SHORT).show();
                                             Toast.makeText(MainScreen.this, "Cadastro feito com sucesso", Toast.LENGTH_SHORT).show();
                                         } else {
                                             Toast.makeText(MainScreen.this, "Erro ao cadastrar, status: ", Toast.LENGTH_SHORT).show();
@@ -173,15 +179,6 @@ public class MainScreen extends AppCompatActivity {
                                     } catch (InterruptedException | ExecutionException | JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    // TODO: Marcelo por favor monte o objeto Materia já pronto para ser adicionado. Grato.
-
-                                    int index = mViewPager.getCurrentItem();
-                                    SectionsPagerAdapter adapter = ((SectionsPagerAdapter)mViewPager.getAdapter());
-                                    Tab2_Materias fragment = (Tab2_Materias)adapter.getFragment(1);
-                                    if (fragment != null)
-                                        fragment.addMateria();
-                                    else
-                                        Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton("Não", new DialogInterface.OnClickListener() {
