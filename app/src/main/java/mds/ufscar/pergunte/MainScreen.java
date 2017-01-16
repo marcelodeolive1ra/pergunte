@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -122,8 +123,9 @@ public class MainScreen extends AppCompatActivity {
                 String nome_materia = "";
 
                 RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+                final String codigoInscricao = result.getContents();
                 try {
-                    String retorno_requisicao = requisicao.execute("buscarmateriaporqr", result.getContents()).get();
+                    String retorno_requisicao = requisicao.execute("buscarmateriaporqr", codigoInscricao).get();
                     JSONObject retorno_requisicao_json = new JSONObject(retorno_requisicao);
                     nome_materia = retorno_requisicao_json.getString("nome_materia");
                 } catch (InterruptedException | ExecutionException | JSONException e) {
@@ -146,10 +148,34 @@ public class MainScreen extends AppCompatActivity {
                             .setMessage(nome_materia)
                             .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    //TODO: cadastrar aluno na matéria - para Marcelo. =p
+
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    String email = (user != null) ? user.getEmail() : "";
+
+                                    RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+
+                                    try {
+                                        String resultado = requisicao.execute("inscreveralunoemmateria", email, codigoInscricao).get();
+                                        System.out.println(resultado);
+
+                                        JSONObject resultado_json = new JSONObject(resultado);
+                                        String status = resultado_json.getString("status");
+                                        System.out.println(resultado_json);
+
+                                        if (status.equals("ok")) {
+                                            // TODO: Danilo, um toast aqui, o de sempre
+                                        } else {
+                                            // TODO: Outro aqui :-)
+                                        }
+
+                                    } catch (InterruptedException | ExecutionException | JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
                                     // PS: talvez tenha que dar um reload no código para aparecer na UI
                                     // código parecido com o load que dá em tab2_materia acho
                                     // fale comigo se for isso mesmo que estou pensando, tenho uma ideia
+                                    // TODO: de fato precisa notificar a interface que o dataset foi atualizado
                                 }
                             })
                             .setNegativeButton("Não", new DialogInterface.OnClickListener() {

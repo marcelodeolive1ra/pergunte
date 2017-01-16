@@ -69,6 +69,16 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, String> {
 
                 break;
 
+            case "inscreveralunoemmateria":
+
+                data.put("email", params[1]);
+                data.put("codigo", params[2]);
+
+                request = HttpRequest.post("http://mds.secompufscar.com.br/inscreveralunoemmateria/").form(data);
+                json = request.body();
+
+                break;
+
             case "cancelarinscricaoemmateria":
                 data.put("email", params[1]);
                 data.put("codigo", params[2]);
