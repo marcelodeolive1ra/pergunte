@@ -36,12 +36,14 @@ public class CadastroMateria extends AppCompatActivity {
     private Spinner mSpinSemester;
     private Spinner mSpinLetter;
     private EditText mClassCode;
-
+    private String emailUsuarioAtual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cadastro_materia);
+
+        emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
 
         // bounding code with interface
         mBtnCadastrarMat = (Button)findViewById(R.id.btn_cadastrar);
@@ -97,24 +99,16 @@ public class CadastroMateria extends AppCompatActivity {
                         codigoDisciplina
                 );
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String email = (user != null) ? user.getEmail() : "";
-
                 RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
                 requisicao.setObject(materia);
 
                 try {
-                    String resultado = requisicao.execute("cadastrarmateria", email).get();
-                    System.out.println(resultado);
+                    JSONObject resultado_requisicao = requisicao.execute("cadastrarmateria", emailUsuarioAtual).get();
 
-                    JSONObject resultado_json = new JSONObject(resultado);
-                    String status = resultado_json.getString("status");
-                    System.out.println(resultado_json);
-
-                    if (status.equals("ok")) {
-                        Toast.makeText(CadastroMateria.this, "Matéria cadastrada com sucesso", Toast.LENGTH_LONG).show();
+                    if (resultado_requisicao.getString("status").equals("ok")) {
+                        Toast.makeText(CadastroMateria.this, "Matéria cadastrada com sucesso!", Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(CadastroMateria.this, "Erro ao cadastrar matéria", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CadastroMateria.this, "Erro ao cadastrar matéria.", Toast.LENGTH_LONG).show();
                     }
 
                 } catch (InterruptedException | ExecutionException | JSONException e) {

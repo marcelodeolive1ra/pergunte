@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
+import mds.ufscar.pergunte.model.Pessoa;
 import mds.ufscar.pergunte.model.Professor;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -55,6 +56,8 @@ public class MainScreen extends AppCompatActivity {
     private boolean mProfessor;
     private ZXingScannerView mScanner;
     private Materia materiaScanneada;
+    static Pessoa usuarioAtual;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,21 +134,20 @@ public class MainScreen extends AppCompatActivity {
                 final String codigoInscricao = result.getContents();
 
                 try {
-                    String retorno_requisicao = requisicao.execute("buscarmateriaporqr", codigoInscricao).get();
-                    JSONObject retorno_requisicao_json = new JSONObject(retorno_requisicao);
-                    nome_materia = retorno_requisicao_json.getString("nome_materia");
-                    JSONObject professor_json = retorno_requisicao_json.getJSONObject("professor");
+                    JSONObject resultado_requisicao = requisicao.execute("buscarmateriaporqr", codigoInscricao).get();
+                    nome_materia = resultado_requisicao.getString("nome_materia");
+                    JSONObject professor_json = resultado_requisicao.getJSONObject("professor");
                     materiaScanneada = new Materia(
-                            retorno_requisicao_json.getInt("codigo"),
-                            retorno_requisicao_json.getString("turma"),
-                            retorno_requisicao_json.getInt("ano"),
-                            retorno_requisicao_json.getInt("semestre"),
-                            retorno_requisicao_json.getString("nome_materia"),
+                            resultado_requisicao.getInt("codigo"),
+                            resultado_requisicao.getString("turma"),
+                            resultado_requisicao.getInt("ano"),
+                            resultado_requisicao.getInt("semestre"),
+                            resultado_requisicao.getString("nome_materia"),
                             new Professor(professor_json.getString("nome"),
                                     professor_json.getString("sobrenome"),
                                     professor_json.getString("email"),
                                     professor_json.getString("universidade")),
-                            retorno_requisicao_json.getString("codigo_inscricao")
+                            resultado_requisicao.getString("codigo_inscricao")
                     );
                 } catch (InterruptedException | ExecutionException | JSONException e) {
                     e.printStackTrace();
@@ -174,14 +176,10 @@ public class MainScreen extends AppCompatActivity {
                                     RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
                                     try {
-                                        String resultado = requisicao.execute("inscreveralunoemmateria", email, codigoInscricao).get();
-                                        System.out.println(resultado);
+                                        JSONObject resultado_requisicao =
+                                                requisicao.execute("inscreveralunoemmateria", email, codigoInscricao).get();
 
-                                        JSONObject resultado_json = new JSONObject(resultado);
-                                        String status = resultado_json.getString("status");
-                                        System.out.println(resultado_json);
-
-                                        if (status.equals("ok")) {
+                                        if (resultado_requisicao.getString("status").equals("ok")) {
                                             Tab2_Materias.materias.add(materiaScanneada);
                                             // TODO: Danilo, um toast aqui, o de sempre
                                         } else {
@@ -304,5 +302,10 @@ public class MainScreen extends AppCompatActivity {
 
     public boolean isProfessor() {
         return mProfessor;
+    }
+
+    public static String getEmailDoUsuarioAtual() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        return (user != null) ? user.getEmail() : "";
     }
 }
