@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,38 +48,24 @@ public class Tab2_Materias extends Fragment {
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
-//        emailUsuarioAtual = ((MainScreen)this.getActivity()).getEmailDoUsuarioAtual();
         emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
         mMaterias =  new ArrayList<>();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
         try {
-            JSONObject resultado_requisicao = requisicao.execute("buscarmaterias", emailUsuarioAtual, "aluno").get();
+            JSONObject resultado_requisicao = requisicao.execute("buscarmaterias", emailUsuarioAtual, "aluno", "ativas").get();
             JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
 
             for (int i = 0; i < materias_json.length(); i++) {
-                JSONObject materia_json = materias_json.getJSONObject(i);
-                JSONObject professor_json = materia_json.getJSONObject("professor");
-
-                Professor professor = new Professor(
-                        professor_json.getString("nome"),
-                        professor_json.getString("sobrenome"),
-                        professor_json.getString("email"),
-                        professor_json.getString("universidade")
-                );
-
-                Materia materia = new Materia(
-                        materia_json.getInt("codigo"),
-                        materia_json.getString("turma"),
-                        materia_json.getInt("ano"),
-                        materia_json.getInt("semestre"),
-                        materia_json.getString("nome_materia"),
-                        professor,
-                        materia_json.getString("codigo_inscricao")
-                );
-
-                mMaterias.add(materia);
+                Materia materia = new Materia();
+                if (materia.construirObjetoComJSON(materias_json.getJSONObject(i))) {
+                    mMaterias.add(materia);
+                } else {
+                    Toast.makeText(Tab2_Materias.this.getActivity(),
+                            "Erro ao carregar matéria.",
+                            Toast.LENGTH_LONG).show();
+                }
             }
 
         } catch (InterruptedException | ExecutionException | JSONException e) {
@@ -156,11 +143,13 @@ public class Tab2_Materias extends Fragment {
                                         email, Integer.toString(mMaterias.get(positionToRemove).getCodigo())).get();
 
                                 if (resultado_requisicao.getString("status").equals("ok")) {
+                                    Log.w("REQUISICAO", resultado_requisicao.toString());
                                     mMaterias.remove(positionToRemove); // removing from the interface
                                     Toast.makeText(Tab2_Materias.this.getActivity(),
                                             "Matéria cancelada - você não receberá mais notificações dela",
                                             Toast.LENGTH_LONG).show();
                                 } else {
+                                    Log.w("REQUISICAO", resultado_requisicao.toString());
                                     Toast.makeText(Tab2_Materias.this.getActivity(),
                                             "Ocorreu um erro na operação com status: " +
                                                     resultado_requisicao.getString("descricao"),
@@ -199,15 +188,14 @@ public class Tab2_Materias extends Fragment {
                     break;
                 }
                 else if (materia.getSemestre() == materiaAdicionada.getSemestre()) {
+                    adicionada = true;
                     // verify alphabet
                     if (materia.getNomeDisciplina().compareToIgnoreCase(materiaAdicionada.getNomeDisciplina()) > 0){
                         mMaterias.add(index, materiaAdicionada);
-                        adicionada = true;
                         break;
                     }
                     else {
                         mMaterias.add(index+1, materiaAdicionada);
-                        adicionada = true;
                         break;
                     }
                 }

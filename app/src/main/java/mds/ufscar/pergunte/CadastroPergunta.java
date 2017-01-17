@@ -32,7 +32,7 @@ public class CadastroPergunta extends AppCompatActivity {
     private EditText mInputTitle;
     private EditText mInputQuestion;
     private Spinner mNAlternatives;
-    private Spinner mNRight;
+//    private Spinner mNRight;
     private Button mDateSelector;
     private TextView mSelectedDate;
     private int mYear;
@@ -51,7 +51,7 @@ public class CadastroPergunta extends AppCompatActivity {
         mInputTitle = (EditText)findViewById(R.id.input_title);
         mInputQuestion = (EditText)findViewById(R.id.input_question);
         mNAlternatives = (Spinner)findViewById(R.id.spinner_nAlternatives);
-        mNRight = (Spinner)findViewById(R.id.spinner_nRight);
+//        mNRight = (Spinner)findViewById(R.id.spinner_nRight);
         mDateSelector = (Button)findViewById(R.id.btn_dateSelector);
         mSelectedDate = (TextView)findViewById(R.id.input_selectedDate);
 
