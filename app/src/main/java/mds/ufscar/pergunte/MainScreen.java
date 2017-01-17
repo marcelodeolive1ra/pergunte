@@ -117,7 +117,7 @@ public class MainScreen extends AppCompatActivity {
                 final String codigoInscricao = result.getContents();
 
                 try {
-                    JSONObject resultado_requisicao = requisicao.execute("buscarmateriaporqr",
+                    JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIA_POR_QR_CODE,
                             getEmailDoUsuarioAtual(), codigoInscricao).get();
 
                     String status_requisicao = resultado_requisicao.getString("status");
@@ -145,7 +145,8 @@ public class MainScreen extends AppCompatActivity {
 
                                         try {
                                             JSONObject resultado_requisicao =
-                                                    requisicao.execute("inscreveralunoemmateria", getEmailDoUsuarioAtual(), codigoInscricao).get();
+                                                    requisicao.execute(RequisicaoAssincrona.INSCREVER_ALUNO_EM_MATERIA,
+                                                            getEmailDoUsuarioAtual(), codigoInscricao).get();
 
                                             if (resultado_requisicao.getString("status").equals("ok")) {
                                                 materiaScanneada = new Materia();
