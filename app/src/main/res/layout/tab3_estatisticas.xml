@@ -88,7 +88,7 @@
         <ImageView
             android:id="@+id/header_cover_image"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:scaleType="centerCrop"/>
            <!-- android:src="@drawable/navigation_header_image"-->
 
@@ -112,7 +112,7 @@
             android:layout_below="@+id/header_cover_image"
             android:background="#ebca0707"
             android:elevation="4dp"
-            android:paddingBottom="24dp">
+            android:paddingBottom="20dp">
 
 
             <TextView
@@ -120,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="76dp"
+                android:layout_marginTop="65dp"
                 android:text="Viral Android"
                 android:textColor="#fff"
                 android:textSize="24sp"
@@ -132,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/user_profile_name"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
                 android:text="email@blabal.com"
                 android:textColor="#fff"
                 android:textSize="14sp" />
