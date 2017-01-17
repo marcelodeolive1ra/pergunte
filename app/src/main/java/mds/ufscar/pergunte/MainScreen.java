@@ -78,6 +78,7 @@ public class MainScreen extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Pergunte - Perfil " + mPerfil);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -273,7 +274,7 @@ public class MainScreen extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return isProfessor() ? "Histórico" : "Respondidas";
+                    return isProfessor() ? "Perguntas" : "Respondidas";
                 case 1:
                     return "Matérias";
                 case 2:

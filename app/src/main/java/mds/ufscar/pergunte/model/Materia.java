@@ -25,7 +25,8 @@ public class Materia {
         this.setCodigoInscricao(codigoInscricao);
         perguntas = new ArrayList<>();
         alunos = new ArrayList<>();
-        imageUrl = "https://pt.wikipedia.org/wiki/Turma_da_M%C3%B4nica#/media/File:Turma_da_M%C3%B4nica.jpg";
+        imageUrl = null;
+//        imageUrl = "https://www.edamam.com/web-img/1d0/1d0075b30ec5fc368ce9ccaf3156462a.jpg";
     }
 
     public Materia(int codigo, String turma, int ano, int semestre, String nomeDisciplina,

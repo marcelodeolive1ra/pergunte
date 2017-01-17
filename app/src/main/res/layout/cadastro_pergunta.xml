@@ -33,7 +33,7 @@
             android:layout_marginBottom="30dp">
             <EditText android:id="@+id/input_question"
                 android:inputType="textMultiLine"
-                android:lines="5"
+                android:lines="8"
                 android:minLines="4"
                 android:gravity="top|start"
                 android:maxLines="8"
@@ -67,28 +67,28 @@
                 android:spinnerMode="dropdown" />
         </LinearLayout>
         <!--  Colocando label e spinner lado a lado -->
-        <LinearLayout
-            android:id="@+id/LinearLayout03"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="30dp">
-            <TextView android:id="@+id/label_corretas"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="2"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:text="Dentre as quais são corretas:"
-                android:textSize="16sp"/>
-            <Spinner
-                android:id="@+id/spinner_nRight"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:drawable/btn_dropdown"
-                android:spinnerMode="dropdown" />
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/LinearLayout03"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_marginBottom="30dp">-->
+            <!--<TextView android:id="@+id/label_corretas"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_weight="2"-->
+                <!--android:layout_marginBottom="5dp"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="Dentre as quais são corretas:"-->
+                <!--android:textSize="16sp"/>-->
+            <!--<Spinner-->
+                <!--android:id="@+id/spinner_nRight"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@android:drawable/btn_dropdown"-->
+                <!--android:spinnerMode="dropdown" />-->
+        <!--</LinearLayout>-->
 
         <!--  Colocando label e button lado a lado -->
         <LinearLayout
