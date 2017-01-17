@@ -2,6 +2,8 @@ package mds.ufscar.pergunte;
 
 import android.os.AsyncTask;
 
+import com.github.kevinsawicki.http.HttpRequest;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
