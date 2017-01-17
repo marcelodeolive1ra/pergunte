@@ -154,27 +154,20 @@ public class MainScreen extends AppCompatActivity {
 
                                         if (resultado_requisicao.getString("status").equals("ok")) {
                                             JSONObject professor_json = resultado_requisicao.getJSONObject("professor");
-                                            materiaScanneada = new Materia(
-                                                    resultado_requisicao.getInt("codigo"),
-                                                    resultado_requisicao.getString("turma"),
-                                                    resultado_requisicao.getInt("ano"),
-                                                    resultado_requisicao.getInt("semestre"),
-                                                    resultado_requisicao.getString("nome_materia"),
-                                                    new Professor(professor_json.getString("nome"),
-                                                            professor_json.getString("sobrenome"),
-                                                            professor_json.getString("email"),
-                                                            professor_json.getString("universidade")),
-                                                    resultado_requisicao.getString("codigo_inscricao")
-                                            );
-
-                                            int index = mViewPager.getCurrentItem();
-                                            SectionsPagerAdapter adapter = ((SectionsPagerAdapter)mViewPager.getAdapter());
-                                            Tab2_Materias fragment = (Tab2_Materias)adapter.getFragment(1);
-                                            if (fragment != null)
-                                                fragment.addMateria(materiaScanneada);
-                                            else
-                                                Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias", Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(MainScreen.this, "Cadastro feito com sucesso", Toast.LENGTH_SHORT).show();
+                                            materiaScanneada = new Materia();
+                                            if (materiaScanneada.construirObjetoComJSON(resultado_requisicao)) {
+                                                int indexCurrentTab = mViewPager.getCurrentItem();
+                                                SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
+                                                Tab2_Materias fragment = (Tab2_Materias) adapter.getFragment(indexCurrentTab);
+                                                if (fragment != null) {
+                                                    fragment.addMateria(materiaScanneada);
+                                                } else {
+                                                    Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
+                                                }
+                                                Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(MainScreen.this, "Erro ao cadastrar a matéria.", Toast.LENGTH_SHORT).show();
+                                            }
                                         } else {
                                             Toast.makeText(MainScreen.this, "Erro ao cadastrar, status: ", Toast.LENGTH_SHORT).show();
                                         }
@@ -193,7 +186,6 @@ public class MainScreen extends AppCompatActivity {
                             .show();
 
                 }
-
             }
         }
         else {
@@ -201,11 +193,9 @@ public class MainScreen extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onPause(){
         super.onPause();
-//        mScanner.stopCamera();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
