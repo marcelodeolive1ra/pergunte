@@ -103,7 +103,8 @@ public class CadastroMateria extends AppCompatActivity {
                 requisicao.setObject(materia);
 
                 try {
-                    JSONObject resultado_requisicao = requisicao.execute("cadastrarmateria", emailUsuarioAtual).get();
+                    JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CADASTRAR_NOVA_MATERIA,
+                            emailUsuarioAtual).get();
 
                     if (resultado_requisicao.getString("status").equals("ok")) {
                         Toast.makeText(CadastroMateria.this, "Matéria cadastrada com sucesso!", Toast.LENGTH_LONG).show();

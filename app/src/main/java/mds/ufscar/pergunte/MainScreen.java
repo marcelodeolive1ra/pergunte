@@ -113,78 +113,75 @@ public class MainScreen extends AppCompatActivity {
                 Toast.makeText(this, "Voce cancelou o scanning", Toast.LENGTH_LONG).show();
             }
             else {
-                String nome_materia = "";
-
                 RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
                 final String codigoInscricao = result.getContents();
 
                 try {
-                    JSONObject resultado_requisicao = requisicao.execute("buscarmateriaporqr", codigoInscricao).get();
-                    nome_materia = resultado_requisicao.getString("nome_materia");
+                    JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIA_POR_QR_CODE,
+                            getEmailDoUsuarioAtual(), codigoInscricao).get();
+
+                    String status_requisicao = resultado_requisicao.getString("status");
+
+                    if (!status_requisicao.equals("ok")) {
+                        new AlertDialog.Builder(this)
+                                .setTitle("Erro!")
+                                .setMessage(resultado_requisicao.getString("descricao"))
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                    } else {
+                        new AlertDialog.Builder(this)
+                                .setTitle(codigoInscricao)
+                                .setMessage("Tem certeza que deseja se cadastrar na matéria \"" +
+                                        resultado_requisicao.getString("nome_materia") + "\"?")
+                                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+
+                                        try {
+                                            JSONObject resultado_requisicao =
+                                                    requisicao.execute(RequisicaoAssincrona.INSCREVER_ALUNO_EM_MATERIA,
+                                                            getEmailDoUsuarioAtual(), codigoInscricao).get();
+
+                                            if (resultado_requisicao.getString("status").equals("ok")) {
+                                                materiaScanneada = new Materia();
+                                                if (materiaScanneada.construirObjetoComJSON(resultado_requisicao)) {
+                                                    int indexCurrentTab = mViewPager.getCurrentItem();
+                                                    SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
+                                                    Tab2_Materias fragment = (Tab2_Materias) adapter.getFragment(indexCurrentTab);
+                                                    if (fragment != null) {
+                                                        fragment.addMateria(materiaScanneada);
+                                                    } else {
+                                                        Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(MainScreen.this, "Erro ao cadastrar a matéria.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            } else {
+                                                Toast.makeText(MainScreen.this, "Erro ao cadastrar, status: ", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } catch (InterruptedException | ExecutionException | JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                })
+                                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                    }
 
                 } catch (InterruptedException | ExecutionException | JSONException e) {
                     e.printStackTrace();
-                }
-                if (nome_materia.equals("")) {
-                    new AlertDialog.Builder(this)
-                            .setTitle("Erro na leitura. Tente novamente!")
-
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                } else {
-                    new AlertDialog.Builder(this)
-                            .setTitle("Tem certeza que deseja se cadastrar nessa matéria?")
-                            .setMessage(nome_materia)
-                            .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    String email = (user != null) ? user.getEmail() : "";
-
-                                    RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
-
-                                    try {
-                                        JSONObject resultado_requisicao =
-                                                requisicao.execute("inscreveralunoemmateria", email, codigoInscricao).get();
-
-                                        if (resultado_requisicao.getString("status").equals("ok")) {
-                                            JSONObject professor_json = resultado_requisicao.getJSONObject("professor");
-                                            materiaScanneada = new Materia();
-                                            if (materiaScanneada.construirObjetoComJSON(resultado_requisicao)) {
-                                                int indexCurrentTab = mViewPager.getCurrentItem();
-                                                SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
-                                                Tab2_Materias fragment = (Tab2_Materias) adapter.getFragment(indexCurrentTab);
-                                                if (fragment != null) {
-                                                    fragment.addMateria(materiaScanneada);
-                                                } else {
-                                                    Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
-                                                }
-                                                Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                Toast.makeText(MainScreen.this, "Erro ao cadastrar a matéria.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        } else {
-                                            Toast.makeText(MainScreen.this, "Erro ao cadastrar, status: ", Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    } catch (InterruptedException | ExecutionException | JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            })
-                            .setNegativeButton("Não", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-
                 }
             }
         }

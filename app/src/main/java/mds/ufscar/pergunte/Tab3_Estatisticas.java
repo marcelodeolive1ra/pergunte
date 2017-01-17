@@ -51,7 +51,7 @@ public class Tab3_Estatisticas extends Fragment {
            // String uid = user.getUid();
         }
 
-            return rootView;
+        return rootView;
     }
 
 
