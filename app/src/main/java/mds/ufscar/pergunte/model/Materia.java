@@ -40,7 +40,7 @@ public class Materia {
         JSONObject professor_json = null;
         try {
             professor_json = resultado_requisicao.getJSONObject("professor");
-            this.setAno(resultado_requisicao.getInt("codigo"));
+            this.setCodigo(resultado_requisicao.getInt("codigo"));
             this.setTurma(resultado_requisicao.getString("turma"));
             this.setAno(resultado_requisicao.getInt("ano"));
             this.setSemestre(resultado_requisicao.getInt("semestre"));
