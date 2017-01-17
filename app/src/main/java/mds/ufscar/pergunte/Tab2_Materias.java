@@ -39,7 +39,6 @@ public class Tab2_Materias extends Fragment {
     private boolean mProfessor;
     private ArrayList<Materia> mMaterias;
     private MateriaAdapter adapter;
-    private String emailUsuarioAtual;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,13 +47,15 @@ public class Tab2_Materias extends Fragment {
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
-        emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
+        String emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
         mMaterias =  new ArrayList<>();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
         try {
-            JSONObject resultado_requisicao = requisicao.execute("buscarmaterias", emailUsuarioAtual, "aluno", "ativas").get();
+            JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIAS,
+                    emailUsuarioAtual, RequisicaoAssincrona.Parametros.PERFIL_ALUNO,
+                    RequisicaoAssincrona.Parametros.STATUS_MATERIA_ATIVA).get();
             JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
 
             for (int i = 0; i < materias_json.length(); i++) {
@@ -139,7 +140,7 @@ public class Tab2_Materias extends Fragment {
                             // TODO: Caso Professor - Marcelo desabilite ou remova a matéria (materiaASerRemovida) do BD por favore
                         } else {
                             try {
-                                JSONObject resultado_requisicao = requisicao.execute("cancelarinscricaoemmateria",
+                                JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA,
                                         email, Integer.toString(mMaterias.get(positionToRemove).getCodigo())).get();
 
                                 if (resultado_requisicao.getString("status").equals("ok")) {
