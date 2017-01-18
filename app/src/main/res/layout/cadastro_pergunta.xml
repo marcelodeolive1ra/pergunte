@@ -43,59 +43,11 @@
                 android:hint="Escreva sua pergunta" />
         </android.support.design.widget.TextInputLayout>
 
-        <!--  Colocando label e spinner lado a lado -->
-        <LinearLayout
-            android:id="@+id/LinearLayout02"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="10dp">
-            <TextView android:id="@+id/label_nAlternatives"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="2"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:text="Número de alternativas:"
-                android:textSize="16sp"/>
-            <Spinner
-                android:id="@+id/spinner_nAlternatives"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:drawable/btn_dropdown"
-                android:spinnerMode="dropdown" />
-        </LinearLayout>
-        <!--  Colocando label e spinner lado a lado -->
-        <!--<LinearLayout-->
-            <!--android:id="@+id/LinearLayout03"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_marginBottom="30dp">-->
-            <!--<TextView android:id="@+id/label_corretas"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="40dp"-->
-                <!--android:layout_weight="2"-->
-                <!--android:layout_marginBottom="5dp"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="Dentre as quais são corretas:"-->
-                <!--android:textSize="16sp"/>-->
-            <!--<Spinner-->
-                <!--android:id="@+id/spinner_nRight"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:background="@android:drawable/btn_dropdown"-->
-                <!--android:spinnerMode="dropdown" />-->
-        <!--</LinearLayout>-->
-
         <!--  Colocando label e button lado a lado -->
         <LinearLayout
             android:id="@+id/LinearLayout04"
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:layout_alignParentBottom="true">
+            android:layout_width="fill_parent">
             <TextView android:id="@+id/label_date"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
@@ -117,7 +69,6 @@
             android:id="@+id/LinearLayout05"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:layout_alignParentBottom="true"
             android:layout_marginBottom="30dp">
             <TextView android:id="@+id/label_selectedDate"
                 android:layout_width="0dp"
@@ -132,9 +83,42 @@
                 android:layout_height="40dp"
                 android:layout_weight="2"
                 android:layout_marginBottom="5dp"
-                android:gravity="center_vertical|right"
+                android:gravity="center_vertical|end"
                 android:text="15/01/2017"
                 android:textSize="16sp"/>
+        </LinearLayout>
+
+        <TextView android:id="@+id/label_alternatives"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_vertical"
+            android:text="Alternativas (a correta estará em destaque):"
+            android:textSize="16sp"/>
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+        <!--  Colocando buttons lado a lado -->
+        <LinearLayout
+            android:id="@+id/LinearLayout06"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_marginBottom="30dp">
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_editAlternative"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1.5"
+                android:text="Editar alternativa selecionada"/>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_newAlternative"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:text="Nova alternativa"/>
         </LinearLayout>
 
         <!-- Cadastrar pergunta Button -->

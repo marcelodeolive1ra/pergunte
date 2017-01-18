@@ -1,24 +1,28 @@
 package mds.ufscar.pergunte;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -31,15 +35,18 @@ public class CadastroPergunta extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText mInputTitle;
     private EditText mInputQuestion;
-    private Spinner mNAlternatives;
-//    private Spinner mNRight;
     private Button mDateSelector;
+    private Button mEditAlternative;
+    private Button mAddAlternative;
     private TextView mSelectedDate;
     private int mYear;
     private int mMonth;
     private int mDay;
     private DatePickerDialog mDatePickerDialog;
     private SimpleDateFormat dateFormatter;
+    private String mTextAlternative;
+    private final String mAlternativeLetters[] = {"A", "B", "C", "D", "E"};
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,28 +57,29 @@ public class CadastroPergunta extends AppCompatActivity {
         // linking UI components
         mInputTitle = (EditText)findViewById(R.id.input_title);
         mInputQuestion = (EditText)findViewById(R.id.input_question);
-        mNAlternatives = (Spinner)findViewById(R.id.spinner_nAlternatives);
-//        mNRight = (Spinner)findViewById(R.id.spinner_nRight);
         mDateSelector = (Button)findViewById(R.id.btn_dateSelector);
         mSelectedDate = (TextView)findViewById(R.id.input_selectedDate);
+        mEditAlternative = (Button)findViewById(R.id.btn_editAlternative);
+        mAddAlternative = (Button)findViewById(R.id.btn_newAlternative);
 
         // filling spinners
-        final ArrayList<Integer> numbersFrom1 = new ArrayList<>();
-        for (int i = 1; i<=5; i++)
-            numbersFrom1.add(i);
-        ArrayAdapter<Integer> nAlternativesAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_dropdown_item, numbersFrom1);
-        mNAlternatives.setAdapter(nAlternativesAdapter);
-        // check what user selected
-        mNAlternatives.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Toast.makeText(CadastroPergunta.this, "Numero de alternativas: " + numbersFrom1.get(position), Toast.LENGTH_LONG).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // nothing so far
-            }
-        });
+//        final ArrayList<Integer> numbersFrom2 = new ArrayList<>();
+//        for (int i = 2; i<=5; i++)
+//            numbersFrom2.add(i);
+//        ArrayAdapter<Integer> nAlternativesAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_dropdown_item, numbersFrom2);
+//        mNAlternatives.setAdapter(nAlternativesAdapter);
+//        // check what user selected
+//        mNAlternatives.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+//                ((ViewGroup) findViewById(R.id.radiogroup)).removeAllViews();   // cleaning radio buttons if any
+//                addRadioButtons(numbersFrom2.get(position));
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parentView) {
+//                // nothing so far
+//            }
+//        });
 
         setCurrentDateOnView();
 
@@ -84,10 +92,52 @@ public class CadastroPergunta extends AppCompatActivity {
             }
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
+        // Buttons
+        index = 0;
         mDateSelector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDatePickerDialog.show();
+            }
+        });
+
+        mAddAlternative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CadastroPergunta.this);
+                builder.setTitle("Alternativa - " + mAlternativeLetters[index]);
+
+                final LinearLayout linearLayout = new LinearLayout(CadastroPergunta.this);
+                // Set up the input
+                final EditText input = new EditText(CadastroPergunta.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                input.setWidth(ActionBar.LayoutParams.MATCH_PARENT);
+                final CheckBox correct = new CheckBox(CadastroPergunta.this);
+                correct.setText("Alternativa correta");
+                correct.setWidth(ActionBar.LayoutParams.MATCH_PARENT);
+                linearLayout.addView(input);
+                linearLayout.addView(correct);
+                builder.setView(linearLayout);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String textAlternative = input.getText().toString();
+                        if (correct.isChecked())
+                            addRadioButton(textAlternative, true);
+                        else
+                            addRadioButton(textAlternative, false);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
             }
         });
     }
@@ -125,5 +175,14 @@ public class CadastroPergunta extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addRadioButton(String text, boolean correct) {
+        RadioGroup radioGroup = new RadioGroup(this);
+        radioGroup.setOrientation(LinearLayout.VERTICAL);
+        RadioButton rdbtn = new RadioButton(this);
+        rdbtn.setText(text);
+        radioGroup.addView(rdbtn);
+        ((ViewGroup) findViewById(R.id.radiogroup)).addView(radioGroup);
     }
 }
