@@ -1,5 +1,7 @@
 package mds.ufscar.pergunte;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -12,7 +14,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -105,11 +106,13 @@ public class CadastroMateria extends AppCompatActivity {
                 try {
                     JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CADASTRAR_NOVA_MATERIA,
                             emailUsuarioAtual).get();
-
+                    Intent returnIntent = new Intent();
                     if (resultado_requisicao.getString("status").equals("ok")) {
-                        Toast.makeText(CadastroMateria.this, "Matéria cadastrada com sucesso!", Toast.LENGTH_LONG).show();
+                        returnIntent.putExtra("materia", materia);
+                        setResult(Activity.RESULT_OK, returnIntent);
                     } else {
-                        Toast.makeText(CadastroMateria.this, "Erro ao cadastrar matéria.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CadastroMateria.this, "Erro ao cadastrar matéria no BD.", Toast.LENGTH_LONG).show();
+                        setResult(Activity.RESULT_CANCELED, returnIntent);
                     }
 
                 } catch (InterruptedException | ExecutionException | JSONException e) {

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
-import mds.ufscar.pergunte.model.Professor;
 
 /**
  * Created by Danilo on 24/12/2016.
@@ -84,7 +83,7 @@ public class Tab2_Materias extends Fragment {
             public void onClick(View view) {
                 if (mProfessor) {
                     Intent cadastroMateria = new Intent(Tab2_Materias.this.getActivity(), CadastroMateria.class);
-                    startActivity(cadastroMateria);
+                    startActivityForResult(cadastroMateria, MainScreen.cadastroMateriaCode);
                 } else {
                     IntentIntegrator integrator = new IntentIntegrator(activity);
                     integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);

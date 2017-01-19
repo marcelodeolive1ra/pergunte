@@ -1,11 +1,14 @@
 package mds.ufscar.pergunte.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Materia {
+public class Materia implements Parcelable{
     private int codigo;
     private String turma;
     private int ano;
@@ -68,6 +71,16 @@ public class Materia {
     public Materia() {
         this.perguntas = new ArrayList<>();
         this.alunos = new ArrayList<>();
+    }
+
+    // example constructor that takes a Parcel and gives you an object populated with it's values
+    private Materia(Parcel in) {
+        codigo = in.readInt();
+        turma = in.readString();
+        ano = in.readInt();
+        semestre = in.readInt();
+        nomeDisciplina = in.readString();
+        codigoInscricao = in.readString();
     }
 
     public void setCodigo(int codigo) {
@@ -175,4 +188,33 @@ public class Materia {
         descricao.append("Turma: " + turma + " " + ano + "/" + semestre);
         return descricao.toString();
     }
+
+    // 99.9% of the time you can just ignore this
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    // write your object's data to the passed-in Parcel
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(codigo);
+        out.writeString(turma);
+        out.writeInt(ano);
+        out.writeInt(semestre);
+        out.writeString(nomeDisciplina);
+        out.writeString(codigoInscricao);
+//        out.writeString(imageUrl);
+    }
+
+    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
+    public static final Parcelable.Creator<Materia> CREATOR = new Parcelable.Creator<Materia>() {
+        public Materia createFromParcel(Parcel in) {
+            return new Materia(in);
+        }
+
+        public Materia[] newArray(int size) {
+            return new Materia[size];
+        }
+    };
 }
