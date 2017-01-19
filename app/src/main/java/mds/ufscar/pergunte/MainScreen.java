@@ -82,7 +82,11 @@ public class MainScreen extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Pergunte - Perfil " + mPerfil);
+        if ((getSupportActionBar() != null) && (isProfessor())) {
+            getSupportActionBar().setTitle("Pergunte - Perfil Professor");
+        } else {
+            getSupportActionBar().setTitle("Pergunte - Perfil Aluno");
+        }
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -225,12 +229,11 @@ public class MainScreen extends AppCompatActivity {
             mAuth.signOut();
         } else if (id == R.id.change_profile) {
             finish();
-            if (mPerfil.equalsIgnoreCase(perfilAluno)) {
-                startActivity(getIntent().putExtra("perfil", perfilProfessor));
+            if (!isProfessor()) { //se não é professor
+                startActivity(getIntent().putExtra("perfil", perfilProfessor)); // agora é
             } else {
-                startActivity(getIntent().putExtra("perfil", perfilAluno));
+                startActivity(getIntent().putExtra("perfil", perfilAluno)); // agora é professor então
             }
-
         }
 
         return super.onOptionsItemSelected(item);

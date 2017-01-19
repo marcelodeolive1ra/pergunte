@@ -52,11 +52,18 @@ public class Tab2_Materias extends Fragment {
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
         try {
-            JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIAS,
-                    emailUsuarioAtual, RequisicaoAssincrona.Parametros.PERFIL_ALUNO,
-                    RequisicaoAssincrona.Parametros.STATUS_MATERIA_ATIVA).get();
-            JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
-
+            JSONArray materias_json;
+            if (mProfessor) {
+                JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIAS,
+                        emailUsuarioAtual, RequisicaoAssincrona.Parametros.PERFIL_PROFESSOR,
+                        RequisicaoAssincrona.Parametros.STATUS_MATERIA_ATIVA).get();
+                materias_json = resultado_requisicao.getJSONArray("materias");
+            } else {
+                JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIAS,
+                        emailUsuarioAtual, RequisicaoAssincrona.Parametros.PERFIL_ALUNO,
+                        RequisicaoAssincrona.Parametros.STATUS_MATERIA_ATIVA).get();
+                materias_json = resultado_requisicao.getJSONArray("materias");
+            }
             for (int i = 0; i < materias_json.length(); i++) {
                 Materia materia = new Materia();
                 if (materia.construirObjetoComJSON(materias_json.getJSONObject(i))) {
