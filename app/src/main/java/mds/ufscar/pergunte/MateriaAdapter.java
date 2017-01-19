@@ -67,7 +67,11 @@ public class MateriaAdapter extends BaseAdapter {
 
         titleTextView.setText(materia.getNomeDisciplina());
         subtitleTextView.setText(materia.getDescricao());
-        detailTextView.setText(String.valueOf(materia.getPerguntas().size()));
+        if (materia.getPerguntas() == null) {
+            detailTextView.setText("0");
+        } else {
+            detailTextView.setText(String.valueOf(materia.getPerguntas().size()));
+        }
 
         Picasso.with(mContext).load(materia.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
 

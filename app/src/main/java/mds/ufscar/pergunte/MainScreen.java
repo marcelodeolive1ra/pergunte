@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
 import mds.ufscar.pergunte.model.Pessoa;
+import mds.ufscar.pergunte.model.Professor;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class MainScreen extends AppCompatActivity {
@@ -112,7 +113,7 @@ public class MainScreen extends AppCompatActivity {
         if (requestCode == cadastroMateriaCode) {
             if (resultCode == Activity.RESULT_OK) {
                 Materia materiaASerAdd = data.getParcelableExtra("materia");
-                if (adicionouMateria(materiaASerAdd)) {
+                if (adicionouMateria(materiaASerAdd, true)) { // true = é professor (linkar com o professor)
                     Toast.makeText(this, "Matéria cadastrada com sucesso!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "Erro ao atualizar lista de matérias", Toast.LENGTH_LONG).show();
@@ -162,7 +163,7 @@ public class MainScreen extends AppCompatActivity {
                                                 if (resultado_requisicao.getString("status").equals("ok")) {
                                                     materiaScanneada = new Materia();
                                                     if (materiaScanneada.construirObjetoComJSON(resultado_requisicao)) {
-                                                        if (!adicionouMateria(materiaScanneada)) {
+                                                        if (!adicionouMateria(materiaScanneada, false)) {   // fasle = é aluno
                                                             Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
                                                         } else {
                                                             Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
@@ -225,14 +226,26 @@ public class MainScreen extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean adicionouMateria(Materia materia) {
+    public boolean adicionouMateria(Materia materia, boolean linkProfessor) {
         int indexCurrentTab = mViewPager.getCurrentItem();
         SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
         Tab2_Materias fragment = (Tab2_Materias) adapter.getFragment(indexCurrentTab);
-        if (fragment == null)
+        if (fragment == null) {
             return false;
-        else
+        } else {
+            if (linkProfessor) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String nomeProfessor = user.getDisplayName();
+                String[] nomes = nomeProfessor.split(" ");
+                StringBuilder sobrenome = new StringBuilder();
+                for (int i = 1; i<nomes.length; i++) {
+                    sobrenome.append(nomes[i]).append(" ");
+                }
+                Professor professor = new Professor(nomes[0], sobrenome.toString(), user.getEmail(), "UFSCar");
+                materia.setProfessor(professor);
+            }
             fragment.addMateria(materia);
+        }
         return true;
     }
 

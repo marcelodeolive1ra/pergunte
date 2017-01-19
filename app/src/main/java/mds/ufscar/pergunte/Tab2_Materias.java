@@ -83,7 +83,7 @@ public class Tab2_Materias extends Fragment {
             public void onClick(View view) {
                 if (mProfessor) {
                     Intent cadastroMateria = new Intent(Tab2_Materias.this.getActivity(), CadastroMateria.class);
-                    startActivityForResult(cadastroMateria, MainScreen.cadastroMateriaCode);
+                    getActivity().startActivityForResult(cadastroMateria, MainScreen.cadastroMateriaCode);
                 } else {
                     IntentIntegrator integrator = new IntentIntegrator(activity);
                     integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
