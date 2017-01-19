@@ -62,25 +62,6 @@ public class CadastroPergunta extends AppCompatActivity {
         mEditAlternative = (Button)findViewById(R.id.btn_editAlternative);
         mAddAlternative = (Button)findViewById(R.id.btn_newAlternative);
 
-        // filling spinners
-//        final ArrayList<Integer> numbersFrom2 = new ArrayList<>();
-//        for (int i = 2; i<=5; i++)
-//            numbersFrom2.add(i);
-//        ArrayAdapter<Integer> nAlternativesAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_dropdown_item, numbersFrom2);
-//        mNAlternatives.setAdapter(nAlternativesAdapter);
-//        // check what user selected
-//        mNAlternatives.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//                ((ViewGroup) findViewById(R.id.radiogroup)).removeAllViews();   // cleaning radio buttons if any
-//                addRadioButtons(numbersFrom2.get(position));
-//            }
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parentView) {
-//                // nothing so far
-//            }
-//        });
-
         setCurrentDateOnView();
 
         Calendar newCalendar = Calendar.getInstance();
@@ -170,7 +151,7 @@ public class CadastroPergunta extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.logout) {
             mAuth.signOut();
         }
 

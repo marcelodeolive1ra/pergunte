@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Pergunte</string>
     <string name="logout">Logout</string>
+    <string name="change_profile">Change Profile</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="thumbnail">thumbnail</string>
 </resources>

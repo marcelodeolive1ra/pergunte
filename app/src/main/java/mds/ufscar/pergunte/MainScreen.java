@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,8 +28,6 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
@@ -59,20 +58,23 @@ public class MainScreen extends AppCompatActivity {
     private ZXingScannerView mScanner;
     private Materia materiaScanneada;
     static Pessoa usuarioAtual;
-    static final int cadastroMateriaCode = 2; // for differentiate at onResultActivity
+    private SparseArrayCompat<Fragment> mPageReferenceMap;
 
-    private Map<Integer, Fragment> mPageReferenceMap;
+    // padronizações
+    static final int cadastroMateriaCode = 2; // for differentiate at onResultActivity
+    static final String perfilProfessor = "professor(a)";
+    static final String perfilAluno = "aluno(a)";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
-        mPageReferenceMap = new HashMap<>();
+        mPageReferenceMap = new SparseArrayCompat<>();
 
         // setting selected profile
         mPerfil = this.getIntent().getStringExtra("perfil");
         Toast.makeText(this, "Bem vindo(a) " + mPerfil, Toast.LENGTH_SHORT).show();
-        if (mPerfil.equalsIgnoreCase("professor(a)")) {
+        if (mPerfil.equalsIgnoreCase(perfilProfessor)) {
             mProfessor = true;
         } else {
             mProfessor = false;
@@ -219,8 +221,16 @@ public class MainScreen extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.logout) {
             mAuth.signOut();
+        } else if (id == R.id.change_profile) {
+            finish();
+            if (mPerfil.equalsIgnoreCase(perfilAluno)) {
+                startActivity(getIntent().putExtra("perfil", perfilProfessor));
+            } else {
+                startActivity(getIntent().putExtra("perfil", perfilAluno));
+            }
+
         }
 
         return super.onOptionsItemSelected(item);
