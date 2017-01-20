@@ -52,27 +52,29 @@ public class Tab2_Materias extends Fragment {
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
         try {
-            JSONArray materias_json;
-            if (mProfessor) {
-                JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIAS,
-                        emailUsuarioAtual, RequisicaoAssincrona.Parametros.PERFIL_PROFESSOR,
-                        RequisicaoAssincrona.Parametros.STATUS_MATERIA_ATIVA).get();
-                materias_json = resultado_requisicao.getJSONArray("materias");
-            } else {
-                JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIAS,
-                        emailUsuarioAtual, RequisicaoAssincrona.Parametros.PERFIL_ALUNO,
-                        RequisicaoAssincrona.Parametros.STATUS_MATERIA_ATIVA).get();
-                materias_json = resultado_requisicao.getJSONArray("materias");
-            }
-            for (int i = 0; i < materias_json.length(); i++) {
-                Materia materia = new Materia();
-                if (materia.construirObjetoComJSON(materias_json.getJSONObject(i))) {
-                    mMaterias.add(materia);
-                } else {
-                    Toast.makeText(Tab2_Materias.this.getActivity(),
-                            "Erro ao carregar matéria.",
-                            Toast.LENGTH_LONG).show();
+            String perfil_usuario = (mProfessor) ?
+                    RequisicaoAssincrona.Parametros.PERFIL_PROFESSOR : RequisicaoAssincrona.Parametros.PERFIL_ALUNO;
+
+            JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIAS,
+                    emailUsuarioAtual, perfil_usuario,
+                    RequisicaoAssincrona.Parametros.STATUS_MATERIA_ATIVA).get();
+
+            if (resultado_requisicao.getString("status").equals("ok")) {
+                JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
+
+                for (int i = 0; i < materias_json.length(); i++) {
+                    Materia materia = new Materia();
+                    if (materia.construirObjetoComJSON(materias_json.getJSONObject(i))) {
+                        mMaterias.add(materia);
+                    } else {
+                        Toast.makeText(Tab2_Materias.this.getActivity(),
+                                "Erro ao carregar matéria.", Toast.LENGTH_LONG).show();
+                    }
                 }
+            } else {
+                Log.w("REQUISICAO", resultado_requisicao.toString());
+                Toast.makeText(Tab2_Materias.this.getActivity(),
+                        resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
             }
 
         } catch (InterruptedException | ExecutionException | JSONException e) {
@@ -153,13 +155,12 @@ public class Tab2_Materias extends Fragment {
                                     Log.w("REQUISICAO", resultado_requisicao.toString());
                                     mMaterias.remove(positionToRemove); // removing from the interface
                                     Toast.makeText(Tab2_Materias.this.getActivity(),
-                                            "Matéria cancelada - você não receberá mais notificações dela",
+                                            "Matéria cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.",
                                             Toast.LENGTH_LONG).show();
                                 } else {
                                     Log.w("REQUISICAO", resultado_requisicao.toString());
                                     Toast.makeText(Tab2_Materias.this.getActivity(),
-                                            "Ocorreu um erro na operação com status: " +
-                                                    resultado_requisicao.getString("descricao"),
+                                            resultado_requisicao.getString("descricao"),
                                             Toast.LENGTH_LONG).show();
                                 }
 
