@@ -170,7 +170,10 @@ public class Tab2_Materias extends Fragment {
                                         mensagemDeFeedback,
                                         Toast.LENGTH_LONG).show();
 
-                                mMateriaItems = addSections(extrairMaterias(mMateriaItems));
+                                ArrayList<Materia> materias = extrairMaterias(mMateriaItems);
+                                // has to keep the same object
+                                mMateriaItems.clear();
+                                mMateriaItems.addAll(addSections(materias));
                             } else {
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
                                 Toast.makeText(Tab2_Materias.this.getActivity(),
