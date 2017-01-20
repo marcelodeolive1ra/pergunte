@@ -41,6 +41,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
     static final String INSCREVER_ALUNO_EM_MATERIA = "5";
     static final String CANCELAR_INSCRICAO_EM_MATERIA = "6";
     static final String BUSCAR_PERFIL_DO_USUARIO = "7";
+    static final String DESATIVAR_MATERIA = "8";
 
     private Object objetoGenerico;
 
@@ -100,6 +101,12 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
             case BUSCAR_PERFIL_DO_USUARIO:
                 data.put(Parametros.EMAIL_USUARIO, params[1]);
                 request = HttpRequest.post("http://mds.secompufscar.com.br/buscarperfilusuario/").form(data);
+                break;
+
+            case DESATIVAR_MATERIA:
+                data.put(Parametros.EMAIL_USUARIO, params[1]);
+                data.put(Parametros.CODIGO_MATERIA, params[2]);
+                request = HttpRequest.post("http://mds.secompufscar.com.br/desativarmateria/").form(data);
                 break;
 
             default:

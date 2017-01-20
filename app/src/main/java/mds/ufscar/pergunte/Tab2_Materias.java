@@ -129,11 +129,14 @@ public class Tab2_Materias extends Fragment {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
 
                 AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
-                adb.setTitle("Remover?");
+
                 if (mProfessor) {
-                    adb.setMessage("Tem certeza que deseja apagar a disciplina \"" +
-                            ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?");
+                    adb.setTitle("Desativar a matéria?");
+                    adb.setMessage("Tem certeza que deseja desativar a matéria \"" +
+                            ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?\n\n" +
+                    "Os alunos cadastrados não poderão mais acessar os dados da matéria.");
                 } else {
+                    adb.setTitle("Cancelar inscrição");
                     adb.setMessage("Tem certeza que deseja sair da disciplina \"" +
                             ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?");
                 }
@@ -147,29 +150,33 @@ public class Tab2_Materias extends Fragment {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         String email = (user != null) ? user.getEmail() : "";
 
-                        if (mProfessor) {
-                            // TODO: Caso Professor - Marcelo desabilite ou remova a matéria (materiaASerRemovida) do BD por favore
-                        } else {
-                            try {
-                                JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA,
-                                        email, Integer.toString(((Materia) mMateriaItems.get(positionToRemove)).getCodigo())).get();
+                        try {
 
-                                if (resultado_requisicao.getString("status").equals("ok")) {
-                                    Log.w("REQUISICAO", resultado_requisicao.toString());
-                                    mMateriaItems.remove(positionToRemove); // removing from the interface
-                                    Toast.makeText(Tab2_Materias.this.getActivity(),
-                                            "Matéria cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.",
-                                            Toast.LENGTH_LONG).show();
-                                } else {
-                                    Log.w("REQUISICAO", resultado_requisicao.toString());
-                                    Toast.makeText(Tab2_Materias.this.getActivity(),
-                                            resultado_requisicao.getString("descricao"),
-                                            Toast.LENGTH_LONG).show();
-                                }
+                            String tipo_requisicao = (mProfessor) ?
+                                    RequisicaoAssincrona.DESATIVAR_MATERIA : RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA;
 
-                            } catch (InterruptedException | ExecutionException | JSONException e) {
-                                e.printStackTrace();
+                            JSONObject resultado_requisicao = requisicao.execute(tipo_requisicao,
+                                    email, Integer.toString(((Materia) mMateriaItems.get(positionToRemove)).getCodigo())).get();
+
+                            if (resultado_requisicao.getString("status").equals("ok")) {
+                                Log.w("REQUISICAO", resultado_requisicao.toString());
+                                mMateriaItems.remove(positionToRemove); // removing from the interface
+
+                                String mensagemDeFeedback = (mProfessor) ?
+                                        "Matéria desativada com sucesso!" :
+                                        "Matéria cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.";
+
+                                Toast.makeText(Tab2_Materias.this.getActivity(),
+                                        mensagemDeFeedback,
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Log.w("REQUISICAO", resultado_requisicao.toString());
+                                Toast.makeText(Tab2_Materias.this.getActivity(),
+                                        resultado_requisicao.getString("descricao"),
+                                        Toast.LENGTH_LONG).show();
                             }
+                        } catch (InterruptedException | ExecutionException | JSONException e) {
+                            e.printStackTrace();
                         }
                         adapter.notifyDataSetChanged();
                     }});
@@ -199,7 +206,7 @@ public class Tab2_Materias extends Fragment {
     public String getSectionTitle(Materia materia) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(materia.getAno());
-        stringBuilder.append(" - ").append(materia.getSemestre());
+        stringBuilder.append("/").append(materia.getSemestre());
         return stringBuilder.toString();
     }
 

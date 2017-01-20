@@ -186,8 +186,8 @@ public class Materia implements Parcelable, MateriaItem {
     public String getDescricao() {
         String newLine = System.getProperty("line.separator");
         StringBuilder descricao = new StringBuilder();
-        descricao.append("Professor: " + professor.getNome() + newLine);
-        descricao.append("Turma: " + turma + " " + ano + "/" + semestre);
+        descricao.append("Ministrante: " + professor.getNome() + " " + professor.getSobrenome() + newLine);
+        descricao.append("Turma " + this.getTurma() + " - " + this.getAno() + "/" + this.getSemestre());
         return descricao.toString();
     }
 
