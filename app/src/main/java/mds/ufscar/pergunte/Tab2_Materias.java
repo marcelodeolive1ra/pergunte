@@ -134,7 +134,7 @@ public class Tab2_Materias extends Fragment {
                     adb.setTitle("Desativar a matéria?");
                     adb.setMessage("Tem certeza que deseja desativar a matéria \"" +
                             ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?\n\n" +
-                    "Os alunos cadastrados não poderão mais acessar os dados da matéria.");
+                            "Os alunos cadastrados não poderão mais acessar os dados da matéria.");
                 } else {
                     adb.setTitle("Cancelar inscrição");
                     adb.setMessage("Tem certeza que deseja sair da disciplina \"" +
@@ -169,6 +169,8 @@ public class Tab2_Materias extends Fragment {
                                 Toast.makeText(Tab2_Materias.this.getActivity(),
                                         mensagemDeFeedback,
                                         Toast.LENGTH_LONG).show();
+
+                                mMateriaItems = addSections(extrairMaterias(mMateriaItems));
                             } else {
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
                                 Toast.makeText(Tab2_Materias.this.getActivity(),
@@ -186,6 +188,16 @@ public class Tab2_Materias extends Fragment {
         });
 
         return rootView;
+    }
+
+    public ArrayList<Materia> extrairMaterias(ArrayList<MateriaItem> materiaItems) {
+        ArrayList<Materia> materias = new ArrayList<>();
+        for (MateriaItem materiaItem : materiaItems) {
+            if (!materiaItem.isSection()) {
+                materias.add((Materia)materiaItem);
+            }
+        }
+        return materias;
     }
 
     public ArrayList<MateriaItem> addSections(ArrayList<Materia> materias) {
@@ -206,7 +218,7 @@ public class Tab2_Materias extends Fragment {
     public String getSectionTitle(Materia materia) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(materia.getAno());
-        stringBuilder.append("/").append(materia.getSemestre());
+        stringBuilder.append(" - ").append(materia.getSemestre());
         return stringBuilder.toString();
     }
 
