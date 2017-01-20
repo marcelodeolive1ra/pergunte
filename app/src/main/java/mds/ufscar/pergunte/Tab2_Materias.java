@@ -36,7 +36,7 @@ public class Tab2_Materias extends Fragment {
 
     private ListView mListView;
     private boolean mProfessor;
-    private ArrayList<Materia> mMaterias;
+    private ArrayList<MateriaItem> mMateriaItems;
     private MateriaAdapter adapter;
 
     @Override
@@ -47,7 +47,7 @@ public class Tab2_Materias extends Fragment {
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
         String emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
-        mMaterias =  new ArrayList<>();
+        mMateriaItems =  new ArrayList<>();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
@@ -62,15 +62,17 @@ public class Tab2_Materias extends Fragment {
             if (resultado_requisicao.getString("status").equals("ok")) {
                 JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
 
+                ArrayList<Materia> materias = new ArrayList<>();
                 for (int i = 0; i < materias_json.length(); i++) {
                     Materia materia = new Materia();
                     if (materia.construirObjetoComJSON(materias_json.getJSONObject(i))) {
-                        mMaterias.add(materia);
+                        materias.add(materia);
                     } else {
                         Toast.makeText(Tab2_Materias.this.getActivity(),
                                 "Erro ao carregar matéria.", Toast.LENGTH_LONG).show();
                     }
                 }
+                mMateriaItems = addSections(materias);
             } else {
                 Log.w("REQUISICAO", resultado_requisicao.toString());
                 Toast.makeText(Tab2_Materias.this.getActivity(),
@@ -81,7 +83,7 @@ public class Tab2_Materias extends Fragment {
             e.printStackTrace();
         }
 
-        adapter = new MateriaAdapter(getActivity(), mMaterias);
+        adapter = new MateriaAdapter(getActivity(), mMateriaItems);
         mListView.setAdapter(adapter);
 
         // fab button
@@ -120,6 +122,7 @@ public class Tab2_Materias extends Fragment {
         });
 
         // setting option to remove an item for a long press
+        // TODO: Danilo corrigir remover seção caso remova todo semestre
         mListView.setLongClickable(true);
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -129,10 +132,10 @@ public class Tab2_Materias extends Fragment {
                 adb.setTitle("Remover?");
                 if (mProfessor) {
                     adb.setMessage("Tem certeza que deseja apagar a disciplina \"" +
-                            mMaterias.get(pos).getNomeDisciplina() + "\"?");
+                            ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?");
                 } else {
                     adb.setMessage("Tem certeza que deseja sair da disciplina \"" +
-                            mMaterias.get(pos).getNomeDisciplina() + "\"?");
+                            ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?");
                 }
                 final int positionToRemove = pos;
                 adb.setNegativeButton("Cancelar", null);
@@ -149,11 +152,11 @@ public class Tab2_Materias extends Fragment {
                         } else {
                             try {
                                 JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA,
-                                        email, Integer.toString(mMaterias.get(positionToRemove).getCodigo())).get();
+                                        email, Integer.toString(((Materia) mMateriaItems.get(positionToRemove)).getCodigo())).get();
 
                                 if (resultado_requisicao.getString("status").equals("ok")) {
                                     Log.w("REQUISICAO", resultado_requisicao.toString());
-                                    mMaterias.remove(positionToRemove); // removing from the interface
+                                    mMateriaItems.remove(positionToRemove); // removing from the interface
                                     Toast.makeText(Tab2_Materias.this.getActivity(),
                                             "Matéria cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.",
                                             Toast.LENGTH_LONG).show();
@@ -178,40 +181,68 @@ public class Tab2_Materias extends Fragment {
         return rootView;
     }
 
+    public ArrayList<MateriaItem> addSections(ArrayList<Materia> materias) {
+        ArrayList<MateriaItem> materiaItems = new ArrayList<>();
+        String lastYearSemesterAdded;
+        lastYearSemesterAdded = getSectionTitle(materias.get(0));
+        materiaItems.add(new MateriaSection(lastYearSemesterAdded));
+        for (Materia materia : materias) {
+            if (!lastYearSemesterAdded.equals(getSectionTitle(materia))) {
+                lastYearSemesterAdded = getSectionTitle(materia);
+                materiaItems.add(new MateriaSection(lastYearSemesterAdded));
+            }
+            materiaItems.add(materia);
+        }
+        return materiaItems;
+    }
+
+    public String getSectionTitle(Materia materia) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(materia.getAno());
+        stringBuilder.append(" - ").append(materia.getSemestre());
+        return stringBuilder.toString();
+    }
+
     public void addMateria(Materia materiaAdicionada){
         int index = 0;
         boolean adicionada = false;
-        for (Materia materia : mMaterias) {
-            // verify year
-            if (materia.getAno() < materiaAdicionada.getAno()){
-                mMaterias.add(index, materiaAdicionada);
-                adicionada = true;
-                break;
-            }
-            else if (materia.getAno() == materiaAdicionada.getAno()){
-                //verify semester
-                if (materia.getSemestre() < materiaAdicionada.getSemestre()) {
-                    mMaterias.add(index, materiaAdicionada);
+        for (MateriaItem materiaItem : mMateriaItems) {
+            if (materiaItem.isSection()) {
+                continue;
+            } else {
+                Materia materia = (Materia) materiaItem;
+                // verify year
+                if (materia.getAno() < materiaAdicionada.getAno()) {
+                    mMateriaItems.add(index, new MateriaSection(getSectionTitle(materiaAdicionada)));
+                    mMateriaItems.add(index+1, materiaAdicionada);
                     adicionada = true;
                     break;
-                }
-                else if (materia.getSemestre() == materiaAdicionada.getSemestre()) {
-                    adicionada = true;
-                    // verify alphabet
-                    if (materia.getNomeDisciplina().compareToIgnoreCase(materiaAdicionada.getNomeDisciplina()) > 0){
-                        mMaterias.add(index, materiaAdicionada);
+                } else if (materia.getAno() == materiaAdicionada.getAno()) {
+                    //verify semester
+                    if (materia.getSemestre() < materiaAdicionada.getSemestre()) {
+                        mMateriaItems.add(index, new MateriaSection(getSectionTitle(materiaAdicionada)));
+                        mMateriaItems.add(index+1, materiaAdicionada);
+                        adicionada = true;
                         break;
-                    }
-                    else {
-                        mMaterias.add(index+1, materiaAdicionada);
-                        break;
+                    } else if (materia.getSemestre() == materiaAdicionada.getSemestre()) {
+                        adicionada = true;
+                        // verify alphabet
+                        if (materia.getNomeDisciplina().compareToIgnoreCase(materiaAdicionada.getNomeDisciplina()) > 0) {
+                            mMateriaItems.add(index, materiaAdicionada);
+                            break;
+                        } else {
+                            mMateriaItems.add(index + 1, materiaAdicionada);
+                            break;
+                        }
                     }
                 }
             }
             index++;
         }
-        if (!adicionada)
-            mMaterias.add(materiaAdicionada);
+        if (!adicionada) {
+            mMateriaItems.add(new MateriaSection(getSectionTitle(materiaAdicionada)));
+            mMateriaItems.add(materiaAdicionada);
+        }
         adapter.notifyDataSetChanged();
     }
 }

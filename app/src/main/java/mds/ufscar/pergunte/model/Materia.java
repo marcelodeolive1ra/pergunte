@@ -8,7 +8,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Materia implements Parcelable{
+import mds.ufscar.pergunte.MateriaItem;
+
+public class Materia implements Parcelable, MateriaItem {
     private int codigo;
     private String turma;
     private int ano;
@@ -217,4 +219,9 @@ public class Materia implements Parcelable{
             return new Materia[size];
         }
     };
+
+    @Override
+    public boolean isSection() {
+        return false;
+    }
 }

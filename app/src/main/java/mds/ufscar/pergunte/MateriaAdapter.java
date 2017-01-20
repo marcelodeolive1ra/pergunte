@@ -21,9 +21,9 @@ import mds.ufscar.pergunte.model.Materia;
 public class MateriaAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
-    private ArrayList<Materia> mDataSource;
+    private ArrayList<MateriaItem> mDataSource;
 
-    public MateriaAdapter(Context context, ArrayList<Materia> items) {
+    public MateriaAdapter(Context context, ArrayList<MateriaItem> items) {
         mContext = context;
         mDataSource = items;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -46,35 +46,50 @@ public class MateriaAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get view for row item
-        View rowView = mInflater.inflate(R.layout.list_item_materia, parent, false);
+        View rowView = convertView;
 
-        // Get title element - nome da matéria
-        TextView titleTextView =
-                (TextView) rowView.findViewById(R.id.materia_list_title);
-        // Get subtitle element - informações adicionais?
-        TextView subtitleTextView =
-                (TextView) rowView.findViewById(R.id.materia_list_subtitle);
-        // Get detail element - número de perguntas?
-        TextView detailTextView =
-                (TextView) rowView.findViewById(R.id.materia_list_detail);
-        // Get thumbnail element - imagem da matéria?
-        ImageView thumbnailImageView =
-                (ImageView) rowView.findViewById(R.id.materia_list_thumbnail);
+        final MateriaItem item = mDataSource.get(position);
+        if (item != null) {
+            if (item.isSection()) {
+                MateriaSection materiaSection = (MateriaSection) item;
+                rowView = mInflater.inflate(R.layout.list_item_section, parent, false);
 
-        // Populando dados
-        Materia materia = (Materia) getItem(position);
+                rowView.setOnClickListener(null);
+                rowView.setOnLongClickListener(null);
+                rowView.setLongClickable(false);
 
-        titleTextView.setText(materia.getNomeDisciplina());
-        subtitleTextView.setText(materia.getDescricao());
-        if (materia.getPerguntas() == null) {
-            detailTextView.setText("0");
-        } else {
-            detailTextView.setText(String.valueOf(materia.getPerguntas().size()));
+                final TextView sectionView = (TextView) rowView.findViewById(R.id.list_item_section_text);
+                sectionView.setText(materiaSection.getTitle());
+            } else {
+                Materia materia = (Materia) item;
+                // Get view for row item
+                rowView = mInflater.inflate(R.layout.list_item_materia, parent, false);
+
+                // Get title element - nome da matéria
+                final TextView titleTextView =
+                        (TextView) rowView.findViewById(R.id.materia_list_title);
+                // Get subtitle element - informações adicionais?
+                final TextView subtitleTextView =
+                        (TextView) rowView.findViewById(R.id.materia_list_subtitle);
+                // Get detail element - número de perguntas?
+                final TextView detailTextView =
+                        (TextView) rowView.findViewById(R.id.materia_list_detail);
+                // Get thumbnail element - imagem da matéria?
+                final ImageView thumbnailImageView =
+                        (ImageView) rowView.findViewById(R.id.materia_list_thumbnail);
+
+                // Populando dados
+                titleTextView.setText(materia.getNomeDisciplina());
+                subtitleTextView.setText(materia.getDescricao());
+                if (materia.getPerguntas() == null) {
+                    detailTextView.setText("0");
+                } else {
+                    detailTextView.setText(String.valueOf(materia.getPerguntas().size()));
+                }
+
+                Picasso.with(mContext).load(materia.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+            }
         }
-
-        Picasso.with(mContext).load(materia.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
-
         return rowView;
     }
 
