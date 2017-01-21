@@ -279,7 +279,7 @@ public class MainScreen extends AppCompatActivity {
             // return the current tab
             switch (position) {
                 case 0:
-                    Tab1_Respondidas tab1Respondidas = new Tab1_Respondidas();
+                    Tab1_Perguntas tab1Respondidas = new Tab1_Perguntas();
                     mPageReferenceMap.put(position, tab1Respondidas);
                     return tab1Respondidas;
                 case 1:

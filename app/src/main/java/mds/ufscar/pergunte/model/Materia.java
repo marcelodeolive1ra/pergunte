@@ -8,9 +8,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import mds.ufscar.pergunte.MateriaItem;
+import mds.ufscar.pergunte.ListItem;
 
-public class Materia implements Parcelable, MateriaItem {
+public class Materia implements Parcelable, ListItem {
     private int codigo;
     private String turma;
     private int ano;

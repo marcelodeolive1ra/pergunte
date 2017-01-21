@@ -4,11 +4,11 @@ package mds.ufscar.pergunte;
  * Created by Danilo on 19/01/2017.
  */
 
-public class MateriaSection implements MateriaItem {
+public class Section implements ListItem {
 
     private final String mTitle;
 
-    public MateriaSection(String title) {
+    public Section(String title) {
         this.mTitle = title;
     }
 

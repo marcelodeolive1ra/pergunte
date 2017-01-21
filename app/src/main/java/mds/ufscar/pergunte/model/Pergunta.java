@@ -3,7 +3,9 @@ package mds.ufscar.pergunte.model;
 import java.util.Date;
 import java.util.List;
 
-public class Pergunta {
+import mds.ufscar.pergunte.ListItem;
+
+public class Pergunta implements ListItem{
 
     private int codigo;
     private String titulo;
@@ -73,5 +75,10 @@ public class Pergunta {
 
     public void setDataAproximada(Date dataAproximada) {
         this.dataAproximada = dataAproximada;
+    }
+
+    @Override
+    public boolean isSection() {
+        return false;
     }
 }

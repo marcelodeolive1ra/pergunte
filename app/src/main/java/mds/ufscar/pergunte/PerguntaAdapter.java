@@ -12,18 +12,18 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import mds.ufscar.pergunte.model.Materia;
+import mds.ufscar.pergunte.model.Pergunta;
 
 /**
- * Created by Danilo on 08/01/2017.
+ * Created by Danilo on 21/01/2017.
  */
 
-public class MateriaAdapter extends BaseAdapter {
+public class PerguntaAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private ArrayList<ListItem> mDataSource;
 
-    public MateriaAdapter(Context context, ArrayList<ListItem> items) {
+    public PerguntaAdapter(Context context, ArrayList<ListItem> items) {
         mContext = context;
         mDataSource = items;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -51,7 +51,7 @@ public class MateriaAdapter extends BaseAdapter {
         final ListItem item = mDataSource.get(position);
         if (item != null) {
             if (item.isSection()) {
-                Section materiaSection = (Section) item;
+                Section perguntaSection = (Section) item;
                 rowView = mInflater.inflate(R.layout.list_item_section, parent, false);
 
                 rowView.setOnClickListener(null);
@@ -59,10 +59,10 @@ public class MateriaAdapter extends BaseAdapter {
                 rowView.setLongClickable(false);
 
                 final TextView sectionView = (TextView) rowView.findViewById(R.id.list_item_section_text);
-                sectionView.setText(materiaSection.getTitle());
+                sectionView.setText(perguntaSection.getTitle());
             } else {
-                Materia materia = (Materia) item;
-                // Get view for row item
+                Pergunta pergunta = (Pergunta) item;
+                // Aproveitando a view da materia (talvez nem precise mudar depois)
                 rowView = mInflater.inflate(R.layout.list_item_materia, parent, false);
 
                 // Get title element - nome da matéria
@@ -79,19 +79,13 @@ public class MateriaAdapter extends BaseAdapter {
                         (ImageView) rowView.findViewById(R.id.materia_list_thumbnail);
 
                 // Populando dados
-                titleTextView.setText(materia.getNomeDisciplina());
-                subtitleTextView.setText(materia.getDescricao());
-                if (materia.getPerguntas() == null) {
-                    detailTextView.setText("0");
-                } else {
-                    detailTextView.setText(String.valueOf(materia.getPerguntas().size()));
-                }
+                titleTextView.setText(pergunta.getTitulo());
+                subtitleTextView.setText(pergunta.getDataAproximada().toString());
+                detailTextView.setText("Sem resposta");
 
-                Picasso.with(mContext).load(materia.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+                Picasso.with(mContext).load("url aqui").placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
             }
         }
         return rowView;
     }
-
-
 }

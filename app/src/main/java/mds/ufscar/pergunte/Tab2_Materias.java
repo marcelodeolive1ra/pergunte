@@ -36,7 +36,7 @@ public class Tab2_Materias extends Fragment {
 
     private ListView mListView;
     private boolean mProfessor;
-    private ArrayList<MateriaItem> mMateriaItems;
+    private ArrayList<ListItem> mListItems;
     private MateriaAdapter adapter;
 
     @Override
@@ -47,7 +47,7 @@ public class Tab2_Materias extends Fragment {
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
         String emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
-        mMateriaItems =  new ArrayList<>();
+        mListItems =  new ArrayList<>();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
@@ -73,7 +73,7 @@ public class Tab2_Materias extends Fragment {
                                     "Erro ao carregar matéria.", Toast.LENGTH_LONG).show();
                         }
                     }
-                    mMateriaItems = addSections(materias);
+                    mListItems = addSections(materias);
                 } else {
                     Log.w("REQUISICAO", resultado_requisicao.toString());
                     Toast.makeText(Tab2_Materias.this.getActivity(),
@@ -96,7 +96,7 @@ public class Tab2_Materias extends Fragment {
             e.printStackTrace();
         }
 
-        adapter = new MateriaAdapter(getActivity(), mMateriaItems);
+        adapter = new MateriaAdapter(getActivity(), mListItems);
         mListView.setAdapter(adapter);
 
         // fab button
@@ -129,14 +129,13 @@ public class Tab2_Materias extends Fragment {
             {
                 if (mProfessor) {
                     Intent cadastroPergunta = new Intent(Tab2_Materias.this.getActivity(), CadastroPergunta.class);
-                    cadastroPergunta.putExtra("materiaID", ((Materia)mMateriaItems.get(pos)).getCodigo());
+                    cadastroPergunta.putExtra("materiaID", ((Materia) mListItems.get(pos)).getCodigo());
                     startActivity(cadastroPergunta);
                 }
             }
         });
 
         // setting option to remove an item for a long press
-        // TODO: Danilo corrigir remover seção caso remova todo semestre
         mListView.setLongClickable(true);
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -147,12 +146,12 @@ public class Tab2_Materias extends Fragment {
                 if (mProfessor) {
                     adb.setTitle("Desativar a matéria");
                     adb.setMessage("Tem certeza que deseja desativar a matéria \"" +
-                            ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?\n\n" +
+                            ((Materia) mListItems.get(pos)).getNomeDisciplina() + "\"?\n\n" +
                             "Os alunos cadastrados não poderão mais acessar os dados da matéria.");
                 } else {
                     adb.setTitle("Cancelar inscrição");
                     adb.setMessage("Tem certeza que deseja sair da disciplina \"" +
-                            ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?");
+                            ((Materia) mListItems.get(pos)).getNomeDisciplina() + "\"?");
                 }
                 final int positionToRemove = pos;
                 adb.setNegativeButton("Não", null);
@@ -170,11 +169,11 @@ public class Tab2_Materias extends Fragment {
                                     RequisicaoAssincrona.DESATIVAR_MATERIA : RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA;
 
                             JSONObject resultado_requisicao = requisicao.execute(tipo_requisicao,
-                                    email, Integer.toString(((Materia) mMateriaItems.get(positionToRemove)).getCodigo())).get();
+                                    email, Integer.toString(((Materia) mListItems.get(positionToRemove)).getCodigo())).get();
 
                             if (resultado_requisicao.getString("status").equals("ok")) {
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
-                                mMateriaItems.remove(positionToRemove); // removing from the interface
+                                mListItems.remove(positionToRemove); // removing from the interface
 
                                 String mensagemDeFeedback = (mProfessor) ?
                                         "Matéria desativada com sucesso!" :
@@ -184,10 +183,10 @@ public class Tab2_Materias extends Fragment {
                                         mensagemDeFeedback,
                                         Toast.LENGTH_LONG).show();
 
-                                ArrayList<Materia> materias = extrairMaterias(mMateriaItems);
+                                ArrayList<Materia> materias = extrairMaterias(mListItems);
                                 // has to keep the same object
-                                mMateriaItems.clear();
-                                mMateriaItems.addAll(addSections(materias));
+                                mListItems.clear();
+                                mListItems.addAll(addSections(materias));
                             } else {
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
                                 Toast.makeText(Tab2_Materias.this.getActivity(),
@@ -207,29 +206,29 @@ public class Tab2_Materias extends Fragment {
         return rootView;
     }
 
-    public ArrayList<Materia> extrairMaterias(ArrayList<MateriaItem> materiaItems) {
+    public ArrayList<Materia> extrairMaterias(ArrayList<ListItem> listItems) {
         ArrayList<Materia> materias = new ArrayList<>();
-        for (MateriaItem materiaItem : materiaItems) {
-            if (!materiaItem.isSection()) {
-                materias.add((Materia)materiaItem);
+        for (ListItem listItem : listItems) {
+            if (!listItem.isSection()) {
+                materias.add((Materia) listItem);
             }
         }
         return materias;
     }
 
-    public ArrayList<MateriaItem> addSections(ArrayList<Materia> materias) {
-        ArrayList<MateriaItem> materiaItems = new ArrayList<>();
+    public ArrayList<ListItem> addSections(ArrayList<Materia> materias) {
+        ArrayList<ListItem> listItems = new ArrayList<>();
         String lastYearSemesterAdded;
         lastYearSemesterAdded = getSectionTitle(materias.get(0));
-        materiaItems.add(new MateriaSection(lastYearSemesterAdded));
+        listItems.add(new Section(lastYearSemesterAdded));
         for (Materia materia : materias) {
             if (!lastYearSemesterAdded.equals(getSectionTitle(materia))) {
                 lastYearSemesterAdded = getSectionTitle(materia);
-                materiaItems.add(new MateriaSection(lastYearSemesterAdded));
+                listItems.add(new Section(lastYearSemesterAdded));
             }
-            materiaItems.add(materia);
+            listItems.add(materia);
         }
-        return materiaItems;
+        return listItems;
     }
 
     public String getSectionTitle(Materia materia) {
@@ -242,33 +241,33 @@ public class Tab2_Materias extends Fragment {
     public void addMateria(Materia materiaAdicionada){
         int index = 0;
         boolean adicionada = false;
-        for (MateriaItem materiaItem : mMateriaItems) {
-            if (materiaItem.isSection()) {
+        for (ListItem listItem : mListItems) {
+            if (listItem.isSection()) {
                 index++;
                 continue;
             } else {
-                Materia materia = (Materia) materiaItem;
+                Materia materia = (Materia) listItem;
                 // verify year
                 if (materia.getAno() < materiaAdicionada.getAno()) {
-                    mMateriaItems.add(index, new MateriaSection(getSectionTitle(materiaAdicionada)));
-                    mMateriaItems.add(index+1, materiaAdicionada);
+                    mListItems.add(index, new Section(getSectionTitle(materiaAdicionada)));
+                    mListItems.add(index+1, materiaAdicionada);
                     adicionada = true;
                     break;
                 } else if (materia.getAno() == materiaAdicionada.getAno()) {
                     //verify semester
                     if (materia.getSemestre() < materiaAdicionada.getSemestre()) {
-                        mMateriaItems.add(index, new MateriaSection(getSectionTitle(materiaAdicionada)));
-                        mMateriaItems.add(index+1, materiaAdicionada);
+                        mListItems.add(index, new Section(getSectionTitle(materiaAdicionada)));
+                        mListItems.add(index+1, materiaAdicionada);
                         adicionada = true;
                         break;
                     } else if (materia.getSemestre() == materiaAdicionada.getSemestre()) {
                         adicionada = true;
                         // verify alphabet
                         if (materia.getNomeDisciplina().compareToIgnoreCase(materiaAdicionada.getNomeDisciplina()) > 0) {
-                            mMateriaItems.add(index, materiaAdicionada);
+                            mListItems.add(index, materiaAdicionada);
                             break;
                         } else {
-                            mMateriaItems.add(index + 1, materiaAdicionada);
+                            mListItems.add(index + 1, materiaAdicionada);
                             break;
                         }
                     }
@@ -277,8 +276,8 @@ public class Tab2_Materias extends Fragment {
             index++;
         }
         if (!adicionada) {
-            mMateriaItems.add(new MateriaSection(getSectionTitle(materiaAdicionada)));
-            mMateriaItems.add(materiaAdicionada);
+            mListItems.add(new Section(getSectionTitle(materiaAdicionada)));
+            mListItems.add(materiaAdicionada);
         }
         adapter.notifyDataSetChanged();
     }
