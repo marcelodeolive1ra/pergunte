@@ -1,12 +1,10 @@
 package mds.ufscar.pergunte;
 
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +51,7 @@ public class CadastroPergunta extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cadastro_pergunta);
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.CANADA);
+        final Context context = this;
 
         // linking UI components
         mInputTitle = (EditText)findViewById(R.id.input_title);
@@ -85,40 +84,34 @@ public class CadastroPergunta extends AppCompatActivity {
         mAddAlternative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(CadastroPergunta.this);
-                builder.setTitle("Alternativa - " + mAlternativeLetters[index]);
+                // custom dialog
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.alternativa);
+                dialog.setTitle("Alternativa - ");
 
-                final LinearLayout linearLayout = new LinearLayout(CadastroPergunta.this);
-                // Set up the input
-                final EditText input = new EditText(CadastroPergunta.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setWidth(ActionBar.LayoutParams.MATCH_PARENT);
-                final CheckBox correct = new CheckBox(CadastroPergunta.this);
-                correct.setText("Alternativa correta");
-                correct.setWidth(ActionBar.LayoutParams.MATCH_PARENT);
-                linearLayout.addView(input);
-                linearLayout.addView(correct);
-                builder.setView(linearLayout);
+                // set the custom dialog components - text, image and button
+                final EditText alternativa = (EditText) dialog.findViewById(R.id.input_alternative);
+                final CheckBox correta = (CheckBox) dialog.findViewById(R.id.checkboxCorreta);
 
-                // Set up the buttons
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                Button cancelButton = (Button) dialog.findViewById(R.id.btn_cancel);
+                Button okButton = (Button) dialog.findViewById(R.id.btn_ok);
+                // if button ok is clicked, add alternative and close the custom dialog
+                okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String textAlternative = input.getText().toString();
-                        if (correct.isChecked())
-                            addRadioButton(textAlternative, true);
-                        else
-                            addRadioButton(textAlternative, false);
+                    public void onClick(View v) {
+                        addRadioButton(alternativa.getText().toString(), correta.isChecked());
+                        dialog.dismiss();
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                // cancel: just close the dialog
+                cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                    public void onClick(View v) {
+                        dialog.dismiss();
                     }
                 });
-                builder.show();
+
+                dialog.show();
             }
         });
     }

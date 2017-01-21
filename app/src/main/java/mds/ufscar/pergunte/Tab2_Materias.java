@@ -131,7 +131,7 @@ public class Tab2_Materias extends Fragment {
                 AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
 
                 if (mProfessor) {
-                    adb.setTitle("Desativar a matéria?");
+                    adb.setTitle("Desativar a matéria");
                     adb.setMessage("Tem certeza que deseja desativar a matéria \"" +
                             ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?\n\n" +
                             "Os alunos cadastrados não poderão mais acessar os dados da matéria.");
@@ -141,7 +141,7 @@ public class Tab2_Materias extends Fragment {
                             ((Materia) mMateriaItems.get(pos)).getNomeDisciplina() + "\"?");
                 }
                 final int positionToRemove = pos;
-                adb.setNegativeButton("Cancelar", null);
+                adb.setNegativeButton("Não", null);
                 adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 

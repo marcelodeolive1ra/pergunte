@@ -3,12 +3,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView android:id="@+id/label_alternativa"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:text="Alternativa - "
-        android:textSize="20sp"/>
+    <!--<TextView android:id="@+id/label_alternativa"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:text="Alternativa - "-->
+        <!--android:textSize="20sp"/>-->
 
     <!--  Text input multiple lines -->
     <android.support.design.widget.TextInputLayout
@@ -38,7 +38,7 @@
         android:layout_marginBottom="30dp">
 
         <CheckBox
-            android:id="@+id/radioCorreta"
+            android:id="@+id/checkboxCorreta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="false"
