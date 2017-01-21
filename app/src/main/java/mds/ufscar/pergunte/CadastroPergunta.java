@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +23,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,7 +35,6 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Alternativa;
-import mds.ufscar.pergunte.model.Materia;
 import mds.ufscar.pergunte.model.Pergunta;
 
 import static mds.ufscar.pergunte.R.id.radiogroup;
@@ -184,7 +184,6 @@ public class CadastroPergunta extends AppCompatActivity {
                     }
                     // criando objeto pergunta
 
-                    // TODO: verificar se o objeto date foi realmente criado? Se for null, a requisição vai retornar erro
                     Pergunta pergunta = new Pergunta(
                             mInputTitle.getText().toString(),
                             mInputQuestion.getText().toString(),
@@ -201,14 +200,15 @@ public class CadastroPergunta extends AppCompatActivity {
 
                         if (resultado_requisicao != null) {
                             if (resultado_requisicao.getString("status").equals("ok")) {
-                                // TODO: Mensagem de feedback de cadastro OKAY
+                                Toast.makeText(CadastroPergunta.this, "Pergunta cadastrada com sucesso", Toast.LENGTH_LONG).show();
 
                             } else {
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
-                                // TODO: Mensagem de feedback com descrição do erro.
+                                Toast.makeText(CadastroPergunta.this, "Erro ao cadastrar pergunta no BD.", Toast.LENGTH_LONG).show();
 
                             }
                         } else {
+                            Toast.makeText(CadastroPergunta.this, "Verifique sua conexão com a internet", Toast.LENGTH_LONG).show();
                             // TODO: Tratamento de erro relacionado à falta de conexão com Internet
                         }
 
@@ -306,6 +306,10 @@ public class CadastroPergunta extends AppCompatActivity {
             RadioButton rdbtn = new RadioButton(this);
             String textoComLetra = alternativa.getLetra() + ") " + alternativa.getTextoAlternativa();
             rdbtn.setText(textoComLetra);
+            if (alternativa.isCorreta()) {
+                rdbtn.setTypeface(null, Typeface.BOLD);
+                rdbtn.setTextColor(Color.RED);
+            }
             mRadioGroup.addView(rdbtn);
         }
     }

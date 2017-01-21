@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:gravity="center_vertical"
-            android:text="Alternativas (a correta estará em destaque):"
+            android:text="Alternativas - correta(s) em destaque:"
             android:textSize="16sp"/>
 
         <RadioGroup
