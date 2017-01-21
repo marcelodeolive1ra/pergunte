@@ -5,13 +5,23 @@ import java.util.List;
 public class Pergunta {
 
     private int codigo;
-    private String pergunta;
-    private List<String> respostas;
+    private String textoPergunta;
+    private List<Alternativa> alternativas;
     private boolean disponivel;
-    private String respostaCorreta;
+    private String[] respostaCorreta;
 
-    public Pergunta(int codigo, String pergunta, List<String> respostas, boolean disponivel, String respostaCorreta) {
+    public Pergunta(int codigo, String textoPergunta, List<Alternativa> alternativas,
+                    boolean disponivel, String[] respostaCorreta) {
+        this.setCodigo(codigo);
+        this.setTextoPergunta(textoPergunta);
+        this.setAlternativas(alternativas);
+        this.setDisponivel(disponivel);
+        this.setRespostaCorreta(respostaCorreta);
+    }
 
+    public Pergunta(String textoPergunta, List<Alternativa> alternativas, boolean disponivel,
+                    String[] respostaCorreta) {
+        this(0, textoPergunta, alternativas, disponivel, respostaCorreta);
     }
 
     public int getCodigo() {
@@ -22,20 +32,20 @@ public class Pergunta {
         this.codigo = codigo;
     }
 
-    public String getPergunta() {
-        return pergunta;
+    public String getTextoPergunta() {
+        return textoPergunta;
     }
 
-    public void setPergunta(String pergunta) {
-        this.pergunta = pergunta;
+    public void setTextoPergunta(String textoPergunta) {
+        this.textoPergunta = textoPergunta;
     }
 
-    public List<String> getRespostas() {
-        return respostas;
+    public List<Alternativa> getAlternativas() {
+        return alternativas;
     }
 
-    public void setRespostas(List<String> respostas) {
-        this.respostas = respostas;
+    public void setAlternativas(List<Alternativa> alternativas) {
+        this.alternativas = alternativas;
     }
 
     public boolean isDisponivel() {
@@ -46,13 +56,11 @@ public class Pergunta {
         this.disponivel = disponivel;
     }
 
-    public String getRespostaCorreta() {
+    public String[] getRespostaCorreta() {
         return respostaCorreta;
     }
 
-    public void setRespostaCorreta(String resposta_correta) {
+    public void setRespostaCorreta(String[] resposta_correta) {
         this.respostaCorreta = resposta_correta;
     }
-
-
 }
