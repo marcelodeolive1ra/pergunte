@@ -230,6 +230,7 @@ public class Tab2_Materias extends Fragment {
         boolean adicionada = false;
         for (MateriaItem materiaItem : mMateriaItems) {
             if (materiaItem.isSection()) {
+                index++;
                 continue;
             } else {
                 Materia materia = (Materia) materiaItem;
