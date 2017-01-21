@@ -80,7 +80,7 @@ public class PerguntaAdapter extends BaseAdapter {
 
                 // Populando dados
                 titleTextView.setText(pergunta.getTitulo());
-                subtitleTextView.setText(pergunta.getDataAproximada().toString());
+                subtitleTextView.setText(pergunta.getDataAproximadaString());
                 detailTextView.setText("Sem resposta");
 
                 Picasso.with(mContext).load("url aqui").placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);

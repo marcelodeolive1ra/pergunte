@@ -63,6 +63,22 @@ public class Materia implements Parcelable, ListItem {
         return true;
     }
 
+    public boolean construirObjetoComJSONSemProfessor(JSONObject resultado_requisicao) {
+        try {
+            this.setCodigo(resultado_requisicao.getInt("codigo"));
+            this.setTurma(resultado_requisicao.getString("turma"));
+            this.setAno(resultado_requisicao.getInt("ano"));
+            this.setSemestre(resultado_requisicao.getInt("semestre"));
+            this.setNomeDisciplina(resultado_requisicao.getString("nome_materia"));
+            this.setProfessor(null);
+            this.setCodigoInscricao(resultado_requisicao.getString("codigo_inscricao"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public Materia(int codigo, String turma, int ano, int semestre, String nomeDisciplina,
                    String codigoInscricao) {
         this(codigo, turma, ano, semestre, nomeDisciplina, null, codigoInscricao);

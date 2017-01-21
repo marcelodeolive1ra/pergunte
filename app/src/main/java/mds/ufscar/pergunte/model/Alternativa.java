@@ -1,5 +1,8 @@
 package mds.ufscar.pergunte.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by marcelodeoliveiradasilva on 20/01/17.
  */
@@ -19,6 +22,26 @@ public class Alternativa {
         this.setLetra(letra);
         this.setTextoAlternativa(textoAlternativa);
         this.setCorreta(correta);
+    }
+
+    public Alternativa() {
+
+    }
+
+    public boolean construirObjetoComJSON(JSONObject resultado_requisicao, String alternativasCorretas) {
+        try {
+            this.setCodigo(0);
+            this.setLetra(resultado_requisicao.getString("letra"));
+            this.setTextoAlternativa(resultado_requisicao.getString("texto_alternativa"));
+
+            if (alternativasCorretas.contains(this.getLetra())) {
+                this.setCorreta(true);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public int getCodigo() {

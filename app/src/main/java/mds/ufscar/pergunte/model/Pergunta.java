@@ -1,13 +1,19 @@
 package mds.ufscar.pergunte.model;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import mds.ufscar.pergunte.ListItem;
 
-public class Pergunta implements ListItem{
+public class Pergunta implements ListItem {
 
     private int codigo;
     private String titulo;
@@ -29,6 +35,45 @@ public class Pergunta implements ListItem{
     public Pergunta(String titulo, String textoPergunta, List<Alternativa> alternativas,
                     Date dataAproximada) {
         this(0, titulo, textoPergunta, alternativas, dataAproximada);
+    }
+
+    public Pergunta() {
+        this.alternativas = new ArrayList<>();
+    }
+
+    public boolean construirObjetoComJSON(JSONObject resultado_requisicao) {
+        try {
+            this.setCodigo(resultado_requisicao.getInt("codigo"));
+            this.setDisponivel(false);
+            this.setTitulo(resultado_requisicao.getString("titulo"));
+            this.setTextoPergunta(resultado_requisicao.getString("texto_pergunta"));
+
+            String dataAproximadaString = resultado_requisicao.getString("data_aproximada");
+            int dia = Integer.parseInt(dataAproximadaString.substring(0, 4));
+            int mes = Integer.parseInt(dataAproximadaString.substring(5, 7));
+            int ano = Integer.parseInt(dataAproximadaString.substring(8, 10));
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
+            Date data_aproximada = sdf.parse(dataAproximadaString);
+
+            this.setDataAproximada(data_aproximada);
+
+            JSONArray alternativas_json = resultado_requisicao.getJSONArray("alternativas");
+
+            for (int i = 0; i < alternativas_json.length(); i++) {
+                Alternativa alternativa = new Alternativa();
+
+                if (alternativa.construirObjetoComJSON(alternativas_json.getJSONObject(i),
+                        resultado_requisicao.getString("alternativas_corretas"))) {
+                    this.alternativas.add(alternativa);
+                }
+            }
+
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public int getCodigo() {
