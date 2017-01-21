@@ -183,6 +183,8 @@ public class CadastroPergunta extends AppCompatActivity {
                         ex.printStackTrace();
                     }
                     // criando objeto pergunta
+
+                    // TODO: verificar se o objeto date foi realmente criado? Se for null, a requisição vai retornar erro
                     Pergunta pergunta = new Pergunta(
                             mInputTitle.getText().toString(),
                             mInputQuestion.getText().toString(),

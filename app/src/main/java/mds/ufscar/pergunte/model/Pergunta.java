@@ -1,7 +1,9 @@
 package mds.ufscar.pergunte.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import mds.ufscar.pergunte.ListItem;
 
@@ -71,6 +73,11 @@ public class Pergunta implements ListItem{
 
     public Date getDataAproximada() {
         return dataAproximada;
+    }
+
+    public String getDataAproximadaString() {
+        SimpleDateFormat s = new SimpleDateFormat("dd-MM-yyyy", Locale.CANADA);
+        return s.format(dataAproximada);
     }
 
     public void setDataAproximada(Date dataAproximada) {

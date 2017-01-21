@@ -121,7 +121,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
 
                     int quantidadeAlternativas = pergunta.getAlternativas().size();
                     parametros.put("quantidade_alternativas", Integer.toString(quantidadeAlternativas));
-                    parametros.put("data_aproximada", pergunta.getDataAproximada().toString());
+                    parametros.put("data_aproximada", pergunta.getDataAproximadaString());
 
                     for (int i = 0; i < quantidadeAlternativas; i++) {
                         parametros.put("alternativa" + Integer.toString(i) + "_letra", pergunta.getAlternativas().get(i).getLetra());
