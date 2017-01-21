@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,6 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,8 +31,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Alternativa;
+import mds.ufscar.pergunte.model.Materia;
 import mds.ufscar.pergunte.model.Pergunta;
 
 import static mds.ufscar.pergunte.R.id.radiogroup;
@@ -182,8 +190,29 @@ public class CadastroPergunta extends AppCompatActivity {
                             date
                     );
 
+                    RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+                    requisicao.setObject(pergunta);
 
-                    // TODO: Marcelo, persista no BD. Grato.
+                    try {
+                        JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CADASTRAR_NOVA_PERGUNTA,
+                                MainScreen.getEmailDoUsuarioAtual(), Integer.toString(mCodigoMateria)).get();
+
+                        if (resultado_requisicao != null) {
+                            if (resultado_requisicao.getString("status").equals("ok")) {
+                                // TODO: Mensagem de feedback de cadastro OKAY
+
+                            } else {
+                                Log.w("REQUISICAO", resultado_requisicao.toString());
+                                // TODO: Mensagem de feedback com descrição do erro.
+
+                            }
+                        } else {
+                            // TODO: Tratamento de erro relacionado à falta de conexão com Internet
+                        }
+
+                    } catch (InterruptedException | ExecutionException | JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     finish();
                 } else {

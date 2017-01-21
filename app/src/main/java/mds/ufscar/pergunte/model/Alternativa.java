@@ -5,14 +5,24 @@ package mds.ufscar.pergunte.model;
  */
 
 public class Alternativa {
+    private int codigo;
     private String letra;
     private String textoAlternativa;
     private boolean correta;
 
     public Alternativa(String letra, String textoAlternativa, boolean correta) {
+        this(0, letra, textoAlternativa, correta);
+    }
+
+    public Alternativa(int codigo, String letra, String textoAlternativa, boolean correta) {
+        this.setCodigo(codigo);
         this.setLetra(letra);
         this.setTextoAlternativa(textoAlternativa);
         this.setCorreta(correta);
+    }
+
+    public int getCodigo() {
+        return this.codigo;
     }
 
     public String getLetra() {
@@ -21,6 +31,10 @@ public class Alternativa {
 
     public String getTextoAlternativa() {
         return this.textoAlternativa;
+    }
+
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
     }
 
     public void setLetra(String letra) {

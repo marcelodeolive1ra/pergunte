@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mds.ufscar.pergunte.model.Materia;
+import mds.ufscar.pergunte.model.Pergunta;
 
 /**
  * Created by marcelodeoliveiradasilva on 13/01/17.
@@ -42,6 +43,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
     static final String CANCELAR_INSCRICAO_EM_MATERIA = "6";
     static final String BUSCAR_PERFIL_DO_USUARIO = "7";
     static final String DESATIVAR_MATERIA = "8";
+    static final String CADASTRAR_NOVA_PERGUNTA = "9";
 
     private Object objetoGenerico;
 
@@ -76,7 +78,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                     break;
 
                 case CADASTRAR_NOVA_MATERIA:
-                    Materia materia = (Materia) objetoGenerico;
+                    Materia materia = (Materia)this.objetoGenerico;
                     // Não é necessário passar o código, pois este será gerado automaticamente no banco
                     parametros.put(Parametros.EMAIL_USUARIO, params[1]);
                     parametros.put(Parametros.TURMA_MATERIA, materia.getTurma());
@@ -108,6 +110,26 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                     parametros.put(Parametros.EMAIL_USUARIO, params[1]);
                     parametros.put(Parametros.CODIGO_MATERIA, params[2]);
                     request = HttpRequest.post("http://mds.secompufscar.com.br/desativarmateria/").form(parametros);
+                    break;
+
+                case CADASTRAR_NOVA_PERGUNTA:
+                    Pergunta pergunta = (Pergunta)this.objetoGenerico;
+                    parametros.put(Parametros.EMAIL_USUARIO, params[1]);
+                    parametros.put(Parametros.CODIGO_MATERIA, params[2]);
+                    parametros.put("titulo", pergunta.getTitulo());
+                    parametros.put("texto_pergunta", pergunta.getTextoPergunta());
+
+                    int quantidadeAlternativas = pergunta.getAlternativas().size();
+                    parametros.put("quantidade_alternativas", Integer.toString(quantidadeAlternativas));
+                    parametros.put("data_aproximada", pergunta.getDataAproximada().toString());
+
+                    for (int i = 0; i < quantidadeAlternativas; i++) {
+                        parametros.put("alternativa" + Integer.toString(i) + "_letra", pergunta.getAlternativas().get(i).getLetra());
+                        parametros.put("alternativa" + Integer.toString(i) + "_texto_alternativa", pergunta.getAlternativas().get(i).getTextoAlternativa());
+                        parametros.put("alternativa" + Integer.toString(i) + "_correta", (pergunta.getAlternativas().get(i).isCorreta() ? "true" : "false"));
+                    }
+
+                    request = HttpRequest.post("http://mds.secompufscar.com.br/cadastrarpergunta/").form(parametros);
                     break;
 
                 default:

@@ -12,9 +12,9 @@ public class Pergunta {
     private boolean disponivel;
     private Date dataAproximada;
 
-    public Pergunta(String titulo, String textoPergunta, List<Alternativa> alternativas,
+    public Pergunta(int codigo, String titulo, String textoPergunta, List<Alternativa> alternativas,
                     Date dataAproximada) {
-        this.setCodigo(0);
+        this.setCodigo(codigo);
         this.setTitulo(titulo);
         this.setTextoPergunta(textoPergunta);
         this.setAlternativas(alternativas);
@@ -22,9 +22,10 @@ public class Pergunta {
         this.setDataAproximada(dataAproximada);
     }
 
-//    public Pergunta(String titulo, String textoPergunta, List<Alternativa> alternativas, Date dataAproximada) {
-//        this(0, titulo, textoPergunta, alternativas, false, dataAproximada);
-//    }
+    public Pergunta(String titulo, String textoPergunta, List<Alternativa> alternativas,
+                    Date dataAproximada) {
+        this(0, titulo, textoPergunta, alternativas, dataAproximada);
+    }
 
     public int getCodigo() {
         return codigo;
