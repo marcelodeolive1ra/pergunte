@@ -52,6 +52,7 @@ public class CadastroPergunta extends AppCompatActivity {
     private int index;
     private int correta;
     private ArrayList<Alternativa> mAlternativas;
+    private int mCodigoMateria;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,8 @@ public class CadastroPergunta extends AppCompatActivity {
         final Context context = this;
         index = 0;  // para letra da alternativa
         mAlternativas = new ArrayList<>();
+        // -1 = erro, alguem chamou essa activity sem passar o codigo da materia
+        mCodigoMateria = this.getIntent().getIntExtra("materiaID", -1);
 
         // linking UI components
         mInputTitle = (EditText)findViewById(R.id.input_title);
@@ -160,6 +163,8 @@ public class CadastroPergunta extends AppCompatActivity {
                         mAlternativas,
                         date
                 );
+
+
 
                 // TODO: Marcelo, persista no BD. Grato.
 
