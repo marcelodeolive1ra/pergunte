@@ -145,9 +145,7 @@ public class MainScreen extends AppCompatActivity {
                                     .setTitle("Erro!")
                                     .setMessage(resultado_requisicao.getString("descricao"))
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
+                                        public void onClick(DialogInterface dialog, int which) {}
                                     })
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show();

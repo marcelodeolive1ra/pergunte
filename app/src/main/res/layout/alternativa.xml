@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:minWidth="350dp">
 
-    <!--<TextView android:id="@+id/label_alternativa"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="5dp"-->
-        <!--android:text="Alternativa - "-->
-        <!--android:textSize="20sp"/>-->
+    <TextView android:id="@+id/label_alternativa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="Alternativa - "
+        android:gravity="center"
+        android:textSize="20sp"/>
 
     <!--  Text input multiple lines -->
     <android.support.design.widget.TextInputLayout
@@ -42,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="Marque aqui caso a alternativa seja correta" />
+            android:text="Alternativa correta" />
 
     </RadioGroup>
 

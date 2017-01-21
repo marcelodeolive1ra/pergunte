@@ -1,28 +1,30 @@
 package mds.ufscar.pergunte.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class Pergunta {
 
     private int codigo;
+    private String titulo;
     private String textoPergunta;
     private List<Alternativa> alternativas;
     private boolean disponivel;
-    private String[] respostaCorreta;
+    private Date dataAproximada;
 
-    public Pergunta(int codigo, String textoPergunta, List<Alternativa> alternativas,
-                    boolean disponivel, String[] respostaCorreta) {
-        this.setCodigo(codigo);
+    public Pergunta(String titulo, String textoPergunta, List<Alternativa> alternativas,
+                    Date dataAproximada) {
+        this.setCodigo(0);
+        this.setTitulo(titulo);
         this.setTextoPergunta(textoPergunta);
         this.setAlternativas(alternativas);
-        this.setDisponivel(disponivel);
-        this.setRespostaCorreta(respostaCorreta);
+        this.setDisponivel(false);
+        this.setDataAproximada(dataAproximada);
     }
 
-    public Pergunta(String textoPergunta, List<Alternativa> alternativas, boolean disponivel,
-                    String[] respostaCorreta) {
-        this(0, textoPergunta, alternativas, disponivel, respostaCorreta);
-    }
+//    public Pergunta(String titulo, String textoPergunta, List<Alternativa> alternativas, Date dataAproximada) {
+//        this(0, titulo, textoPergunta, alternativas, false, dataAproximada);
+//    }
 
     public int getCodigo() {
         return codigo;
@@ -30,6 +32,14 @@ public class Pergunta {
 
     public void setCodigo(int codigo) {
         this.codigo = codigo;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getTextoPergunta() {
@@ -56,11 +66,11 @@ public class Pergunta {
         this.disponivel = disponivel;
     }
 
-    public String[] getRespostaCorreta() {
-        return respostaCorreta;
+    public Date getDataAproximada() {
+        return dataAproximada;
     }
 
-    public void setRespostaCorreta(String[] resposta_correta) {
-        this.respostaCorreta = resposta_correta;
+    public void setDataAproximada(Date dataAproximada) {
+        this.dataAproximada = dataAproximada;
     }
 }

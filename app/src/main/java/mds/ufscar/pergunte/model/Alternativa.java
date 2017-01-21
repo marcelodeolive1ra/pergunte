@@ -7,10 +7,12 @@ package mds.ufscar.pergunte.model;
 public class Alternativa {
     private String letra;
     private String textoAlternativa;
+    private boolean correta;
 
-    public Alternativa(String letra, String textoAlternativa) {
+    public Alternativa(String letra, String textoAlternativa, boolean correta) {
         this.setLetra(letra);
         this.setTextoAlternativa(textoAlternativa);
+        this.setCorreta(correta);
     }
 
     public String getLetra() {
@@ -27,5 +29,13 @@ public class Alternativa {
 
     public void setTextoAlternativa(String textoAlternativa) {
         this.textoAlternativa = textoAlternativa;
+    }
+
+    public boolean isCorreta() {
+        return correta;
+    }
+
+    public void setCorreta(boolean correta) {
+        this.correta = correta;
     }
 }
