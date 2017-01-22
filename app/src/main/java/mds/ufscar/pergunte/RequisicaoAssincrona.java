@@ -33,6 +33,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
         static final String CODIGO_INSCRICAO_MATERIA = "codigo_inscricao";
         static final String ANO_MATERIA = "ano";
         static final String SEMESTRE_MATERIA = "semestre";
+        static final String CODIGO_PERGUNTA = "codigo";
 
         static final String URL_SERVIDOR = "http://mds.secompufscar.com.br/";
     }
@@ -48,6 +49,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
     static final String CADASTRAR_NOVA_PERGUNTA = "9";
     static final String BUSCAR_PERGUNTAS_POR_MATERIA = "10";
     static final String BUSCAR_PERGUNTAS_POR_PROFESSOR = "11";
+    static final String BUSCAR_ALTERNATIVAS_POR_PERGUNTA = "12";
 
     private Object objetoGenerico;
 
@@ -139,6 +141,12 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                 case BUSCAR_PERGUNTAS_POR_PROFESSOR:
                     parametros.put(Parametros.EMAIL_USUARIO, params[1]);
                     request = HttpRequest.post(Parametros.URL_SERVIDOR + "buscarperguntasporprofessor/").form(parametros);
+                    break;
+
+                case BUSCAR_ALTERNATIVAS_POR_PERGUNTA:
+                    parametros.put(Parametros.CODIGO_PERGUNTA, params[1]);
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "buscaralternativasporpergunta/").form(parametros);
+                    break;
 
                 default:
                     break;

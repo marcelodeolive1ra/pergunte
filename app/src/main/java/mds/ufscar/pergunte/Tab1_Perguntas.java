@@ -64,7 +64,7 @@ public class Tab1_Perguntas extends Fragment {
 
                     for (int i = 0; i < materias_json.length(); i++) {
                         Materia materia = new Materia();
-                        materia.construirObjetoComJSONSemProfessor(materias_json.getJSONObject(i).getJSONObject("materia"));
+                        materia.construirObjetoComJSONSemProfessor(materias_json.getJSONObject(i));
 
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(materia.getNomeDisciplina()).append("   -   ");
@@ -73,7 +73,7 @@ public class Tab1_Perguntas extends Fragment {
                         stringBuilder.append(" Turma: ").append(materia.getTurma());
                         mListItems.add(new Section(stringBuilder.toString()));
 
-                        JSONArray perguntas_json = materias_json.getJSONObject(i).getJSONObject("materia").getJSONArray("perguntas");
+                        JSONArray perguntas_json = materias_json.getJSONObject(i).getJSONArray("perguntas");
                         boolean temPergunta = false;
                         for (int j = 0; j < perguntas_json.length(); j++) {
                             Pergunta pergunta = new Pergunta();
