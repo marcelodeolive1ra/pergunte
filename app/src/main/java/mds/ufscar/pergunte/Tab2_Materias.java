@@ -130,7 +130,7 @@ public class Tab2_Materias extends Fragment {
                 if (mProfessor) {
                     Intent cadastroPergunta = new Intent(Tab2_Materias.this.getActivity(), CadastroPergunta.class);
                     cadastroPergunta.putExtra("materiaID", ((Materia) mListItems.get(pos)).getCodigo());
-                    startActivity(cadastroPergunta);
+                    getActivity().startActivityForResult(cadastroPergunta, MainScreen.cadastroPerguntaCode);
                 }
             }
         });

@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
 import mds.ufscar.pergunte.model.Pergunta;
-import mds.ufscar.pergunte.model.Professor;
 
 /**
  * Created by Danilo on 24/12/2016.
@@ -42,6 +41,16 @@ public class Tab1_Perguntas extends Fragment {
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
         String emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
         mListItems =  new ArrayList<>();
+        adapter = new PerguntaAdapter(getActivity(), mListItems);
+        mListView.setAdapter(adapter);
+
+        buscaPerguntasServidor();
+
+        return rootView;
+    }
+
+    public void buscaPerguntasServidor(){
+        mListItems.clear();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
@@ -56,6 +65,13 @@ public class Tab1_Perguntas extends Fragment {
                     for (int i = 0; i < materias_json.length(); i++) {
                         Materia materia = new Materia();
                         materia.construirObjetoComJSONSemProfessor(materias_json.getJSONObject(i).getJSONObject("materia"));
+
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(materia.getNomeDisciplina()).append("   -   ");
+                        stringBuilder.append(materia.getAno()).append("/");
+                        stringBuilder.append(materia.getSemestre()).append("   -   ");
+                        stringBuilder.append(" Turma: ").append(materia.getTurma());
+                        mListItems.add(new Section(stringBuilder.toString()));
 
                         JSONArray perguntas_json = materias_json.getJSONObject(i).getJSONObject("materia").getJSONArray("perguntas");
 
@@ -87,9 +103,6 @@ public class Tab1_Perguntas extends Fragment {
             e.printStackTrace();
         }
 
-        adapter = new PerguntaAdapter(getActivity(), mListItems);
-        mListView.setAdapter(adapter);
-
-        return rootView;
+        adapter.notifyDataSetChanged();
     }
 }

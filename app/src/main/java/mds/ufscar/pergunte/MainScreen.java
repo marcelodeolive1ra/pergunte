@@ -62,6 +62,7 @@ public class MainScreen extends AppCompatActivity {
 
     // padronizações
     static final int cadastroMateriaCode = 2; // for differentiate at onResultActivity
+    static final int cadastroPerguntaCode = 3; // for differentiate at onResultActivity
     static final String perfilProfessor = "professor(a)";
     static final String perfilAluno = "aluno(a)";
 
@@ -123,6 +124,12 @@ public class MainScreen extends AppCompatActivity {
                     Toast.makeText(this, "Matéria cadastrada com sucesso!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "Erro ao atualizar lista de matérias", Toast.LENGTH_LONG).show();
+                }
+            }
+        } else if (requestCode == cadastroPerguntaCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (!refreshPerguntasTab1()) {
+                    Toast.makeText(this, "Não foi possível atualizar a lista de perguntas neste momento", Toast.LENGTH_LONG).show();
                 }
             }
         } else {    // TODO: Thiago, seria legal ser else if (requestCode == ScannerRequestCode) algo assim
@@ -256,6 +263,17 @@ public class MainScreen extends AppCompatActivity {
                 materia.setProfessor(professor);
             }
             fragment.addMateria(materia);
+        }
+        return true;
+    }
+
+    public boolean refreshPerguntasTab1() {
+        SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
+        Tab1_Perguntas fragment = (Tab1_Perguntas) adapter.getFragment(0);  // cuidado aqui, sempre 0?
+        if (fragment == null) {
+            return false;
+        } else {
+            fragment.buscaPerguntasServidor();
         }
         return true;
     }

@@ -1,9 +1,11 @@
 package mds.ufscar.pergunte;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -151,7 +153,7 @@ public class CadastroPergunta extends AppCompatActivity {
                 } else {
                     new AlertDialog.Builder(context)
                             .setTitle("Atenção")
-                            .setMessage("Não é possível adicionar mais que " + maxAlternativas + " mAlternativas")
+                            .setMessage("Não é possível adicionar mais que " + maxAlternativas + " alternativas")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {}
                             })
@@ -199,13 +201,14 @@ public class CadastroPergunta extends AppCompatActivity {
                                 MainScreen.getEmailDoUsuarioAtual(), Integer.toString(mCodigoMateria)).get();
 
                         if (resultado_requisicao != null) {
+                            Intent returnIntent = new Intent();
                             if (resultado_requisicao.getString("status").equals("ok")) {
                                 Toast.makeText(CadastroPergunta.this, "Pergunta cadastrada com sucesso", Toast.LENGTH_LONG).show();
-
+                                setResult(Activity.RESULT_OK, returnIntent);
                             } else {
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
                                 Toast.makeText(CadastroPergunta.this, "Erro ao cadastrar pergunta no BD.", Toast.LENGTH_LONG).show();
-
+                                setResult(Activity.RESULT_CANCELED, returnIntent);
                             }
                         } else {
                             Toast.makeText(CadastroPergunta.this, "Verifique sua conexão com a internet", Toast.LENGTH_LONG).show();
