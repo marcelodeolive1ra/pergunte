@@ -74,12 +74,16 @@ public class Tab1_Perguntas extends Fragment {
                         mListItems.add(new Section(stringBuilder.toString()));
 
                         JSONArray perguntas_json = materias_json.getJSONObject(i).getJSONObject("materia").getJSONArray("perguntas");
-
+                        boolean temPergunta = false;
                         for (int j = 0; j < perguntas_json.length(); j++) {
                             Pergunta pergunta = new Pergunta();
                             if (pergunta.construirObjetoComJSON(perguntas_json.getJSONObject(j))) {
                                 mListItems.add(pergunta);
+                                temPergunta = true;
                             }
+                        }
+                        if (!temPergunta) {
+                            mListItems.remove(mListItems.size()-1); // remove ultima seção (materia)
                         }
                     }
                 } else {
