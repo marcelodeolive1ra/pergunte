@@ -172,18 +172,14 @@ public class MainScreen extends AppCompatActivity {
                                                                 getEmailDoUsuarioAtual(), codigoInscricao).get();
 
                                                 if (resultado_requisicao.getString("status").equals("ok")) {
-                                                    materiaScanneada = new Materia();
-                                                    if (materiaScanneada.construirObjetoComJSON(resultado_requisicao)) {
-                                                        if (!adicionouMateria(materiaScanneada, false)) {   // fasle = é aluno
-                                                            Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
-                                                        }
+                                                    materiaScanneada = new Materia(resultado_requisicao);
+                                                    if (!adicionouMateria(materiaScanneada, false)) {   // fasle = é aluno
+                                                        Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
                                                     } else {
-                                                        Toast.makeText(MainScreen.this, "Erro ao cadastrar a matéria.", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
                                                     }
                                                 } else {
-                                                    Toast.makeText(MainScreen.this, "Erro ao cadastrar, status: ", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(MainScreen.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_SHORT).show();
                                                 }
                                             } catch (InterruptedException | ExecutionException | JSONException e) {
                                                 e.printStackTrace();

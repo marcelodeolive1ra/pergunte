@@ -65,13 +65,7 @@ public class Tab2_Materias extends Fragment {
 
                     ArrayList<Materia> materias = new ArrayList<>();
                     for (int i = 0; i < materias_json.length(); i++) {
-                        Materia materia = new Materia();
-                        if (materia.construirObjetoComJSON(materias_json.getJSONObject(i))) {
-                            materias.add(materia);
-                        } else {
-                            Toast.makeText(Tab2_Materias.this.getActivity(),
-                                    "Erro ao carregar matéria.", Toast.LENGTH_LONG).show();
-                        }
+                        materias.add(new Materia(materias_json.getJSONObject(i)));
                     }
                     mListItems = addSections(materias);
                 } else {

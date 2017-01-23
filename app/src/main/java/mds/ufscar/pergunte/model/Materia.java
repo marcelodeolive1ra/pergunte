@@ -39,44 +39,26 @@ public class Materia implements Parcelable, ListItem {
 //        imageUrl = "https://www.edamam.com/web-img/1d0/1d0075b30ec5fc368ce9ccaf3156462a.jpg";
     }
 
-    public boolean construirObjetoComJSON(JSONObject resultado_requisicao) {
+    public Materia(JSONObject materia) {
         this.perguntas = new ArrayList<>();
         this.alunos = new ArrayList<>();
-        JSONObject professor_json = null;
         try {
-            professor_json = resultado_requisicao.getJSONObject("professor");
-            this.setCodigo(resultado_requisicao.getInt("codigo"));
-            this.setTurma(resultado_requisicao.getString("turma"));
-            this.setAno(resultado_requisicao.getInt("ano"));
-            this.setSemestre(resultado_requisicao.getInt("semestre"));
-            this.setNomeDisciplina(resultado_requisicao.getString("nome_materia"));
-            this.setProfessor(new Professor(
-                    professor_json.getString("nome"),
-                    professor_json.getString("sobrenome"),
-                    professor_json.getString("email"),
-                    professor_json.getString("universidade")));
-            this.setCodigoInscricao(resultado_requisicao.getString("codigo_inscricao"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
+            this.setCodigo(materia.getInt("codigo"));
+            this.setTurma(materia.getString("turma"));
+            this.setAno(materia.getInt("ano"));
+            this.setSemestre(materia.getInt("semestre"));
+            this.setNomeDisciplina(materia.getString("nome_materia"));
+            this.setCodigoInscricao(materia.getString("codigo_inscricao"));
 
-    public boolean construirObjetoComJSONSemProfessor(JSONObject resultado_requisicao) {
-        try {
-            this.setCodigo(resultado_requisicao.getInt("codigo"));
-            this.setTurma(resultado_requisicao.getString("turma"));
-            this.setAno(resultado_requisicao.getInt("ano"));
-            this.setSemestre(resultado_requisicao.getInt("semestre"));
-            this.setNomeDisciplina(resultado_requisicao.getString("nome_materia"));
-            this.setProfessor(null);
-            this.setCodigoInscricao(resultado_requisicao.getString("codigo_inscricao"));
+            try {
+                JSONObject professor_json = materia.getJSONObject("professor");
+                this.setProfessor(new Professor(professor_json));
+            } catch (JSONException e) {
+                this.setProfessor(null);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
 
     public Materia(int codigo, String turma, int ano, int semestre, String nomeDisciplina,

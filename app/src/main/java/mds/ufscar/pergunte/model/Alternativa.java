@@ -25,23 +25,20 @@ public class Alternativa {
     }
 
     public Alternativa() {
-
     }
 
-    public boolean construirObjetoComJSON(JSONObject resultado_requisicao, String alternativasCorretas) {
+    public Alternativa(JSONObject alternativa, String alternativasCorretas) {
         try {
             this.setCodigo(0);
-            this.setLetra(resultado_requisicao.getString("letra"));
-            this.setTextoAlternativa(resultado_requisicao.getString("texto_alternativa"));
+            this.setLetra(alternativa.getString("letra"));
+            this.setTextoAlternativa(alternativa.getString("texto_alternativa"));
 
             if (alternativasCorretas.contains(this.getLetra())) {
                 this.setCorreta(true);
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
 
     public int getCodigo() {

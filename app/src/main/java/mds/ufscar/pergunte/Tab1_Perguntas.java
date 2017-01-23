@@ -39,8 +39,7 @@ public class Tab1_Perguntas extends Fragment {
 
         mListView = (ListView) rootView.findViewById(R.id.pergunta_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
-        String emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
-        mListItems =  new ArrayList<>();
+        mListItems = new ArrayList<>();
         adapter = new PerguntaAdapter(getActivity(), mListItems);
         mListView.setAdapter(adapter);
 
@@ -63,8 +62,7 @@ public class Tab1_Perguntas extends Fragment {
                     JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
 
                     for (int i = 0; i < materias_json.length(); i++) {
-                        Materia materia = new Materia();
-                        materia.construirObjetoComJSONSemProfessor(materias_json.getJSONObject(i));
+                        Materia materia = new Materia(materias_json.getJSONObject(i));
 
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.append(materia.getNomeDisciplina()).append("   -   ");
@@ -76,14 +74,11 @@ public class Tab1_Perguntas extends Fragment {
                         JSONArray perguntas_json = materias_json.getJSONObject(i).getJSONArray("perguntas");
                         boolean temPergunta = false;
                         for (int j = 0; j < perguntas_json.length(); j++) {
-                            Pergunta pergunta = new Pergunta();
-                            if (pergunta.construirObjetoComJSON(perguntas_json.getJSONObject(j))) {
-                                mListItems.add(pergunta);
-                                temPergunta = true;
-                            }
+                            mListItems.add(new Pergunta(perguntas_json.getJSONObject(j)));
+                            temPergunta = true;
                         }
                         if (!temPergunta) {
-                            mListItems.remove(mListItems.size()-1); // remove ultima seção (materia)
+                            mListItems.remove(mListItems.size() -1 ); // remove ultima seção (materia)
                         }
                     }
                 } else {

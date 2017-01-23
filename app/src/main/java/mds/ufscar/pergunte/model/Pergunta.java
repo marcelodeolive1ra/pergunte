@@ -41,39 +41,36 @@ public class Pergunta implements ListItem {
         this.alternativas = new ArrayList<>();
     }
 
-    public boolean construirObjetoComJSON(JSONObject resultado_requisicao) {
+    public Pergunta(JSONObject pergunta) {
         try {
-            this.setCodigo(resultado_requisicao.getInt("codigo"));
+            this.alternativas = new ArrayList<>();
+            this.setCodigo(pergunta.getInt("codigo"));
             this.setDisponivel(false);
-            this.setTitulo(resultado_requisicao.getString("titulo"));
-            this.setTextoPergunta(resultado_requisicao.getString("texto_pergunta"));
+            this.setTitulo(pergunta.getString("titulo"));
+            this.setTextoPergunta(pergunta.getString("texto_pergunta"));
 
-            String dataAproximadaString = resultado_requisicao.getString("data_aproximada");
-            int dia = Integer.parseInt(dataAproximadaString.substring(0, 4));
-            int mes = Integer.parseInt(dataAproximadaString.substring(5, 7));
-            int ano = Integer.parseInt(dataAproximadaString.substring(8, 10));
-
+            String dataAproximadaString = pergunta.getString("data_aproximada");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
             Date data_aproximada = sdf.parse(dataAproximadaString);
 
             this.setDataAproximada(data_aproximada);
 
-            JSONArray alternativas_json = resultado_requisicao.getJSONArray("alternativas");
+            JSONArray alternativas_json = pergunta.getJSONArray("alternativas");
 
-            for (int i = 0; i < alternativas_json.length(); i++) {
-                Alternativa alternativa = new Alternativa();
+            JSONArray alternativasCorretas_json = pergunta.getJSONArray("alternativas_corretas");
+            String alternativasCorretas = "";
 
-                if (alternativa.construirObjetoComJSON(alternativas_json.getJSONObject(i),
-                        resultado_requisicao.getString("alternativas_corretas"))) {
-                    this.alternativas.add(alternativa);
-                }
+            for (int i = 0; i < alternativasCorretas_json.length(); i++) {
+                alternativasCorretas += alternativasCorretas_json.getString(i);
             }
 
+            for (int i = 0; i < alternativas_json.length(); i++) {
+                this.alternativas.add(new Alternativa(alternativas_json.getJSONObject(i),
+                        alternativasCorretas));
+            }
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
 
     public int getCodigo() {
