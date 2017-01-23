@@ -1,5 +1,8 @@
 package mds.ufscar.pergunte.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,21 +11,20 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import mds.ufscar.pergunte.ListItem;
 
-public class Pergunta implements ListItem {
+public class Pergunta implements Parcelable, ListItem {
 
     private int codigo;
     private String titulo;
     private String textoPergunta;
-    private List<Alternativa> alternativas;
+    private ArrayList<Alternativa> alternativas;
     private boolean disponivel;
     private Date dataAproximada;
 
-    public Pergunta(int codigo, String titulo, String textoPergunta, List<Alternativa> alternativas,
+    public Pergunta(int codigo, String titulo, String textoPergunta, ArrayList<Alternativa> alternativas,
                     Date dataAproximada) {
         this.setCodigo(codigo);
         this.setTitulo(titulo);
@@ -32,13 +34,18 @@ public class Pergunta implements ListItem {
         this.setDataAproximada(dataAproximada);
     }
 
-    public Pergunta(String titulo, String textoPergunta, List<Alternativa> alternativas,
+    public Pergunta(String titulo, String textoPergunta, ArrayList<Alternativa> alternativas,
                     Date dataAproximada) {
         this(0, titulo, textoPergunta, alternativas, dataAproximada);
     }
 
-    public Pergunta() {
-        this.alternativas = new ArrayList<>();
+    public Pergunta(Parcel in) {
+        this.codigo = in.readInt();
+        this.titulo = in.readString();
+        this.textoPergunta = in.readString();
+        this.disponivel = (in.readInt() == 1);
+        long tmpDate = in.readLong();
+        this.dataAproximada = (tmpDate == -1) ? null : new Date(tmpDate);
     }
 
     public Pergunta(JSONObject pergunta) {
@@ -97,11 +104,11 @@ public class Pergunta implements ListItem {
         this.textoPergunta = textoPergunta;
     }
 
-    public List<Alternativa> getAlternativas() {
+    public ArrayList<Alternativa> getAlternativas() {
         return alternativas;
     }
 
-    public void setAlternativas(List<Alternativa> alternativas) {
+    public void setAlternativas(ArrayList<Alternativa> alternativas) {
         this.alternativas = alternativas;
     }
 
@@ -130,4 +137,29 @@ public class Pergunta implements ListItem {
     public boolean isSection() {
         return false;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(codigo);
+        out.writeString(titulo);
+        out.writeString(textoPergunta);
+        out.writeInt(disponivel ? 1 : 0);
+        out.writeLong(dataAproximada != null ? dataAproximada.getTime() : -1);
+    }
+
+    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
+    public static final Parcelable.Creator<Pergunta> CREATOR = new Parcelable.Creator<Pergunta>() {
+        public Pergunta createFromParcel(Parcel in) {
+            return new Pergunta(in);
+        }
+
+        public Pergunta[] newArray(int size) {
+            return new Pergunta[size];
+        }
+    };
 }

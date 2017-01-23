@@ -1,5 +1,8 @@
 package mds.ufscar.pergunte.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,7 +10,7 @@ import org.json.JSONObject;
  * Created by marcelodeoliveiradasilva on 20/01/17.
  */
 
-public class Alternativa {
+public class Alternativa implements Parcelable {
     private int codigo;
     private String letra;
     private String textoAlternativa;
@@ -41,6 +44,13 @@ public class Alternativa {
         }
     }
 
+    public Alternativa(Parcel in) {
+        this.codigo = in.readInt();
+        this.letra = in.readString();
+        this.textoAlternativa = in.readString();
+        this.correta = (in.readInt() == 1);
+    }
+
     public int getCodigo() {
         return this.codigo;
     }
@@ -72,4 +82,28 @@ public class Alternativa {
     public void setCorreta(boolean correta) {
         this.correta = correta;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(codigo);
+        dest.writeString(letra);
+        dest.writeString(textoAlternativa);
+        dest.writeInt(correta ? 1 : 0);
+    }
+
+    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
+    public static final Parcelable.Creator<Alternativa> CREATOR = new Parcelable.Creator<Alternativa>() {
+        public Alternativa createFromParcel(Parcel in) {
+            return new Alternativa(in);
+        }
+
+        public Alternativa[] newArray(int size) {
+            return new Alternativa[size];
+        }
+    };
 }

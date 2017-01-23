@@ -1,5 +1,6 @@
 package mds.ufscar.pergunte;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +11,11 @@ import com.jjoe64.graphview.ValueDependentColor;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
+
+import java.util.ArrayList;
+
+import mds.ufscar.pergunte.model.Alternativa;
+import mds.ufscar.pergunte.model.Pergunta;
 
 /**
  * Created by Danilo on 21/01/2017.
@@ -22,6 +28,12 @@ public class PerguntaGrafico extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.pergunta_grafico);
+
+        // pegando dados
+        Intent intent = getIntent();
+        Pergunta pergunta = intent.getParcelableExtra("pergunta");
+        ArrayList<Alternativa> alternativas = intent.getParcelableArrayListExtra("alternativas");
+        pergunta.setAlternativas(alternativas);
 
          /*  GRAFICO */
         GraphView graph = (GraphView) findViewById(R.id.graph);

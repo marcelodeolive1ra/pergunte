@@ -1,6 +1,7 @@
 package mds.ufscar.pergunte;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import mds.ufscar.pergunte.model.Alternativa;
 import mds.ufscar.pergunte.model.Materia;
 import mds.ufscar.pergunte.model.Pergunta;
 
@@ -30,6 +33,7 @@ public class Tab1_Perguntas extends Fragment {
     private ListView mListView;
     private boolean mProfessor;
     private ArrayList<ListItem> mListItems;
+    private ArrayList<Materia> mMaterias;
     private PerguntaAdapter adapter;
 
     @Override
@@ -40,16 +44,59 @@ public class Tab1_Perguntas extends Fragment {
         mListView = (ListView) rootView.findViewById(R.id.pergunta_list_view);
         mProfessor = ((MainScreen)this.getActivity()).isProfessor();
         mListItems = new ArrayList<>();
+        mMaterias = new ArrayList<>();
         adapter = new PerguntaAdapter(getActivity(), mListItems);
         mListView.setAdapter(adapter);
 
         buscaPerguntasServidor();
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3)
+            {
+                final int posicao = pos;
+                if (mProfessor) {
+                    final CharSequence opcoes[] = new CharSequence[] {
+                            "Visualizar pergunta",
+                            "Visualizar gráfico de respostas",
+                            "Ativar pergunta",
+                            "Editar pergunta",
+                            "Excluir pergunta"
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Tab1_Perguntas.this.getActivity());
+                    builder.setTitle("Selecione uma opção");
+                    builder.setItems(opcoes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (opcoes[which].toString().equals("Visualizar gráfico de respostas")) {
+                                Intent perguntaGrafico = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaGrafico.class);
+                                // vai precisar passar a materia tambem? Espero que não. haha
+                                perguntaGrafico.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
+                                ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
+                                perguntaGrafico.putParcelableArrayListExtra("alternativas", alternativas);
+                                getActivity().startActivity(perguntaGrafico);
+                            }
+                        }
+                    });
+                    builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //the user clicked on Cancel
+                        }
+                    });
+                    builder.show();
+                }
+            }
+        });
 
         return rootView;
     }
 
     public void buscaPerguntasServidor(){
         mListItems.clear();
+        mMaterias.clear();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
@@ -73,13 +120,17 @@ public class Tab1_Perguntas extends Fragment {
 
                         JSONArray perguntas_json = materias_json.getJSONObject(i).getJSONArray("perguntas");
                         boolean temPergunta = false;
+                        ArrayList<Pergunta> perguntas = new ArrayList<>();
                         for (int j = 0; j < perguntas_json.length(); j++) {
                             mListItems.add(new Pergunta(perguntas_json.getJSONObject(j)));
                             temPergunta = true;
+                            perguntas.add((Pergunta)mListItems.get(mListItems.size()-1));
                         }
                         if (!temPergunta) {
                             mListItems.remove(mListItems.size() -1 ); // remove ultima seção (materia)
                         }
+                        materia.setPerguntas(perguntas);
+                        mMaterias.add(materia);
                     }
                 } else {
                     Log.w("REQUISICAO", resultado_requisicao.toString());
