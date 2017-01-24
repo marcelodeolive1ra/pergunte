@@ -36,6 +36,12 @@ public class Tab1_Perguntas extends Fragment {
     private ArrayList<Materia> mMaterias;
     private PerguntaAdapter adapter;
 
+    public static final String visualizarPergunta = "Visualizar pergunta";
+    public static final String visualizarGrafico = "Visualizar gráfico";
+    public static final String disponibilizarPergunta = "Disponibilizar pergunta";
+    public static final String editarPergunta = "Editar pergunta";
+    public static final String excluirPergunta = "Excluir pergunta";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,11 +64,11 @@ public class Tab1_Perguntas extends Fragment {
                 final int posicao = pos;
                 if (mProfessor) {
                     final CharSequence opcoes[] = new CharSequence[] {
-                            "Visualizar pergunta",
-                            "Visualizar gráfico de respostas",
-                            "Ativar pergunta",
-                            "Editar pergunta",
-                            "Excluir pergunta"
+                            visualizarPergunta,
+                            visualizarGrafico,
+                            disponibilizarPergunta,
+                            editarPergunta,
+                            excluirPergunta
                     };
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(Tab1_Perguntas.this.getActivity());
@@ -70,14 +76,14 @@ public class Tab1_Perguntas extends Fragment {
                     builder.setItems(opcoes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (opcoes[which].toString().equals("Visualizar gráfico de respostas")) {
+                            if (opcoes[which].toString().equals(visualizarGrafico)) {
                                 Intent perguntaGrafico = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaGrafico.class);
                                 // vai precisar passar a materia tambem? Espero que não. haha
                                 perguntaGrafico.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
                                 ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
                                 perguntaGrafico.putParcelableArrayListExtra("alternativas", alternativas);
                                 getActivity().startActivity(perguntaGrafico);
-                            } else if (opcoes[which].toString().equals("Ativar pergunta")) {
+                            } else if (opcoes[which].toString().equals(disponibilizarPergunta)) {
                                 Intent perguntaDisponivel = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaDisponivel.class);
                                 perguntaDisponivel.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
                                 getActivity().startActivity(perguntaDisponivel);
