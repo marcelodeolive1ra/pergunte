@@ -28,6 +28,8 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".PerguntaGrafico"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".PerguntaDisponivel"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"

@@ -77,6 +77,10 @@ public class Tab1_Perguntas extends Fragment {
                                 ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
                                 perguntaGrafico.putParcelableArrayListExtra("alternativas", alternativas);
                                 getActivity().startActivity(perguntaGrafico);
+                            } else if (opcoes[which].toString().equals("Ativar pergunta")) {
+                                Intent perguntaDisponivel = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaDisponivel.class);
+                                perguntaDisponivel.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
+                                getActivity().startActivity(perguntaDisponivel);
                             }
                         }
                     });

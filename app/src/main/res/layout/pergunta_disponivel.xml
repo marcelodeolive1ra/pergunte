@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp">
+
+    <!--Pergunta-->
+    <TextView android:id="@+id/label_pergunta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="Pergunta disponibilizada"
+        android:textStyle="bold"
+        android:textSize="20sp"/>
+    <TextView android:id="@+id/pergunta_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minLines="10"
+        android:layout_marginBottom="30dp"
+        android:layout_below="@id/label_pergunta"
+        android:text="Pergunta"
+        android:textSize="16sp"/>
+
+    <!--Timer-->
+    <TextView android:id="@+id/label_timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="Tempo passado"
+        android:textStyle="bold"
+        android:layout_below="@id/pergunta_content"
+        android:textSize="20sp"/>
+    <TextView android:id="@+id/timer_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:gravity="center"
+        android:layout_below="@id/label_timer"
+        android:text="00:00:00"
+        android:textSize="70sp"/>
+
+    <!--Numero respostas-->
+    <TextView android:id="@+id/label_respostas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:gravity="center"
+        android:text="Número de respostas até o momento: "
+        android:textStyle="bold"
+        android:layout_below="@id/timer_content"
+        android:textSize="18sp"/>
+    <TextView android:id="@+id/respostas_numero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:gravity="right"
+        android:layout_alignParentEnd="true"
+        android:text="###"
+        android:layout_below="@id/timer_content"
+        android:layout_toEndOf="@id/label_respostas"
+        android:textSize="18sp"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_cadastrar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:text="Encerrar tempo de respostas"/>
+
+
+</RelativeLayout>
