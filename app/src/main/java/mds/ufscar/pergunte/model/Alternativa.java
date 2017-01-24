@@ -15,6 +15,7 @@ public class Alternativa implements Parcelable {
     private String letra;
     private String textoAlternativa;
     private boolean correta;
+    private int nRespostas;
 
     public Alternativa(String letra, String textoAlternativa, boolean correta) {
         this(0, letra, textoAlternativa, correta);
@@ -25,6 +26,7 @@ public class Alternativa implements Parcelable {
         this.setLetra(letra);
         this.setTextoAlternativa(textoAlternativa);
         this.setCorreta(correta);
+        this.setnRespostas(0);
     }
 
     public Alternativa() {
@@ -49,6 +51,7 @@ public class Alternativa implements Parcelable {
         this.letra = in.readString();
         this.textoAlternativa = in.readString();
         this.correta = (in.readInt() == 1);
+        this.nRespostas = in.readInt();
     }
 
     public int getCodigo() {
@@ -83,6 +86,14 @@ public class Alternativa implements Parcelable {
         this.correta = correta;
     }
 
+    public int getnRespostas() {
+        return nRespostas;
+    }
+
+    public void setnRespostas(int nRespostas) {
+        this.nRespostas = nRespostas;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -94,6 +105,7 @@ public class Alternativa implements Parcelable {
         dest.writeString(letra);
         dest.writeString(textoAlternativa);
         dest.writeInt(correta ? 1 : 0);
+        dest.writeInt(nRespostas);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
