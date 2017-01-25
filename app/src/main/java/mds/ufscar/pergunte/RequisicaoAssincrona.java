@@ -52,6 +52,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
     static final String BUSCAR_ALTERNATIVAS_POR_PERGUNTA = "12";
     static final String BUSCAR_QUANTIDADE_DE_RESPOSTAS_POR_ALTERNATIVA_POR_PERGUNTA = "13";
     static final String BUSCAR_QUANTIDADE_DE_RESPOSTAS_TOTAIS_POR_PERGUNTA = "14";
+    static final String ENVIAR_QR_CODE_POR_EMAIL = "15";
 
     private Object objetoGenerico;
 
@@ -158,6 +159,12 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                 case BUSCAR_QUANTIDADE_DE_RESPOSTAS_TOTAIS_POR_PERGUNTA:
                     parametros.put(Parametros.CODIGO_PERGUNTA, params[1]);
                     request = HttpRequest.post(Parametros.URL_SERVIDOR + "buscarquantidadetotalderespostasporpergunta/").form(parametros);
+                    break;
+
+                case ENVIAR_QR_CODE_POR_EMAIL:
+                    parametros.put(Parametros.EMAIL_USUARIO, params[1]);
+                    parametros.put(Parametros.CODIGO_MATERIA, params[2]);
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "enviarqrcodeporemail/").form(parametros);
                     break;
 
                 default:
