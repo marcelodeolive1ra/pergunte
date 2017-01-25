@@ -218,15 +218,17 @@ public class Tab2_Materias extends Fragment {
 
     public ArrayList<ListItem> addSections(ArrayList<Materia> materias) {
         ArrayList<ListItem> listItems = new ArrayList<>();
-        String lastYearSemesterAdded;
-        lastYearSemesterAdded = getSectionTitle(materias.get(0));
-        listItems.add(new Section(lastYearSemesterAdded));
-        for (Materia materia : materias) {
-            if (!lastYearSemesterAdded.equals(getSectionTitle(materia))) {
-                lastYearSemesterAdded = getSectionTitle(materia);
-                listItems.add(new Section(lastYearSemesterAdded));
+        if (materias.size() > 0) {
+            String lastYearSemesterAdded;
+            lastYearSemesterAdded = getSectionTitle(materias.get(0));
+            listItems.add(new Section(lastYearSemesterAdded));
+            for (Materia materia : materias) {
+                if (!lastYearSemesterAdded.equals(getSectionTitle(materia))) {
+                    lastYearSemesterAdded = getSectionTitle(materia);
+                    listItems.add(new Section(lastYearSemesterAdded));
+                }
+                listItems.add(materia);
             }
-            listItems.add(materia);
         }
         return listItems;
     }
