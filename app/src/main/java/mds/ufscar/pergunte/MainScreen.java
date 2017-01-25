@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -173,10 +174,11 @@ public class MainScreen extends AppCompatActivity {
 
                                                 if (resultado_requisicao.getString("status").equals("ok")) {
                                                     materiaScanneada = new Materia(resultado_requisicao);
-                                                    if (!adicionouMateria(materiaScanneada, false)) {   // fasle = é aluno
+                                                    if (!adicionouMateria(materiaScanneada, false)) {   // false = é aluno
                                                         Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
                                                     } else {
                                                         Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
+                                                        FirebaseMessaging.getInstance().subscribeToTopic(materiaScanneada.getCodigoInscricao());
                                                     }
                                                 } else {
                                                     Toast.makeText(MainScreen.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_SHORT).show();

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 import org.json.JSONArray;
@@ -166,6 +167,11 @@ public class Tab2_Materias extends Fragment {
                                     email, Integer.toString(((Materia) mListItems.get(positionToRemove)).getCodigo())).get();
 
                             if (resultado_requisicao.getString("status").equals("ok")) {
+
+                                if (!mProfessor) {
+                                    FirebaseMessaging.getInstance().unsubscribeFromTopic(((Materia) mListItems.get(positionToRemove)).getCodigoInscricao());
+                                }
+
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
                                 mListItems.remove(positionToRemove); // removing from the interface
 
