@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import mds.ufscar.pergunte.model.Alternativa;
 import mds.ufscar.pergunte.model.Pergunta;
 
 /**
@@ -38,6 +41,9 @@ public class PerguntaDisponivel extends AppCompatActivity {
         // pegando dados
         Intent intent = getIntent();
         Pergunta pergunta = intent.getParcelableExtra("pergunta");
+        ArrayList<Alternativa> alternativas = intent.getParcelableArrayListExtra("alternativas");
+        pergunta.setAlternativas(alternativas);
+
         mPergunta.setText(pergunta.getTextoPergunta());
 
         // setting timer count up

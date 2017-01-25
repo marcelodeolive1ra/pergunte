@@ -86,6 +86,8 @@ public class Tab1_Perguntas extends Fragment {
                             } else if (opcoes[which].toString().equals(disponibilizarPergunta)) {
                                 Intent perguntaDisponivel = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaDisponivel.class);
                                 perguntaDisponivel.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
+                                ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
+                                perguntaDisponivel.putParcelableArrayListExtra("alternativas", alternativas);
                                 getActivity().startActivity(perguntaDisponivel);
                             }
                         }
