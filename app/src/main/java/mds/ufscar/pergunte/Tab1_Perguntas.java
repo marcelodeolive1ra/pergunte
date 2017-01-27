@@ -54,54 +54,56 @@ public class Tab1_Perguntas extends Fragment {
         adapter = new PerguntaAdapter(getActivity(), mListItems);
         mListView.setAdapter(adapter);
 
-        buscaPerguntasServidor();
+        if (mProfessor) {
+            buscaPerguntasServidor();
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3)
-            {
-                final int posicao = pos;
-                if (mProfessor) {
-                    final CharSequence opcoes[] = new CharSequence[] {
-                            visualizarPergunta,
-                            visualizarGrafico,
-                            disponibilizarPergunta,
-                            editarPergunta,
-                            excluirPergunta
-                    };
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+                    final int posicao = pos;
+                    if (mProfessor) {
+                        final CharSequence opcoes[] = new CharSequence[]{
+                                visualizarPergunta,
+                                visualizarGrafico,
+                                disponibilizarPergunta,
+                                editarPergunta,
+                                excluirPergunta
+                        };
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Tab1_Perguntas.this.getActivity());
-                    builder.setTitle("Selecione uma opção");
-                    builder.setItems(opcoes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (opcoes[which].toString().equals(visualizarGrafico)) {
-                                Intent perguntaGrafico = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaGrafico.class);
-                                // vai precisar passar a materia tambem? Espero que não. haha
-                                perguntaGrafico.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
-                                ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
-                                perguntaGrafico.putParcelableArrayListExtra("alternativas", alternativas);
-                                getActivity().startActivity(perguntaGrafico);
-                            } else if (opcoes[which].toString().equals(disponibilizarPergunta)) {
-                                Intent perguntaDisponivel = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaDisponivel.class);
-                                perguntaDisponivel.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
-                                ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
-                                perguntaDisponivel.putParcelableArrayListExtra("alternativas", alternativas);
-                                getActivity().startActivity(perguntaDisponivel);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Tab1_Perguntas.this.getActivity());
+                        builder.setTitle("Selecione uma opção");
+                        builder.setItems(opcoes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (opcoes[which].toString().equals(visualizarGrafico)) {
+                                    Intent perguntaGrafico = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaGrafico.class);
+                                    // vai precisar passar a materia tambem? Espero que não. haha
+                                    perguntaGrafico.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
+                                    ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
+                                    perguntaGrafico.putParcelableArrayListExtra("alternativas", alternativas);
+                                    getActivity().startActivity(perguntaGrafico);
+                                } else if (opcoes[which].toString().equals(disponibilizarPergunta)) {
+                                    Intent perguntaDisponivel = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaDisponivel.class);
+                                    perguntaDisponivel.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
+                                    ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
+                                    perguntaDisponivel.putParcelableArrayListExtra("alternativas", alternativas);
+                                    getActivity().startActivity(perguntaDisponivel);
+                                }
                             }
-                        }
-                    });
-                    builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //the user clicked on Cancel
-                        }
-                    });
-                    builder.show();
+                        });
+                        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //the user clicked on Cancel
+                            }
+                        });
+                        builder.show();
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            // TODO: Implementar Tab1 para o perfil Aluno
+        }
 
         return rootView;
     }
@@ -118,31 +120,39 @@ public class Tab1_Perguntas extends Fragment {
 
             if (resultado_requisicao != null) {
                 if (resultado_requisicao.getString("status").equals("ok")) {
+
                     JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
 
-                    for (int i = 0; i < materias_json.length(); i++) {
-                        Materia materia = new Materia(materias_json.getJSONObject(i));
+                    if (materias_json.length() > 0) {
 
-                        StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.append(materia.getNomeDisciplina()).append("   -   ");
-                        stringBuilder.append(materia.getAno()).append("/");
-                        stringBuilder.append(materia.getSemestre()).append("   -   ");
-                        stringBuilder.append(" Turma: ").append(materia.getTurma());
-                        mListItems.add(new Section(stringBuilder.toString()));
+                        for (int i = 0; i < materias_json.length(); i++) {
+                            Materia materia = new Materia(materias_json.getJSONObject(i));
 
-                        JSONArray perguntas_json = materias_json.getJSONObject(i).getJSONArray("perguntas");
-                        boolean temPergunta = false;
-                        ArrayList<Pergunta> perguntas = new ArrayList<>();
-                        for (int j = 0; j < perguntas_json.length(); j++) {
-                            mListItems.add(new Pergunta(perguntas_json.getJSONObject(j)));
-                            temPergunta = true;
-                            perguntas.add((Pergunta)mListItems.get(mListItems.size()-1));
+                            StringBuilder stringBuilder = new StringBuilder();
+                            stringBuilder.append(materia.getNomeDisciplina()).append("   -   ");
+                            stringBuilder.append(materia.getAno()).append("/");
+                            stringBuilder.append(materia.getSemestre()).append("   -   ");
+                            stringBuilder.append(" Turma: ").append(materia.getTurma());
+                            mListItems.add(new Section(stringBuilder.toString()));
+
+                            JSONArray perguntas_json = materias_json.getJSONObject(i).getJSONArray("perguntas");
+
+                            boolean temPergunta = false;
+                            ArrayList<Pergunta> perguntas = new ArrayList<>();
+                            for (int j = 0; j < perguntas_json.length(); j++) {
+                                mListItems.add(new Pergunta(perguntas_json.getJSONObject(j)));
+                                temPergunta = true;
+                                perguntas.add((Pergunta) mListItems.get(mListItems.size() - 1));
+                            }
+                            if (!temPergunta) {
+                                mListItems.remove(mListItems.size() - 1); // remove ultima seção (materia)
+                            }
+                            materia.setPerguntas(perguntas);
+                            mMaterias.add(materia);
                         }
-                        if (!temPergunta) {
-                            mListItems.remove(mListItems.size() -1 ); // remove ultima seção (materia)
-                        }
-                        materia.setPerguntas(perguntas);
-                        mMaterias.add(materia);
+                    } else {
+                        Toast.makeText(Tab1_Perguntas.this.getActivity(),
+                                "Você ainda não cadastrou nenhuma pergunta.", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Log.w("REQUISICAO", resultado_requisicao.toString());

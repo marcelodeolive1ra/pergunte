@@ -64,11 +64,20 @@ public class Tab2_Materias extends Fragment {
                 if (resultado_requisicao.getString("status").equals("ok")) {
                     JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
 
-                    ArrayList<Materia> materias = new ArrayList<>();
-                    for (int i = 0; i < materias_json.length(); i++) {
-                        materias.add(new Materia(materias_json.getJSONObject(i)));
+                    if (materias_json.length() > 0) {
+                        ArrayList<Materia> materias = new ArrayList<>();
+                        for (int i = 0; i < materias_json.length(); i++) {
+                            materias.add(new Materia(materias_json.getJSONObject(i)));
+                        }
+                        mListItems = addSections(materias);
+                    } else {
+                        String mensagem_de_erro = mProfessor ?
+                                "Você ainda não cadastrou nenhuma matéria." :
+                                "Você ainda não está inscrito(a) em nenhuma matéria.";
+
+                        Toast.makeText(Tab2_Materias.this.getActivity(),
+                                mensagem_de_erro, Toast.LENGTH_LONG).show();
                     }
-                    mListItems = addSections(materias);
                 } else {
                     Log.w("REQUISICAO", resultado_requisicao.toString());
                     Toast.makeText(Tab2_Materias.this.getActivity(),
@@ -159,7 +168,6 @@ public class Tab2_Materias extends Fragment {
                         String email = (user != null) ? user.getEmail() : "";
 
                         try {
-
                             String tipo_requisicao = (mProfessor) ?
                                     RequisicaoAssincrona.DESATIVAR_MATERIA : RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA;
 
