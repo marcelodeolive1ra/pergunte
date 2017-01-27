@@ -167,94 +167,125 @@ public class CadastroPergunta extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String warning = null;
-                if (mAlternativas.size() == 0 ) {
-                    warning = "Deve existir pelo menos uma alternativa";
+                if (mAlternativas.size() == 0) {
+                    warning = "Deve existir pelo menos uma alternativa.";
                 }
                 if (mInputQuestion.getText().toString().trim().length() == 0) {
-                    warning = "Pergunta deve ser preenchida";
+                    warning = "Pergunta deve ser preenchida.";
                 }
                 if (mInputTitle.getText().toString().trim().length() == 0) {
-                    warning = "Título deve ser preenchido";
+                    warning = "Título deve ser preenchido.";
                 }
 
                 if (warning == null) {  // se validou os dados (sem warnings)
-                    Date date = new Date();
-                    try {
-                        date = mDateFormat.parse(mSelectedDate.getText().toString());
-                    } catch (ParseException ex) {
-                        ex.printStackTrace();
-                    }
-                    // criando objeto pergunta
+                    boolean algumaCorreta = false;
 
-                    Pergunta pergunta = new Pergunta(
-                            mInputTitle.getText().toString(),
-                            mInputQuestion.getText().toString(),
-                            mAlternativas,
-                            date
-                    );
-
-                    RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
-                    requisicao.setObject(pergunta);
-
-                    try {
-                        JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CADASTRAR_NOVA_PERGUNTA,
-                                MainScreen.getEmailDoUsuarioAtual(), Integer.toString(mCodigoMateria)).get();
-
-                        if (resultado_requisicao != null) {
-                            Intent returnIntent = new Intent();
-                            if (resultado_requisicao.getString("status").equals("ok")) {
-                                Toast.makeText(CadastroPergunta.this, "Pergunta cadastrada com sucesso", Toast.LENGTH_LONG).show();
-                                setResult(Activity.RESULT_OK, returnIntent);
-                                finish();
-                            } else {
-                                Log.w("REQUISICAO", resultado_requisicao.toString());
-                                Toast.makeText(CadastroPergunta.this, "Erro ao cadastrar pergunta no BD.", Toast.LENGTH_LONG).show();
-                                setResult(Activity.RESULT_CANCELED, returnIntent);
-                            }
-                        } else {
-                            AlertDialog.Builder adb = new AlertDialog.Builder(CadastroPergunta.this);
-                            adb.setTitle("Erro");
-                            adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
-                            adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    // Não faz nada aqui para voltar à tela de edição da pergunta,
-                                    // permitindo ao usuário clicar novamente no botão Cadastrar
-                                }
-                            });
-                            adb.setNegativeButton("Cancelar", new AlertDialog.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    AlertDialog.Builder adb2 = new AlertDialog.Builder(CadastroPergunta.this);
-                                    adb2.setTitle("Cancelar cadastro de pergunta?");
-                                    adb2.setMessage("Tem certeza que deseja cancelar o cadastro? Os dados informados serão perdidos.");
-                                    adb2.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Toast.makeText(CadastroPergunta.this, "Cadastro de pergunta cancelado.", Toast.LENGTH_LONG).show();
-                                            finish();
-                                        }
-                                    });
-                                    adb2.setNegativeButton("Não", new AlertDialog.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                                    adb2.show();
-                                }
-                            });
-                            adb.show();
+                    for (int i = 0; i < mAlternativas.size() && !algumaCorreta; i++) {
+                        if (mAlternativas.get(i).isCorreta()) {
+                            algumaCorreta = true;
                         }
-                    } catch (InterruptedException | ExecutionException | JSONException e) {
-                        e.printStackTrace();
                     }
+
+                    if (algumaCorreta) {
+                        cadastrarPergunta();
+                    } else {
+                        AlertDialog.Builder adb = new AlertDialog.Builder(CadastroPergunta.this);
+                        adb.setTitle("Nenhuma alternativa marcada como correta");
+                        adb.setMessage("Você não marcou nenhuma alternativa como correta.\n\n" +
+                                "Tem certeza que deseja cadastrar a pergunta assim mesmo?");
+                        adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                cadastrarPergunta();
+                            }
+                        });
+                        adb.setNegativeButton("Voltar para edição", new AlertDialog.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        adb.show();
+                    }
+
                 } else {
                     new AlertDialog.Builder(context)
                             .setTitle("Atenção")
                             .setMessage(warning)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {}
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
                             })
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
+                }
+            }
+
+            public void cadastrarPergunta() {
+                Date date = new Date();
+                try {
+                    date = mDateFormat.parse(mSelectedDate.getText().toString());
+                } catch (ParseException ex) {
+                    ex.printStackTrace();
+                }
+                // criando objeto pergunta
+
+                Pergunta pergunta = new Pergunta(
+                        mInputTitle.getText().toString(),
+                        mInputQuestion.getText().toString(),
+                        mAlternativas,
+                        date
+                );
+
+                RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+                requisicao.setObject(pergunta);
+
+                try {
+                    JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CADASTRAR_NOVA_PERGUNTA,
+                            MainScreen.getEmailDoUsuarioAtual(), Integer.toString(mCodigoMateria)).get();
+
+                    if (resultado_requisicao != null) {
+                        Intent returnIntent = new Intent();
+                        if (resultado_requisicao.getString("status").equals("ok")) {
+                            Toast.makeText(CadastroPergunta.this, "Pergunta cadastrada com sucesso.", Toast.LENGTH_LONG).show();
+                            setResult(Activity.RESULT_OK, returnIntent);
+                            finish();
+                        } else {
+                            Log.w("REQUISICAO", resultado_requisicao.toString());
+                            Toast.makeText(CadastroPergunta.this, "Erro ao cadastrar pergunta no BD.", Toast.LENGTH_LONG).show();
+                            setResult(Activity.RESULT_CANCELED, returnIntent);
+                        }
+                    } else {
+                        AlertDialog.Builder adb = new AlertDialog.Builder(CadastroPergunta.this);
+                        adb.setTitle("Erro");
+                        adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
+                        adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                // Não faz nada aqui para voltar à tela de edição da pergunta,
+                                // permitindo ao usuário clicar novamente no botão Cadastrar
+                            }
+                        });
+                        adb.setNegativeButton("Cancelar", new AlertDialog.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                AlertDialog.Builder adb2 = new AlertDialog.Builder(CadastroPergunta.this);
+                                adb2.setTitle("Cancelar cadastro de pergunta?");
+                                adb2.setMessage("Tem certeza que deseja cancelar o cadastro? Os dados informados serão perdidos.");
+                                adb2.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(CadastroPergunta.this, "Cadastro de pergunta cancelado.", Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+                                });
+                                adb2.setNegativeButton("Não", new AlertDialog.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                adb2.show();
+                            }
+                        });
+                        adb.show();
+                    }
+                } catch (InterruptedException | ExecutionException | JSONException e) {
+                    e.printStackTrace();
                 }
             }
         });
