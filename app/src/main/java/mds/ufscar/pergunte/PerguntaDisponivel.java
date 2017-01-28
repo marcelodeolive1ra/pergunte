@@ -107,6 +107,7 @@ public class PerguntaDisponivel extends AppCompatActivity {
                 // Terminou o tempo de respostas da pergunta, atualiza a quantidade de respostas obtidas em cada alternativa
                 RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
+                // TODO: Tratar falta de conexão à Internet
                 try {
                     JSONObject resultado_requisicao = requisicao.execute(
                             RequisicaoAssincrona.BUSCAR_QUANTIDADE_DE_RESPOSTAS_POR_ALTERNATIVA_POR_PERGUNTA,

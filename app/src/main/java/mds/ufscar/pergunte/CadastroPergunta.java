@@ -396,4 +396,24 @@ public class CadastroPergunta extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder adb = new AlertDialog.Builder(CadastroPergunta.this);
+        adb.setTitle("Cancelar cadastro?");
+        adb.setMessage("Tem certeza que deseja abandonar o cadastro da pergunta?\n\n" +
+                "Os dados digitados serão perdidos.");
+        adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        adb.setNegativeButton("Não", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        adb.show();
+    }
 }
