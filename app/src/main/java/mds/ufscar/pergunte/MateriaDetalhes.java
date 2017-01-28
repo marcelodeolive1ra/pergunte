@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import mds.ufscar.pergunte.model.Materia;
+import mds.ufscar.pergunte.model.Pergunta;
 import mds.ufscar.pergunte.model.Professor;
 
 /**
@@ -27,11 +28,12 @@ public class MateriaDetalhes extends AppCompatActivity {
     private TextView mMateriaInfo;
     private TextView mMateriaCodigo;
     private ImageView mMateriaImagem;
+    private Materia mMateriaEmQuestao;
     // para a lista expandível
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+    HashMap<String, ArrayList<Pergunta>> listDataChild;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,19 +46,19 @@ public class MateriaDetalhes extends AppCompatActivity {
         mMateriaImagem = (ImageView) findViewById(R.id.materia_list_thumbnail);
 
         Intent intent = getIntent();
-        Materia materia = intent.getParcelableExtra("materia");
+        mMateriaEmQuestao = intent.getParcelableExtra("materia");
         Professor professor = new Professor();
         professor.setNome(intent.getStringExtra("nome"));
         professor.setSobrenome(intent.getStringExtra("sobrenome"));
         professor.setEmail(intent.getStringExtra("email"));
         professor.setUniversidade(intent.getStringExtra("universidade"));
-        materia.setProfessor(professor);
+        mMateriaEmQuestao.setProfessor(professor);
 
-        mMateriaTitulo.setText(materia.getNomeDisciplina());
-        mMateriaInfo.setText(materia.getDescricao());
-        String codigo = "Código de inscrição: " + materia.getCodigoInscricao();
+        mMateriaTitulo.setText(mMateriaEmQuestao.getNomeDisciplina());
+        mMateriaInfo.setText(mMateriaEmQuestao.getDescricao());
+        String codigo = "Código de inscrição: " + mMateriaEmQuestao.getCodigoInscricao();
         mMateriaCodigo.setText(codigo);
-        Picasso.with(this).load(materia.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(mMateriaImagem);
+        Picasso.with(this).load(mMateriaEmQuestao.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(mMateriaImagem);
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
@@ -75,7 +77,7 @@ public class MateriaDetalhes extends AppCompatActivity {
      */
     private void prepareListData() {
         listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
+        listDataChild = new HashMap<String, ArrayList<Pergunta>>();
 
         // Adding child data
         listDataHeader.add("Ativas");
@@ -83,32 +85,17 @@ public class MateriaDetalhes extends AppCompatActivity {
         listDataHeader.add("Respondidas");
 
         // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("The Shawshank Redemption");
-        top250.add("The Godfather");
-        top250.add("The Godfather: Part II");
-        top250.add("Pulp Fiction");
-        top250.add("The Good, the Bad and the Ugly");
-        top250.add("The Dark Knight");
-        top250.add("12 Angry Men");
+        ArrayList<Pergunta> perguntasAtivas = new ArrayList<>();
+        // TODO: Marcelo popule a pergunta ativa (mesmo com uma tem que ser Array, sorry) (da mMateriaEmQuestao)
 
-        List<String> nowShowing = new ArrayList<String>();
-        nowShowing.add("The Conjuring");
-        nowShowing.add("Despicable Me 2");
-        nowShowing.add("Turbo");
-        nowShowing.add("Grown Ups 2");
-        nowShowing.add("Red 2");
-        nowShowing.add("The Wolverine");
+        ArrayList<Pergunta> proximasPerguntas = new ArrayList<>();
+        // TODO: Marcelo popule o ArrayList acima com as próximas pergutas (da mMateriaEmQuestao)
 
-        List<String> comingSoon = new ArrayList<String>();
-        comingSoon.add("2 Guns");
-        comingSoon.add("The Smurfs 2");
-        comingSoon.add("The Spectacular Now");
-        comingSoon.add("The Canyons");
-        comingSoon.add("Europa Report");
+        ArrayList<Pergunta> perguntasRespondidas = new ArrayList<>();
+        // TODO: Marcelo popule o ArrayList acima com as perguntas respondidas (da mMateriaEmQuestao)
 
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);
+        listDataChild.put(listDataHeader.get(0), perguntasAtivas); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), proximasPerguntas);
+        listDataChild.put(listDataHeader.get(2), perguntasRespondidas);
     }
 }
