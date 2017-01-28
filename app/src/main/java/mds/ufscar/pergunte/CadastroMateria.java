@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -136,7 +134,8 @@ public class CadastroMateria extends AppCompatActivity {
                         if (resultado_requisicao != null) {
                             Intent returnIntent = new Intent();
                             if (resultado_requisicao.getString("status").equals("ok")) {
-                                returnIntent.putExtra("materia", materia);
+                                Materia materiaCadastrada = new Materia(resultado_requisicao);
+                                returnIntent.putExtra("materia", materiaCadastrada);
                                 setResult(Activity.RESULT_OK, returnIntent);
                                 finish();
                             } else {
