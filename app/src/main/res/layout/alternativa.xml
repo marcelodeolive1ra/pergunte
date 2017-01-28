@@ -22,6 +22,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="30dp">
         <EditText android:id="@+id/input_alternative"
+            android:textSize="16sp"
             android:inputType="textMultiLine"
             android:lines="4"
             android:minLines="4"

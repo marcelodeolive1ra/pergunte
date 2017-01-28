@@ -53,7 +53,7 @@ public class CadastroMateria extends AppCompatActivity {
         emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
 
         // bounding code with interface
-        mBtnCadastrarMat = (Button)findViewById(R.id.btn_cadastrar);
+//        mBtnCadastrarMat = (Button)findViewById(R.id.btn_cadastrar);
         mClassName = (EditText)findViewById(R.id.input_name);
         mSpinYear = (Spinner)findViewById(R.id.spinner_ano);
         mSpinSemester = (Spinner)findViewById(R.id.spinner_semestre);

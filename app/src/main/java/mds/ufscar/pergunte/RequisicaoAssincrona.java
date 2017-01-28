@@ -7,7 +7,11 @@ import com.github.kevinsawicki.http.HttpRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import mds.ufscar.pergunte.model.Materia;
@@ -53,6 +57,9 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
     static final String BUSCAR_QUANTIDADE_DE_RESPOSTAS_POR_ALTERNATIVA_POR_PERGUNTA = "13";
     static final String BUSCAR_QUANTIDADE_DE_RESPOSTAS_TOTAIS_POR_PERGUNTA = "14";
     static final String ENVIAR_QR_CODE_POR_EMAIL = "15";
+    static final String BUSCAR_PERGUNTAS_ATIVAS_POR_MATERIA = "16";
+    static final String BUSCAR_PROXIMAS_PERGUNTAS_POR_MATERIA = "17";
+    static final String BUSCAR_PERGUNTAS_RESPONDIDAS_POR_MATERIA = "18";
 
     private Object objetoGenerico;
 
@@ -138,6 +145,8 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                         parametros.put("alternativa" + Integer.toString(i) + "_correta", (pergunta.getAlternativas().get(i).isCorreta() ? "true" : "false"));
                     }
 
+                    System.out.println(parametros);
+
                     request = HttpRequest.post("http://mds.secompufscar.com.br/cadastrarpergunta/").form(parametros);
                     break;
 
@@ -165,6 +174,32 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                     parametros.put(Parametros.EMAIL_USUARIO, params[1]);
                     parametros.put(Parametros.CODIGO_MATERIA, params[2]);
                     request = HttpRequest.post(Parametros.URL_SERVIDOR + "enviarqrcodeporemail/").form(parametros);
+                    break;
+
+                case BUSCAR_PERGUNTAS_ATIVAS_POR_MATERIA:
+                    Materia m = (Materia)objetoGenerico;
+                    parametros.put(Parametros.CODIGO_MATERIA, Integer.toString(m.getCodigo()));
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "buscarperguntasativaspormateria/").form(parametros);
+                    break;
+
+                case BUSCAR_PROXIMAS_PERGUNTAS_POR_MATERIA:
+                    Materia m2 = (Materia)objetoGenerico;
+                    parametros.put(Parametros.CODIGO_MATERIA, Integer.toString(m2.getCodigo()));
+
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.CANADA);
+                    Date date = new Date();
+                    String hoje = dateFormat.format(date);
+
+                    parametros.put("data", hoje);
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "buscarproximasperguntaspormateria/").form(parametros);
+                    break;
+
+                case BUSCAR_PERGUNTAS_RESPONDIDAS_POR_MATERIA:
+                    Materia m3 = (Materia)objetoGenerico;
+                    parametros.put(Parametros.EMAIL_USUARIO, params[1]);
+                    parametros.put(Parametros.CODIGO_MATERIA, Integer.toString(m3.getCodigo()));
+
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "buscarperguntasrespondidaspormateria/").form(parametros);
                     break;
 
                 default:

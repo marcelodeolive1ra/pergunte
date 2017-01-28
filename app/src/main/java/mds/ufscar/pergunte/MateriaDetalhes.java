@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -12,9 +13,14 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Alternativa;
 import mds.ufscar.pergunte.model.Materia;
@@ -109,15 +115,95 @@ public class MateriaDetalhes extends AppCompatActivity {
         listDataHeader.add("Próximas");
         listDataHeader.add("Respondidas");
 
+        // TODO: Tratar falta de internet para as três requisições
+
         // Adding child data
         ArrayList<Pergunta> perguntasAtivas = new ArrayList<>();
-        // TODO: Marcelo popule a pergunta ativa (mesmo com uma tem que ser Array, sorry) (da mMateriaEmQuestao)
+        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+        requisicao.setObject(mMateriaEmQuestao);
+        System.out.println("CODIGO = " + mMateriaEmQuestao.getCodigo());
+
+        try {
+            JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_PERGUNTAS_ATIVAS_POR_MATERIA).get();
+
+            if (resultado_requisicao.getString("status").equals("ok")) {
+
+                JSONArray perguntas_ativas_json = resultado_requisicao.getJSONArray("perguntas");
+
+                for (int i = 0; i < perguntas_ativas_json.length(); i++) {
+                    JSONObject pergunta_json = perguntas_ativas_json.getJSONObject(i);
+                    Pergunta pergunta = new Pergunta(pergunta_json);
+                    perguntasAtivas.add(pergunta);
+                }
+
+            } else {
+                Log.w("REQUISICAO", resultado_requisicao.toString());
+                Toast.makeText(MateriaDetalhes.this,
+                        resultado_requisicao.getString("descricao"),
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            e.printStackTrace();
+        }
+
 
         ArrayList<Pergunta> proximasPerguntas = new ArrayList<>();
-        // TODO: Marcelo popule o ArrayList acima com as próximas pergutas (da mMateriaEmQuestao)
+        RequisicaoAssincrona requisicao2 = new RequisicaoAssincrona();
+        requisicao2.setObject(mMateriaEmQuestao);
+
+        try {
+            JSONObject resultado_requisicao = requisicao2.execute(RequisicaoAssincrona.BUSCAR_PROXIMAS_PERGUNTAS_POR_MATERIA).get();
+
+            if (resultado_requisicao.getString("status").equals("ok")) {
+
+                JSONArray proximas_perguntas_json = resultado_requisicao.getJSONArray("perguntas");
+
+                for (int i = 0; i < proximas_perguntas_json.length(); i++) {
+                    JSONObject pergunta_json = proximas_perguntas_json.getJSONObject(i);
+                    Pergunta pergunta = new Pergunta(pergunta_json);
+                    proximasPerguntas.add(pergunta);
+                }
+
+            } else {
+                Log.w("REQUISICAO", resultado_requisicao.toString());
+                Toast.makeText(MateriaDetalhes.this,
+                        resultado_requisicao.getString("descricao"),
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            e.printStackTrace();
+        }
+
 
         ArrayList<Pergunta> perguntasRespondidas = new ArrayList<>();
-        // TODO: Marcelo popule o ArrayList acima com as perguntas respondidas (da mMateriaEmQuestao)
+        RequisicaoAssincrona requisicao3 = new RequisicaoAssincrona();
+        requisicao3.setObject(mMateriaEmQuestao);
+
+        try {
+            JSONObject resultado_requisicao = requisicao3.execute(RequisicaoAssincrona.BUSCAR_PERGUNTAS_RESPONDIDAS_POR_MATERIA,
+                    MainScreen.getEmailDoUsuarioAtual()).get();
+
+            if (resultado_requisicao.getString("status").equals("ok")) {
+
+                JSONArray perguntas_respondidas_json = resultado_requisicao.getJSONArray("perguntas");
+
+                System.out.println(perguntas_respondidas_json);
+
+                for (int i = 0; i < perguntas_respondidas_json.length(); i++) {
+                    JSONObject pergunta_json = perguntas_respondidas_json.getJSONObject(i);
+                    Pergunta pergunta = new Pergunta(pergunta_json);
+                    perguntasRespondidas.add(pergunta);
+                }
+
+            } else {
+                Log.w("REQUISICAO", resultado_requisicao.toString());
+                Toast.makeText(MateriaDetalhes.this,
+                        resultado_requisicao.getString("descricao"),
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            e.printStackTrace();
+        }
 
         listDataChild.put(listDataHeader.get(0), perguntasAtivas); // Header, Child data
         listDataChild.put(listDataHeader.get(1), proximasPerguntas);
