@@ -267,15 +267,15 @@ public class Tab2_Materias extends Fragment {
                 Materia materia = (Materia) listItem;
                 // verify year
                 if (materia.getAno() < materiaAdicionada.getAno()) {
-                    mListItems.add(index, new Section(getSectionTitle(materiaAdicionada)));
-                    mListItems.add(index+1, materiaAdicionada);
+                    mListItems.add(index-1, new Section(getSectionTitle(materiaAdicionada)));
+                    mListItems.add(index, materiaAdicionada);
                     adicionada = true;
                     break;
                 } else if (materia.getAno() == materiaAdicionada.getAno()) {
                     //verify semester
                     if (materia.getSemestre() < materiaAdicionada.getSemestre()) {
-                        mListItems.add(index, new Section(getSectionTitle(materiaAdicionada)));
-                        mListItems.add(index+1, materiaAdicionada);
+                        mListItems.add(index-1, new Section(getSectionTitle(materiaAdicionada)));
+                        mListItems.add(index, materiaAdicionada);
                         adicionada = true;
                         break;
                     } else if (materia.getSemestre() == materiaAdicionada.getSemestre()) {
@@ -283,11 +283,10 @@ public class Tab2_Materias extends Fragment {
                         // verify alphabet
                         if (materia.getNomeDisciplina().compareToIgnoreCase(materiaAdicionada.getNomeDisciplina()) > 0) {
                             mListItems.add(index, materiaAdicionada);
-                            break;
                         } else {
                             mListItems.add(index + 1, materiaAdicionada);
-                            break;
                         }
+                        break;
                     }
                 }
             }

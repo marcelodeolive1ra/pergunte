@@ -257,6 +257,7 @@ public class MainScreen extends AppCompatActivity {
                 for (int i = 1; i<nomes.length; i++) {
                     sobrenome.append(nomes[i]).append(" ");
                 }
+                // TODO: universidade truncada no código, mudar isso
                 Professor professor = new Professor(nomes[0], sobrenome.toString(), user.getEmail(), "UFSCar");
                 materia.setProfessor(professor);
             }
