@@ -6,7 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +40,10 @@ public class CadastroMateria extends AppCompatActivity {
     private Spinner mSpinLetter;
     private EditText mClassCode;
     private String emailUsuarioAtual;
+    private Toolbar mToolbar;
+
+    private Button mBotaoCancelar;
+    private Button mBotaoCadastrar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,14 @@ public class CadastroMateria extends AppCompatActivity {
         mSpinSemester = (Spinner)findViewById(R.id.spinner_semestre);
         mSpinLetter = (Spinner)findViewById(R.id.spinner_turma);
         mClassCode = (EditText)findViewById(R.id.input_codigo);
+        mToolbar = (Toolbar)findViewById(R.id.cadastro_materia_toolbar);
+        mToolbar.setTitle("");
+
+        setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_dark);
+
 
         // filling year dropdown button
         ArrayList<String> years = new ArrayList<>();
@@ -79,15 +96,19 @@ public class CadastroMateria extends AppCompatActivity {
         mSpinLetter.setAdapter(turmaAdapter);
 
         // button click
-        mBtnCadastrarMat.setOnClickListener(new View.OnClickListener() {
+
+        mBotaoCadastrar = (Button)findViewById(R.id.botao_cadastrar_materia);
+        mBotaoCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismissKeyboard();
+
                 String warning = null;
 
                 if (mClassName.getText().toString().trim().length() == 0) {
-                    warning = "O campo 'Nome da matéria' é obrigatório.";
+                    warning = "O campo nome da matéria é obrigatório.";
                 } else if (mClassCode.getText().toString().trim().length() == 0) {
-                    warning = "O campo 'Código da matéria' é obrigatório.";
+                    warning = "O campo código da matéria é obrigatório.";
                 }
 
                 if (warning == null) {
@@ -171,25 +192,45 @@ public class CadastroMateria extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    public void dismissKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
     public void onBackPressed() {
+        dismissKeyboard();
         AlertDialog.Builder adb = new AlertDialog.Builder(CadastroMateria.this);
-        adb.setTitle("Cancelar cadastro?");
-        adb.setMessage("Tem certeza que deseja abandonar o cadastro da matéria?\n\n" +
-                "Os dados digitados serão perdidos.");
-        adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
+        adb.setTitle("Descartar nova matéria?");
+        adb.setMessage("Os dados digitados serão perdidos.");
+        adb.setPositiveButton("Descartar", new AlertDialog.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 finish();
             }
         });
-        adb.setNegativeButton("Não", new AlertDialog.OnClickListener() {
+        adb.setNegativeButton("Voltar para edição", new AlertDialog.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
             }
         });
         adb.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id==android.R.id.home) {
+            onBackPressed();
+        }
+
+        return true;
     }
 }
