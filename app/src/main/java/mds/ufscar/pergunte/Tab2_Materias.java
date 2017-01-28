@@ -252,7 +252,7 @@ public class Tab2_Materias extends Fragment {
     public String getSectionTitle(Materia materia) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(materia.getAno());
-        stringBuilder.append(" - ").append(materia.getSemestre());
+        stringBuilder.append("/").append(materia.getSemestre());
         return stringBuilder.toString();
     }
 

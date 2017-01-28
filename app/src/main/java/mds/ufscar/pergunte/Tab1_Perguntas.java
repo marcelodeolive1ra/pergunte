@@ -129,10 +129,10 @@ public class Tab1_Perguntas extends Fragment {
                             Materia materia = new Materia(materias_json.getJSONObject(i));
 
                             StringBuilder stringBuilder = new StringBuilder();
-                            stringBuilder.append(materia.getNomeDisciplina()).append("   -   ");
+                            stringBuilder.append(materia.getNomeDisciplina()).append(" - ");
                             stringBuilder.append(materia.getAno()).append("/");
-                            stringBuilder.append(materia.getSemestre()).append("   -   ");
-                            stringBuilder.append(" Turma: ").append(materia.getTurma());
+                            stringBuilder.append(materia.getSemestre()).append(" - ");
+                            stringBuilder.append("Turma ").append(materia.getTurma());
                             mListItems.add(new Section(stringBuilder.toString()));
 
                             JSONArray perguntas_json = materias_json.getJSONObject(i).getJSONArray("perguntas");

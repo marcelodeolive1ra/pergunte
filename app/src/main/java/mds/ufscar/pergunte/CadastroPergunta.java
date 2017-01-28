@@ -11,10 +11,13 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -62,6 +65,8 @@ public class CadastroPergunta extends AppCompatActivity {
     private int index;
     private ArrayList<Alternativa> mAlternativas;
     private int mCodigoMateria;
+    private Toolbar mToolbar;
+    private Button mBotaoCadastrar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +87,15 @@ public class CadastroPergunta extends AppCompatActivity {
         mEditAlternative = (Button)findViewById(R.id.btn_editAlternative);
         mAddAlternative = (Button)findViewById(R.id.btn_newAlternative);
         mRadioGroup = (RadioGroup)findViewById(radiogroup);
-        mCadastrarPergunta = (Button)findViewById(R.id.btn_cadastrar);
+//        mCadastrarPergunta = (Button)findViewById(R.id.btn_cadastrar);
+
+        mToolbar = (Toolbar)findViewById(R.id.cadastro_pergunta_toolbar);
+        mToolbar.setTitle("");
+
+        setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_dark);
 
         setCurrentDateOnView();
         mRadioGroup.setOrientation(LinearLayout.VERTICAL);
@@ -116,7 +129,7 @@ public class CadastroPergunta extends AppCompatActivity {
 
                     // set the custom dialog components - text, editText and button
                     final TextView letra = (TextView) dialog.findViewById(R.id.label_alternativa);
-                    String title = "Alternativa - " + mAlternativeLetters[index];
+                    String title = "Alternativa " + mAlternativeLetters[index];
                     letra.setText(title);
                     final EditText alternativa = (EditText) dialog.findViewById(R.id.input_alternative);
                     final CheckBox correta = (CheckBox) dialog.findViewById(R.id.checkboxCorreta);
@@ -163,7 +176,9 @@ public class CadastroPergunta extends AppCompatActivity {
             }
         });
 
-        mCadastrarPergunta.setOnClickListener(new View.OnClickListener() {
+
+        mBotaoCadastrar = (Button)findViewById(R.id.botao_cadastrar_pergunta);
+        mBotaoCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String warning = null;
@@ -397,19 +412,38 @@ public class CadastroPergunta extends AppCompatActivity {
         });
     }
 
+    public void dismissKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id==android.R.id.home) {
+            onBackPressed();
+        }
+
+        return true;
+    }
+
     @Override
     public void onBackPressed() {
+        dismissKeyboard();
         AlertDialog.Builder adb = new AlertDialog.Builder(CadastroPergunta.this);
-        adb.setTitle("Cancelar cadastro?");
-        adb.setMessage("Tem certeza que deseja abandonar o cadastro da pergunta?\n\n" +
-                "Os dados digitados serão perdidos.");
-        adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
+        adb.setTitle("Descartar nova pergunta?");
+        adb.setMessage("Os dados digitados serão perdidos.");
+        adb.setPositiveButton("Descartar", new AlertDialog.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 finish();
             }
         });
-        adb.setNegativeButton("Não", new AlertDialog.OnClickListener() {
+        adb.setNegativeButton("Voltar para edição", new AlertDialog.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
             }
