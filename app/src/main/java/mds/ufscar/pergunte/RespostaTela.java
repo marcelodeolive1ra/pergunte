@@ -63,6 +63,19 @@ public class RespostaTela extends AppCompatActivity{
         mResponder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int count = mAlternativas.getChildCount();
+                ArrayList<Integer> posicaoEscolhidas = new ArrayList<>();
+                for (int i=0; i<count; i++) {
+                    View btn = mAlternativas.getChildAt(i);
+                    if (btn instanceof RadioButton && ((RadioButton) btn).isChecked()) {
+                        posicaoEscolhidas.add(i);
+                    } else if (btn instanceof CheckBox && ((CheckBox) btn).isChecked()) {
+                        posicaoEscolhidas.add(i);
+                    }
+                }
+
+                // TODO: Marcelo cadastrar resposta,
+                // as alternativas escolhidas podem ser acessadas a partir de susas posições da lista acima
                 finish();
             }
         });
