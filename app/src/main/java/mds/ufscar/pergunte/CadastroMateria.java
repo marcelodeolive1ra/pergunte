@@ -1,8 +1,10 @@
 package mds.ufscar.pergunte;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -100,20 +102,53 @@ public class CadastroMateria extends AppCompatActivity {
                 try {
                     JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CADASTRAR_NOVA_MATERIA,
                             emailUsuarioAtual).get();
-                    Intent returnIntent = new Intent();
-                    if (resultado_requisicao.getString("status").equals("ok")) {
-                        returnIntent.putExtra("materia", materia);
-                        setResult(Activity.RESULT_OK, returnIntent);
+
+                    if (resultado_requisicao != null) {
+                        Intent returnIntent = new Intent();
+                        if (resultado_requisicao.getString("status").equals("ok")) {
+                            returnIntent.putExtra("materia", materia);
+                            setResult(Activity.RESULT_OK, returnIntent);
+                            finish();
+                        } else {
+                            Toast.makeText(CadastroMateria.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
+                            setResult(Activity.RESULT_CANCELED, returnIntent);
+                        }
                     } else {
-                        Toast.makeText(CadastroMateria.this, "Erro ao cadastrar matéria no BD.", Toast.LENGTH_LONG).show();
-                        setResult(Activity.RESULT_CANCELED, returnIntent);
+                        AlertDialog.Builder adb = new AlertDialog.Builder(CadastroMateria.this);
+                        adb.setTitle("Sem acesso à Internet");
+                        adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
+                        adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                // Não faz nada aqui para voltar à tela de edição da pergunta,
+                                // permitindo ao usuário clicar novamente no botão Cadastrar
+                            }
+                        });
+                        adb.setNegativeButton("Cancelar", new AlertDialog.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                AlertDialog.Builder adb2 = new AlertDialog.Builder(CadastroMateria.this);
+                                adb2.setTitle("Cancelar cadastro de matéria?");
+                                adb2.setMessage("Tem certeza que deseja cancelar o cadastro? Os dados informados serão perdidos.");
+                                adb2.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(CadastroMateria.this, "Cadastro de matéria cancelado.", Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+                                });
+                                adb2.setNegativeButton("Não", new AlertDialog.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                adb2.show();
+                            }
+                        });
+                        adb.show();
                     }
 
                 } catch (InterruptedException | ExecutionException | JSONException e) {
                     e.printStackTrace();
                 }
-
-                finish();
             }
         });
     }

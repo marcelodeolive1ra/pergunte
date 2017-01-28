@@ -249,7 +249,7 @@ public class CadastroPergunta extends AppCompatActivity {
                             finish();
                         } else {
                             Log.w("REQUISICAO", resultado_requisicao.toString());
-                            Toast.makeText(CadastroPergunta.this, "Erro ao cadastrar pergunta no BD.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CadastroPergunta.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
                             setResult(Activity.RESULT_CANCELED, returnIntent);
                         }
                     } else {
