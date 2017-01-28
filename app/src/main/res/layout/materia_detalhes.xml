@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/materia_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/materia_list_thumbnail"
+            android:longClickable="true"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="6dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="6dp"
+            android:scaleType="centerInside"
+            tools:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/thumbnail"/>
+
+        <RelativeLayout
+            android:id="@+id/materia_list_text_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/materia_list_thumbnail"
+            android:layout_centerVertical="true">
+
+            <TextView
+                android:id="@+id/materia_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:maxLines="2"
+                tools:text="Title"
+                />
+
+            <TextView
+                android:id="@+id/materia_list_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/materia_list_title"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textSize="16sp"
+                tools:text="Subtitle"
+                />
+
+            <TextView
+                android:id="@+id/materia_list_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/materia_list_subtitle"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textSize="16sp"
+                tools:text="code"
+                />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <ExpandableListView
+        android:id="@+id/lvExp"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/materia_detail"/>
+
+</RelativeLayout>

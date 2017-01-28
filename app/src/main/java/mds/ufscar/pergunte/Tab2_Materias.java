@@ -135,6 +135,14 @@ public class Tab2_Materias extends Fragment {
                     Intent cadastroPergunta = new Intent(Tab2_Materias.this.getActivity(), CadastroPergunta.class);
                     cadastroPergunta.putExtra("materiaID", ((Materia) mListItems.get(pos)).getCodigo());
                     getActivity().startActivityForResult(cadastroPergunta, MainScreen.cadastroPerguntaCode);
+                } else {
+                    Intent materiaDetalhes = new Intent(Tab2_Materias.this.getActivity(), MateriaDetalhes.class);
+                    materiaDetalhes.putExtra("materia", (Materia) mListItems.get(pos));
+                    materiaDetalhes.putExtra("nome", ((Materia) mListItems.get(pos)).getProfessor().getNome());
+                    materiaDetalhes.putExtra("sobrenome", ((Materia) mListItems.get(pos)).getProfessor().getSobrenome());
+                    materiaDetalhes.putExtra("email", ((Materia) mListItems.get(pos)).getProfessor().getEmail());
+                    materiaDetalhes.putExtra("universidade", ((Materia) mListItems.get(pos)).getProfessor().getUniversidade());
+                    getActivity().startActivity(materiaDetalhes);
                 }
             }
         });

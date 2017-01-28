@@ -32,7 +32,7 @@ public class PerguntaDisponivel extends AppCompatActivity {
     private TextView mTimerUI;
     private CountDownTimer mTimerCountUp;
     private Button mEncerrar;
-    Pergunta pergunta;
+    private Pergunta pergunta;
     int total_de_respostas = 0;
     final Handler handler = new Handler();
     // Define the code block to be executed
