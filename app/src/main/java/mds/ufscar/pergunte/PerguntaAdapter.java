@@ -5,10 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -63,27 +60,22 @@ public class PerguntaAdapter extends BaseAdapter {
             } else {
                 Pergunta pergunta = (Pergunta) item;
                 // Aproveitando a view da materia (talvez nem precise mudar depois)
-                rowView = mInflater.inflate(R.layout.list_item_materia, parent, false);
+                rowView = mInflater.inflate(R.layout.list_item_pergunta, parent, false);
 
                 // Get title element - nome da matéria
                 final TextView titleTextView =
-                        (TextView) rowView.findViewById(R.id.materia_list_title);
+                        (TextView) rowView.findViewById(R.id.pergunta_list_title);
                 // Get subtitle element - informações adicionais?
                 final TextView subtitleTextView =
-                        (TextView) rowView.findViewById(R.id.materia_list_subtitle);
+                        (TextView) rowView.findViewById(R.id.pergunta_list_subtitle);
                 // Get detail element - número de perguntas?
                 final TextView detailTextView =
-                        (TextView) rowView.findViewById(R.id.materia_list_detail);
-                // Get thumbnail element - imagem da matéria?
-                final ImageView thumbnailImageView =
-                        (ImageView) rowView.findViewById(R.id.materia_list_thumbnail);
+                        (TextView) rowView.findViewById(R.id.respostas_numero);
 
                 // Populando dados
                 titleTextView.setText(pergunta.getTitulo());
                 subtitleTextView.setText(pergunta.getDataAproximadaString());
-                detailTextView.setText("Sem resposta");
-
-                Picasso.with(mContext).load("url aqui").placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+                detailTextView.setText(String.valueOf(pergunta.getNumRespostas()));
             }
         }
         return rowView;

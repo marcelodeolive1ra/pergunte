@@ -23,6 +23,7 @@ public class Pergunta implements Parcelable, ListItem {
     private ArrayList<Alternativa> alternativas;
     private boolean disponivel;
     private Date dataAproximada;
+    private int numRespostas;
 
     public Pergunta(int codigo, String titulo, String textoPergunta, ArrayList<Alternativa> alternativas,
                     Date dataAproximada) {
@@ -32,6 +33,7 @@ public class Pergunta implements Parcelable, ListItem {
         this.setAlternativas(alternativas);
         this.setDisponivel(false);
         this.setDataAproximada(dataAproximada);
+        this.numRespostas = 0;
     }
 
     public Pergunta(String titulo, String textoPergunta, ArrayList<Alternativa> alternativas,
@@ -46,6 +48,7 @@ public class Pergunta implements Parcelable, ListItem {
         this.disponivel = (in.readInt() == 1);
         long tmpDate = in.readLong();
         this.dataAproximada = (tmpDate == -1) ? null : new Date(tmpDate);
+        this.numRespostas = in.readInt();
     }
 
     public Pergunta(JSONObject pergunta) {
@@ -55,6 +58,7 @@ public class Pergunta implements Parcelable, ListItem {
             this.setDisponivel(false);
             this.setTitulo(pergunta.getString("titulo"));
             this.setTextoPergunta(pergunta.getString("texto_pergunta"));
+            this.setNumRespostas(0);
 
             String dataAproximadaString = pergunta.getString("data_aproximada");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
@@ -138,6 +142,14 @@ public class Pergunta implements Parcelable, ListItem {
         return false;
     }
 
+    public int getNumRespostas() {
+        return numRespostas;
+    }
+
+    public void setNumRespostas(int numRespostas) {
+        this.numRespostas = numRespostas;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -150,6 +162,7 @@ public class Pergunta implements Parcelable, ListItem {
         out.writeString(textoPergunta);
         out.writeInt(disponivel ? 1 : 0);
         out.writeLong(dataAproximada != null ? dataAproximada.getTime() : -1);
+        out.writeInt(numRespostas);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods

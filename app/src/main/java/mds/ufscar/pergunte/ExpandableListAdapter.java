@@ -86,18 +86,22 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        final String childText = (String) getChild(groupPosition, childPosition);
+        final Pergunta pergunta = (Pergunta) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_item, null);
+            convertView = infalInflater.inflate(R.layout.list_item_pergunta, null);
         }
 
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.lblListItem);
+        TextView titulo = (TextView) convertView.findViewById(R.id.pergunta_list_title);
+        TextView subtitulo = (TextView) convertView.findViewById(R.id.pergunta_list_subtitle);
+        TextView numeroRespostas = (TextView) convertView.findViewById(R.id.respostas_numero);
 
-        txtListChild.setText(childText);
+        titulo.setText(pergunta.getTitulo());
+        subtitulo.setText(pergunta.getDataAproximadaString());
+        numeroRespostas.setText(String.valueOf(pergunta.getNumRespostas()));
+
         return convertView;
     }
 

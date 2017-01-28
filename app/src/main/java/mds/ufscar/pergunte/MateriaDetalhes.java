@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import mds.ufscar.pergunte.model.Alternativa;
 import mds.ufscar.pergunte.model.Materia;
 import mds.ufscar.pergunte.model.Pergunta;
 import mds.ufscar.pergunte.model.Professor;
@@ -70,6 +73,28 @@ public class MateriaDetalhes extends AppCompatActivity {
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
+
+        // when child is clicked
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        listDataHeader.get(groupPosition)
+                                + " : "
+                                + listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition),
+                        Toast.LENGTH_SHORT).show();
+                // TODO: fazer isso apenas para pergunta ativa e se perfil aluno
+                Intent respostaTela = new Intent(v.getContext(), RespostaTela.class);
+                Pergunta pergunta = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
+                respostaTela.putExtra("pergunta", pergunta);
+                ArrayList<Alternativa> alternativas = pergunta.getAlternativas();
+                respostaTela.putParcelableArrayListExtra("alternativas", alternativas);
+                startActivity(respostaTela);
+                return false;
+            }
+        });
     }
 
     /*
