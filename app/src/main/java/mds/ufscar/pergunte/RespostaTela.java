@@ -81,4 +81,11 @@ public class RespostaTela extends AppCompatActivity{
         });
 
     }
+
+    @Override
+    public void onBackPressed() {
+        // Do nothing or:
+//        this will put app in background
+//        moveTaskToBack(true);
+    }
 }

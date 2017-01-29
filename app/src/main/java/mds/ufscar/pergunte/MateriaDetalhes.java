@@ -80,17 +80,16 @@ public class MateriaDetalhes extends AppCompatActivity {
         // setting list adapter
         expListView.setAdapter(listAdapter);
 
+        // opening all groups
+        int count = listAdapter.getGroupCount();
+        for (int position = 1; position <= count; position++)
+            expListView.expandGroup(position - 1);
+
         // when child is clicked
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        listDataHeader.get(groupPosition)
-                                + " : "
-                                + listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition),
-                        Toast.LENGTH_SHORT).show();
                 // TODO: fazer isso apenas para pergunta ativa e se perfil aluno
                 Intent respostaTela = new Intent(v.getContext(), RespostaTela.class);
                 Pergunta pergunta = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
