@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -28,6 +32,8 @@ import mds.ufscar.pergunte.model.Materia;
 import mds.ufscar.pergunte.model.Pergunta;
 import mds.ufscar.pergunte.model.Professor;
 
+import static mds.ufscar.pergunte.MainScreen.cadastroPerguntaCode;
+
 /**
  * Created by Danilo on 28/01/2017.
  */
@@ -39,6 +45,7 @@ public class MateriaDetalhes extends AppCompatActivity {
     private TextView mMateriaCodigo;
     private ImageView mMateriaImagem;
     private Materia mMateriaEmQuestao;
+    private boolean mProfessor;
     // para a lista expandível
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
@@ -63,6 +70,7 @@ public class MateriaDetalhes extends AppCompatActivity {
         professor.setEmail(intent.getStringExtra("email"));
         professor.setUniversidade(intent.getStringExtra("universidade"));
         mMateriaEmQuestao.setProfessor(professor);
+        mProfessor = intent.getBooleanExtra("isProfessor", false);
 
         mMateriaTitulo.setText(mMateriaEmQuestao.getNomeDisciplina());
         mMateriaInfo.setText(mMateriaEmQuestao.getDescricao());
@@ -81,10 +89,13 @@ public class MateriaDetalhes extends AppCompatActivity {
         // setting list adapter
         expListView.setAdapter(listAdapter);
 
-        // opening all groups
+        // opening groups with something in it
         int count = listAdapter.getGroupCount();
-        for (int position = 1; position <= count; position++)
-            expListView.expandGroup(position - 1);
+        for (int position = 0; position < count; position++) {
+            if (listAdapter.getChildrenCount(position) > 0) {
+                expListView.expandGroup(position);
+            }
+        }
 
         // when child is clicked
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -101,11 +112,60 @@ public class MateriaDetalhes extends AppCompatActivity {
                 return false;
             }
         });
+
+        // fab
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        // case professor - show fab
+        if (mProfessor) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) fab.getLayoutParams();
+            fab.requestLayout();
+            fab.setVisibility(View.VISIBLE);
+        } else { // case student - hide it
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) fab.getLayoutParams();
+            fab.requestLayout();
+            fab.setVisibility(View.GONE);
+        }
+        // on click
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent cadastroPergunta = new Intent(view.getContext(), CadastroPergunta.class);
+                cadastroPergunta.putExtra("materiaID", mMateriaEmQuestao.getCodigo());
+                startActivityForResult(cadastroPergunta, cadastroPerguntaCode);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        Log.v("resultCode", String.valueOf(resultCode));
+        if (requestCode == cadastroPerguntaCode) {
+            prepareListData();
+            listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+
+            // setting list adapter
+            expListView.setAdapter(listAdapter);
+
+            // opening groups with something in it
+            int count = listAdapter.getGroupCount();
+            for (int position = 0; position < count; position++) {
+                if (listAdapter.getChildrenCount(position) > 0) {
+                    expListView.expandGroup(position);
+                }
+            }
+
+            Intent returnIntent = new Intent();
+            setResult(resultCode, returnIntent);
+        }
+
     }
 
     /*
-     * Preparing the list data
-     */
+         * Preparing the list data
+         */
     private void prepareListData() {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, ArrayList<Pergunta>>();

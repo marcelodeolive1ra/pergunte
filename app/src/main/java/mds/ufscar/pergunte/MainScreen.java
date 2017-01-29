@@ -62,9 +62,9 @@ public class MainScreen extends AppCompatActivity {
     private SparseArrayCompat<Fragment> mPageReferenceMap;
 
     // padronizações
-    static final int cadastroMateriaCode = 2; // for differentiate at onResultActivity
-    static final int cadastroPerguntaCode = 3; // for differentiate at onResultActivity
-    static final int voltarParaTab2 = 4;
+    static final int cadastroMateriaCode = 2;   // for differentiate at onResultActivity
+    static final int cadastroPerguntaCode = 3;  // for differentiate at onResultActivity
+    static final int materiaDetalhesCode = 4;   // for differentiate at onResultActivity
     static final String perfilProfessor = "professor(a)";
     static final String perfilAluno = "aluno(a)";
 
@@ -128,14 +128,12 @@ public class MainScreen extends AppCompatActivity {
                     Toast.makeText(this, "Erro ao atualizar lista de matérias", Toast.LENGTH_LONG).show();
                 }
             }
-        } else if (requestCode == cadastroPerguntaCode) {
+        } else if (requestCode == materiaDetalhesCode) {
             if (resultCode == Activity.RESULT_OK) {
                 if (!refreshPerguntasTab1()) {
                     Toast.makeText(this, "Não foi possível atualizar a lista de perguntas neste momento", Toast.LENGTH_LONG).show();
                 }
             }
-        } else if (requestCode == voltarParaTab2) {
-
             // TODO: Tratar "Loading"
 //            findViewById(R.id.progress_overlay).setVisibility(View.GONE);
 //        }
