@@ -1,5 +1,6 @@
 package mds.ufscar.pergunte;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -90,7 +91,7 @@ public class MateriaDetalhes extends AppCompatActivity {
 
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                // TODO: fazer isso apenas para pergunta ativa e se perfil aluno
+                // TODO: fazer isso apenas para pergunta ativa e se mPerfilUsuario aluno
                 Intent respostaTela = new Intent(v.getContext(), RespostaTela.class);
                 Pergunta pergunta = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
                 respostaTela.putExtra("pergunta", pergunta);
@@ -207,5 +208,13 @@ public class MateriaDetalhes extends AppCompatActivity {
         listDataChild.put(listDataHeader.get(0), perguntasAtivas); // Header, Child data
         listDataChild.put(listDataHeader.get(1), proximasPerguntas);
         listDataChild.put(listDataHeader.get(2), perguntasRespondidas);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
     }
 }

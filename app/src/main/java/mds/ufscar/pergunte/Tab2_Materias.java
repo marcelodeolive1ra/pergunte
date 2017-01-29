@@ -142,7 +142,8 @@ public class Tab2_Materias extends Fragment {
                     materiaDetalhes.putExtra("sobrenome", ((Materia) mListItems.get(pos)).getProfessor().getSobrenome());
                     materiaDetalhes.putExtra("email", ((Materia) mListItems.get(pos)).getProfessor().getEmail());
                     materiaDetalhes.putExtra("universidade", ((Materia) mListItems.get(pos)).getProfessor().getUniversidade());
-                    getActivity().startActivity(materiaDetalhes);
+//                    getActivity().findViewById(R.id.progress_overlay).setVisibility(View.VISIBLE);
+                    getActivity().startActivityForResult(materiaDetalhes, MainScreen.voltarParaTab2);
                 }
             }
         });

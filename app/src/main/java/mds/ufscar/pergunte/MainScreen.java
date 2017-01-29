@@ -64,6 +64,7 @@ public class MainScreen extends AppCompatActivity {
     // padronizações
     static final int cadastroMateriaCode = 2; // for differentiate at onResultActivity
     static final int cadastroPerguntaCode = 3; // for differentiate at onResultActivity
+    static final int voltarParaTab2 = 4;
     static final String perfilProfessor = "professor(a)";
     static final String perfilAluno = "aluno(a)";
 
@@ -133,6 +134,14 @@ public class MainScreen extends AppCompatActivity {
                     Toast.makeText(this, "Não foi possível atualizar a lista de perguntas neste momento", Toast.LENGTH_LONG).show();
                 }
             }
+        } else if (requestCode == voltarParaTab2) {
+
+            // TODO: Tratar "Loading"
+//            findViewById(R.id.progress_overlay).setVisibility(View.GONE);
+//        }
+//            if (resultCode == Activity.RESULT_OK) {
+//                findViewById(R.id.progress_overlay).setVisibility(View.GONE);
+//            } else {
         } else {    // TODO: Thiago, seria legal ser else if (requestCode == ScannerRequestCode) algo assim
             if(result != null){
                 if(result.getContents() == null){

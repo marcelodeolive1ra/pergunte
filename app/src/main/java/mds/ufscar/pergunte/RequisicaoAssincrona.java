@@ -145,8 +145,6 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                         parametros.put("alternativa" + Integer.toString(i) + "_correta", (pergunta.getAlternativas().get(i).isCorreta() ? "true" : "false"));
                     }
 
-                    System.out.println(parametros);
-
                     request = HttpRequest.post("http://mds.secompufscar.com.br/cadastrarpergunta/").form(parametros);
                     break;
 
