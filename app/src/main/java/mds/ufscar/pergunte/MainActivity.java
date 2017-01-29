@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
@@ -35,11 +36,17 @@ public class MainActivity extends AppCompatActivity {
     // seleção do perfil
     private RadioGroup radioGroupPerfil;
     private RadioButton radioButtonPerfil;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mToolbar = (Toolbar)findViewById(R.id.main_toolbar);
+        mToolbar.setTitle("Pergunte");
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
