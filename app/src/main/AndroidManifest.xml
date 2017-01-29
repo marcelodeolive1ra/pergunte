@@ -39,6 +39,16 @@
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
 
+        <activity
+            android:name=".SplashScreenActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
