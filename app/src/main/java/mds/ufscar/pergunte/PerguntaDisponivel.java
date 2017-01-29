@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +40,8 @@ public class PerguntaDisponivel extends AppCompatActivity {
     private Runnable runnableCode = new Runnable() {
         @Override
         public void run() {
+
+            // TODO: Tratar a clássica falta de conexão à Internet aqui
             Intent intent = getIntent();
             Pergunta pergunta = intent.getParcelableExtra("pergunta");
             ArrayList<Alternativa> alternativas = intent.getParcelableArrayListExtra("alternativas");
@@ -50,13 +53,15 @@ public class PerguntaDisponivel extends AppCompatActivity {
                 JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_QUANTIDADE_DE_RESPOSTAS_TOTAIS_POR_PERGUNTA,
                         Integer.toString(pergunta.getCodigo())).get();
 
+                System.out.println(pergunta.getCodigo());
+
                 // Apenas para testar se o update está funcionando:
-                total_de_respostas++;
-                mNRespostas.setText(Integer.toString(total_de_respostas));
+//                total_de_respostas++;
+//                mNRespostas.setText(Integer.toString(total_de_respostas));
 
                 // Código real:
                 String quantidade_respostas_total = resultado_requisicao.getString("quantidade_respostas_total");
-//                mNRespostas.setText(quantidade_respostas_total);
+                mNRespostas.setText(quantidade_respostas_total);
 
             } catch (InterruptedException | ExecutionException | JSONException e) {
                 e.printStackTrace();
@@ -89,9 +94,33 @@ public class PerguntaDisponivel extends AppCompatActivity {
 
         mPergunta.setText(this.pergunta.getTextoPergunta());
 
-        // setting timer count up
-        mTimerCountUp = setTimer();
-        mTimerCountUp.start();
+        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+        try {
+            JSONObject resultado_requisicao = requisicao.execute(
+                    RequisicaoAssincrona.DISPONIBILIZAR_PERGUNTA,
+                    Integer.toString(pergunta.getCodigo())).get();
+
+            if (resultado_requisicao != null) {
+                if (resultado_requisicao.getString("status").equals("ok")) {
+                    Toast.makeText(PerguntaDisponivel.this,
+                            "Pergunta disponibilizada.", Toast.LENGTH_LONG).show();
+
+                    // setting timer count up
+                    mTimerCountUp = setTimer();
+                    mTimerCountUp.start();
+
+                } else {
+                    Toast.makeText(PerguntaDisponivel.this,
+                            resultado_requisicao.getString("error"), Toast.LENGTH_LONG).show();
+                    // TODO: tratar melhor esse caso, quando deu erro na disponibilização da pergunta
+                }
+            } else {
+                // TODO: tratar falta de conexão à Internet aqui
+            }
+
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            e.printStackTrace();
+        }
 
         // TODO: send notification to students
 
@@ -104,25 +133,54 @@ public class PerguntaDisponivel extends AppCompatActivity {
                 // TODO: go where from here?
                 handler.removeCallbacks(runnableCode);
 
-                // Terminou o tempo de respostas da pergunta, atualiza a quantidade de respostas obtidas em cada alternativa
                 RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
-                // TODO: Tratar falta de conexão à Internet
                 try {
                     JSONObject resultado_requisicao = requisicao.execute(
-                            RequisicaoAssincrona.BUSCAR_QUANTIDADE_DE_RESPOSTAS_POR_ALTERNATIVA_POR_PERGUNTA,
-                            Integer.toString(pergunta.getCodigo())).get();
+                            RequisicaoAssincrona.FINALIZAR_PERGUNTA, Integer.toString(pergunta.getCodigo())).get();
 
-                    JSONArray alternativas_com_respostas_json = resultado_requisicao.getJSONArray("quantidade_respostas");
+                    if (resultado_requisicao != null) {
+                        if (resultado_requisicao.getString("status").equals("ok")) {
+                            // TODO: notificar o professor que a pergunta foi finalizada?
 
-                    for (int i = 0; i < pergunta.getAlternativas().size(); i++) {
-                        pergunta.getAlternativas().get(i).setnRespostas(
-                                alternativas_com_respostas_json.getJSONObject(i).getInt("quantidade_respostas"));
+                            Toast.makeText(PerguntaDisponivel.this,
+                                    "Pergunta finalizada.", Toast.LENGTH_LONG).show();
+
+                            // Terminou o tempo de respostas da pergunta, atualiza a quantidade de respostas obtidas em cada alternativa
+                            RequisicaoAssincrona requisicao2 = new RequisicaoAssincrona();
+
+                            try {
+                                JSONObject resultado_requisicao2 = requisicao2.execute(
+                                        RequisicaoAssincrona.BUSCAR_QUANTIDADE_DE_RESPOSTAS_POR_ALTERNATIVA_POR_PERGUNTA,
+                                        Integer.toString(pergunta.getCodigo())).get();
+
+                                if (resultado_requisicao2 != null) {
+
+                                    JSONArray alternativas_com_respostas_json = resultado_requisicao2.getJSONArray("quantidade_respostas");
+
+                                    for (int i = 0; i < pergunta.getAlternativas().size(); i++) {
+                                        pergunta.getAlternativas().get(i).setnRespostas(
+                                                alternativas_com_respostas_json.getJSONObject(i).getInt("quantidade_respostas"));
+                                    }
+                                } else {
+                                    // TODO: tratar falta de conexão à Internet aqui também
+                                }
+
+                            } catch (InterruptedException | ExecutionException | JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            // TODO Tratar erro: EVERYBODY CRIES
+                        }
+
+                    } else {
+                        // TODO: Tratar falta de conexão à Internet
                     }
 
                 } catch (InterruptedException | ExecutionException | JSONException e) {
                     e.printStackTrace();
                 }
+
 
                 finish();
             }

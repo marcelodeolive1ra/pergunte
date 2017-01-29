@@ -60,6 +60,9 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
     static final String BUSCAR_PERGUNTAS_ATIVAS_POR_MATERIA = "16";
     static final String BUSCAR_PROXIMAS_PERGUNTAS_POR_MATERIA = "17";
     static final String BUSCAR_PERGUNTAS_RESPONDIDAS_POR_MATERIA = "18";
+    static final String DISPONIBILIZAR_PERGUNTA = "19";
+    static final String FINALIZAR_PERGUNTA = "20";
+    static final String REGISTRAR_RESPOSTA = "21";
 
     private Object objetoGenerico;
 
@@ -198,6 +201,36 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                     parametros.put(Parametros.CODIGO_MATERIA, Integer.toString(m3.getCodigo()));
 
                     request = HttpRequest.post(Parametros.URL_SERVIDOR + "buscarperguntasrespondidaspormateria/").form(parametros);
+                    break;
+
+                case DISPONIBILIZAR_PERGUNTA:
+                    parametros.put(Parametros.CODIGO_PERGUNTA, params[1]);
+
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "disponibilizarpergunta/").form(parametros);
+                    break;
+
+                case FINALIZAR_PERGUNTA:
+                    parametros.put(Parametros.CODIGO_PERGUNTA, params[1]);
+
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "finalizarpergunta/").form(parametros);
+                    break;
+
+                case REGISTRAR_RESPOSTA:
+                    String[] alternativasEscolhidas = (String[])objetoGenerico;
+
+                    for (int i = 0; i < alternativasEscolhidas.length; i++) {
+                        System.out.println(alternativasEscolhidas[i]);
+                    }
+
+                    parametros.put(Parametros.EMAIL_USUARIO, params[1]);
+                    parametros.put(Parametros.CODIGO_PERGUNTA, params[2]);
+                    parametros.put("quantidade_alternativas", Integer.toString(alternativasEscolhidas.length));
+
+                    for (int i = 0; i < alternativasEscolhidas.length; i++) {
+                        parametros.put("alternativa" + Integer.toString(i) + "_codigo", alternativasEscolhidas[i]);
+                    }
+
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "registrarresposta/").form(parametros);
                     break;
 
                 default:

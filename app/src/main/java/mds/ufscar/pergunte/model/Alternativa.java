@@ -34,7 +34,7 @@ public class Alternativa implements Parcelable {
 
     public Alternativa(JSONObject alternativa, String alternativasCorretas) {
         try {
-            this.setCodigo(0);
+            this.setCodigo(alternativa.getInt("codigo"));
             this.setLetra(alternativa.getString("letra"));
             this.setTextoAlternativa(alternativa.getString("texto_alternativa"));
 
