@@ -38,6 +38,7 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'com.github.kevinsawicki:http-request:6.0'
+    compile 'com.getbase:floatingactionbutton:1.10.1'
     //compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 
 }

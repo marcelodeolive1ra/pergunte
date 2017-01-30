@@ -142,13 +142,17 @@ public class MainScreen extends AppCompatActivity {
 //            } else {
         } else {    // TODO: Thiago, seria legal ser else if (requestCode == ScannerRequestCode) algo assim
             if(result != null){
-                if(result.getContents() == null){
+                if(result.getContents() == null && data == null){
                     Toast.makeText(this, "Voce cancelou o scanning", Toast.LENGTH_LONG).show();
                 }
-                else {
+                else if (result.getContents() != null || data.hasExtra("scan")){
+                    final String codigoInscricao;
+                    if (data.hasExtra("scan")) {
+                        codigoInscricao = data.getStringExtra("scan");
+                    } else {
+                        codigoInscricao = result.getContents();
+                    }
                     RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
-                    final String codigoInscricao = result.getContents();
-
                     try {
                         JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIA_POR_QR_CODE,
                                 getEmailDoUsuarioAtual(), codigoInscricao).get();

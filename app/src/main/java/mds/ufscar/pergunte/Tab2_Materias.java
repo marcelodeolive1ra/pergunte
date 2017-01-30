@@ -1,17 +1,19 @@
 package mds.ufscar.pergunte;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -46,7 +48,8 @@ public class Tab2_Materias extends Fragment {
         View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
-        mProfessor = ((MainScreen)this.getActivity()).isProfessor();
+        final MainScreen mainScreen = (MainScreen)this.getActivity();
+        mProfessor = mainScreen.isProfessor();
         String emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
         mListItems =  new ArrayList<>();
 
@@ -105,13 +108,13 @@ public class Tab2_Materias extends Fragment {
 
         // fab button
         final Activity activity = this.getActivity();
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        final com.getbase.floatingactionbutton.FloatingActionButton fabScan =
+                (com.getbase.floatingactionbutton.FloatingActionButton) rootView.findViewById(R.id.action_a);
+        fabScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mProfessor) {
-                    Intent cadastroMateria = new Intent(Tab2_Materias.this.getActivity(), CadastroMateria.class);
-                    getActivity().startActivityForResult(cadastroMateria, MainScreen.cadastroMateriaCode);
+
                 } else {
                     IntentIntegrator integrator = new IntentIntegrator(activity);
                     integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
@@ -124,6 +127,55 @@ public class Tab2_Materias extends Fragment {
                 }
             }
         });
+
+        final com.getbase.floatingactionbutton.FloatingActionButton fabType =
+                (com.getbase.floatingactionbutton.FloatingActionButton) rootView.findViewById(R.id.action_b);
+        fabType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mProfessor) {
+                    Intent cadastroMateria = new Intent(Tab2_Materias.this.getActivity(), CadastroMateria.class);
+                    getActivity().startActivityForResult(cadastroMateria, MainScreen.cadastroMateriaCode);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setTitle("Código de inscrição da matéria");
+                    final EditText input = new EditText(view.getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
+                    final Context view1 = view.getContext();
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("scan", input.getText().toString());
+                            mainScreen.onActivityResult(49374, Activity.RESULT_OK, returnIntent);
+                        }
+                    });
+                    builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    builder.show();
+                }
+            }
+        });
+
+        final com.getbase.floatingactionbutton.FloatingActionsMenu fabMain =
+                (com.getbase.floatingactionbutton.FloatingActionsMenu) rootView.findViewById(R.id.multiple_actions);
+        fabMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        if (mProfessor) {
+            fabScan.setVisibility(View.GONE);
+            fabType.setTitle("Nova matéria");
+        }
 
         // setting one click on an item of the list view
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
