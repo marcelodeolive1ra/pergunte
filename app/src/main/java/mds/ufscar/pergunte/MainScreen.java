@@ -76,7 +76,7 @@ public class MainScreen extends AppCompatActivity {
 
         // setting selected profile
         mPerfil = this.getIntent().getStringExtra("perfil");
-        Toast.makeText(this, "Bem vindo(a) " + mPerfil, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Bem vindo(a) " + mPerfil, Toast.LENGTH_SHORT).show();
         if (mPerfil.equalsIgnoreCase(perfilProfessor)) {
             mProfessor = true;
         } else {

@@ -1,6 +1,8 @@
 package mds.ufscar.pergunte;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -45,7 +48,7 @@ public class Tab2_Materias extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
+        final View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         final MainScreen mainScreen = (MainScreen)this.getActivity();
@@ -141,13 +144,19 @@ public class Tab2_Materias extends Fragment {
                     Intent cadastroMateria = new Intent(Tab2_Materias.this.getActivity(), CadastroMateria.class);
                     getActivity().startActivityForResult(cadastroMateria, MainScreen.cadastroMateriaCode);
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                    builder.setTitle("Código de inscrição da matéria");
-                    final EditText input = new EditText(view.getContext());
-                    input.setInputType(InputType.TYPE_CLASS_TEXT);
-                    builder.setView(input);
-                    final Context view1 = view.getContext();
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    LayoutInflater factory = LayoutInflater.from(getContext());
+                    final View dialogView = factory.inflate(R.layout.digitar_codigo_inscricao, null);
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext());
+                    alertDialog.setView(dialogView);
+                    alertDialog.setTitle("Inscrição em matéria");
+
+                    final EditText input = (EditText)dialogView.findViewById(R.id.input_codigo_inscricao_materia);
+
+                    // TODO: (DANILO, HELP!) abrir o teclado automaticamente com foco no EditText input
+
+                    alertDialog.setPositiveButton("Inscrever", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent returnIntent = new Intent();
@@ -155,14 +164,14 @@ public class Tab2_Materias extends Fragment {
                             mainScreen.onActivityResult(49374, Activity.RESULT_OK, returnIntent);
                         }
                     });
-                    builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                         }
                     });
 
-                    builder.show();
+                    alertDialog.show();
                 }
             }
         });
