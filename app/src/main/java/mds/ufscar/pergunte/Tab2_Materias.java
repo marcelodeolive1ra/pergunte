@@ -108,23 +108,26 @@ public class Tab2_Materias extends Fragment {
 
         // fab button
         final Activity activity = this.getActivity();
+
+        final com.getbase.floatingactionbutton.FloatingActionsMenu fabMain =
+                (com.getbase.floatingactionbutton.FloatingActionsMenu) rootView.findViewById(R.id.multiple_actions);
+
         final com.getbase.floatingactionbutton.FloatingActionButton fabScan =
                 (com.getbase.floatingactionbutton.FloatingActionButton) rootView.findViewById(R.id.action_a);
         fabScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mProfessor) {
+                fabMain.collapse();
 
-                } else {
-                    IntentIntegrator integrator = new IntentIntegrator(activity);
-                    integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-                    integrator.setPrompt("Scan");
-                    integrator.setCameraId(0);
-                    integrator.setOrientationLocked(false);
-                    integrator.setBeepEnabled(false);
-                    integrator.setBarcodeImageEnabled(false);
-                    integrator.initiateScan();
-                }
+                IntentIntegrator integrator = new IntentIntegrator(activity);
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                integrator.setPrompt("Scan");
+                integrator.setCameraId(0);
+                integrator.setOrientationLocked(false);
+                integrator.setBeepEnabled(false);
+                integrator.setBarcodeImageEnabled(false);
+                integrator.initiateScan();
+
             }
         });
 
@@ -133,6 +136,7 @@ public class Tab2_Materias extends Fragment {
         fabType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMain.collapse();
                 if (mProfessor) {
                     Intent cadastroMateria = new Intent(Tab2_Materias.this.getActivity(), CadastroMateria.class);
                     getActivity().startActivityForResult(cadastroMateria, MainScreen.cadastroMateriaCode);
@@ -160,15 +164,6 @@ public class Tab2_Materias extends Fragment {
 
                     builder.show();
                 }
-            }
-        });
-
-        final com.getbase.floatingactionbutton.FloatingActionsMenu fabMain =
-                (com.getbase.floatingactionbutton.FloatingActionsMenu) rootView.findViewById(R.id.multiple_actions);
-        fabMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
 
