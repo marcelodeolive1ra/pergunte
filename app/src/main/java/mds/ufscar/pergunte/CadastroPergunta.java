@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -87,7 +88,6 @@ public class CadastroPergunta extends AppCompatActivity {
         mEditAlternative = (Button)findViewById(R.id.btn_editAlternative);
         mAddAlternative = (Button)findViewById(R.id.btn_newAlternative);
         mRadioGroup = (RadioGroup)findViewById(radiogroup);
-//        mCadastrarPergunta = (Button)findViewById(R.id.btn_cadastrar);
 
         mToolbar = (Toolbar)findViewById(R.id.cadastro_pergunta_toolbar);
         mToolbar.setTitle("");
@@ -123,27 +123,20 @@ public class CadastroPergunta extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (index < maxAlternativas) {
-                    // custom dialog
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.alternativa);
 
-                    // set the custom dialog components - text, editText and button
-                    final TextView letra = (TextView) dialog.findViewById(R.id.label_alternativa);
-                    String title = "Alternativa " + mAlternativeLetters[index];
-                    letra.setText(title);
-                    final EditText alternativa = (EditText) dialog.findViewById(R.id.input_alternative);
-                    final CheckBox correta = (CheckBox) dialog.findViewById(R.id.checkboxCorreta);
+                    LayoutInflater factory = LayoutInflater.from(context);
+                    final View dialogView = factory.inflate(R.layout.alternativa, null);
 
-                    final Button cancelButton = (Button) dialog.findViewById(R.id.btn_cancel);
-                    final Button okButton = (Button) dialog.findViewById(R.id.btn_ok);
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                    alertDialog.setView(dialogView);
+                    alertDialog.setTitle("Alternativa " + mAlternativeLetters[index]);
 
-                    okButton.setEnabled(false);
-                    addTextChangedListener(alternativa, okButton);
+                    final EditText alternativa = (EditText)dialogView.findViewById(R.id.input_alternative);
+                    final CheckBox correta = (CheckBox)dialogView.findViewById(R.id.checkboxCorreta);
 
-                    // if button ok is clicked, add alternative and close the custom dialog
-                    okButton.setOnClickListener(new View.OnClickListener() {
+                    alertDialog.setPositiveButton("Salvar", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(DialogInterface dialog, int which) {
                             String textoAlternativa = alternativa.getText().toString();
                             // criando objecto alternativa
                             Alternativa alternativa = new Alternativa(mAlternativeLetters[index],
@@ -151,18 +144,17 @@ public class CadastroPergunta extends AppCompatActivity {
                             mAlternativas.add(alternativa);
                             index++;
                             setRadioButtons(mAlternativas);
-                            dialog.dismiss();
                         }
                     });
-                    // cancel: just close the dialog
-                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                    alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
 
-                    dialog.show();
+                    alertDialog.show();
+
                 } else {
                     new AlertDialog.Builder(context)
                             .setTitle("Atenção")
@@ -314,43 +306,37 @@ public class CadastroPergunta extends AppCompatActivity {
 
                 if (pos > -1) {
                     // custom dialog
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.alternativa);
+                    LayoutInflater factory = LayoutInflater.from(context);
+                    final View dialogView = factory.inflate(R.layout.alternativa, null);
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                    alertDialog.setView(dialogView);
+                    alertDialog.setTitle("Alternativa " + mAlternativeLetters[pos]);
 
                     // set the custom dialog components - text, editText and button
-                    final TextView letra = (TextView) dialog.findViewById(R.id.label_alternativa);
-                    String title = "Alternativa - " + mAlternativeLetters[pos];
-                    letra.setText(title);
-                    final EditText alternativa = (EditText) dialog.findViewById(R.id.input_alternative);
+                    final EditText alternativa = (EditText)dialogView.findViewById(R.id.input_alternative);
+                    final CheckBox correta = (CheckBox)dialogView.findViewById(R.id.checkboxCorreta);
+
                     alternativa.setText(mAlternativas.get(pos).getTextoAlternativa());
-                    final CheckBox correta = (CheckBox) dialog.findViewById(R.id.checkboxCorreta);
                     correta.setChecked(mAlternativas.get(pos).isCorreta());
 
-                    final Button cancelButton = (Button) dialog.findViewById(R.id.btn_cancel);
-                    String excluir = "Excluir";
-                    cancelButton.setText(excluir);
-                    final Button okButton = (Button) dialog.findViewById(R.id.btn_ok);
-                    String salvar = "Salvar";
-                    okButton.setText(salvar);
-
-                    addTextChangedListener(alternativa, okButton);
-
-                    // if button Salvar is clicked, edit alternative and close the custom dialog
-                    okButton.setOnClickListener(new View.OnClickListener() {
+                    alertDialog.setPositiveButton("Salvar", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(DialogInterface dialog, int which) {
                             String textoAlternativa = alternativa.getText().toString();
-                            // editando objecto alternativa
-                            mAlternativas.get(pos).setTextoAlternativa(textoAlternativa);
-                            mAlternativas.get(pos).setCorreta(correta.isChecked());
+                            // criando objeto alternativa
+                            Alternativa alternativa = new Alternativa(mAlternativeLetters[index],
+                                    textoAlternativa, correta.isChecked());
+                            mAlternativas.add(alternativa);
+                            index++;
                             setRadioButtons(mAlternativas);
-                            dialog.dismiss();
                         }
                     });
+
                     // excluir alternativa
-                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                    alertDialog.setNegativeButton("Excluir alternativa", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(DialogInterface dialog, int which) {
                             mAlternativas.remove(pos);
                             // reset letters
                             index = 0;
@@ -363,7 +349,7 @@ public class CadastroPergunta extends AppCompatActivity {
                         }
                     });
 
-                    dialog.show();
+                    alertDialog.show();
                 }
             }
         });
@@ -383,7 +369,7 @@ public class CadastroPergunta extends AppCompatActivity {
             rdbtn.setText(textoComLetra);
             if (alternativa.isCorreta()) {
                 rdbtn.setTypeface(null, Typeface.BOLD);
-                rdbtn.setTextColor(Color.RED);
+                rdbtn.setTextColor(getResources().getColor(R.color.green_600));
             }
             mRadioGroup.addView(rdbtn);
         }
