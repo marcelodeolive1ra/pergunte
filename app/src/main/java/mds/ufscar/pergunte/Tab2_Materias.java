@@ -1,20 +1,15 @@
 package mds.ufscar.pergunte;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.Service;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -334,14 +329,16 @@ public class Tab2_Materias extends Fragment {
                         adicionada = true;
                         break;
                     } else if (materia.getSemestre() == materiaAdicionada.getSemestre()) {
-                        adicionada = true;
                         // verify alphabet
                         if (materia.getNomeDisciplina().compareToIgnoreCase(materiaAdicionada.getNomeDisciplina()) > 0) {
                             mListItems.add(index, materiaAdicionada);
-                        } else {
+                            adicionada = true;
+                            break;
+                        } else if (index >= (mListItems.size()-1) || mListItems.get(index+1).isSection()){ // acabou a seção
                             mListItems.add(index + 1, materiaAdicionada);
+                            adicionada = true;
+                            break;
                         }
-                        break;
                     }
                 }
             }
