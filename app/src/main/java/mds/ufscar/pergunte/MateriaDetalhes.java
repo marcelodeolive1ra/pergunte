@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.vision.text.Text;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.squareup.picasso.Picasso;
@@ -42,10 +44,12 @@ public class MateriaDetalhes extends AppCompatActivity {
 
     private TextView mMateriaTitulo;
     private TextView mMateriaInfo;
+    private TextView mMateriaInfo2;
     private TextView mMateriaCodigo;
     private ImageView mMateriaImagem;
     private Materia mMateriaEmQuestao;
     private boolean mProfessor;
+    private Toolbar mToolbar;
     // para a lista expandível
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
@@ -59,8 +63,23 @@ public class MateriaDetalhes extends AppCompatActivity {
         setContentView(R.layout.materia_detalhes);
         mMateriaTitulo = (TextView) findViewById(R.id.materia_list_title);
         mMateriaInfo = (TextView) findViewById(R.id.materia_list_subtitle);
+        mMateriaInfo2 = (TextView)findViewById(R.id.materia_list_subtitle2);
         mMateriaCodigo = (TextView) findViewById(R.id.materia_list_code);
         mMateriaImagem = (ImageView) findViewById(R.id.materia_list_thumbnail);
+
+        mToolbar = (Toolbar)findViewById(R.id.materia_detalhes_toolbar);
+        mToolbar.setTitle("Perguntas da matéria");
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
+        setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         Intent intent = getIntent();
         mMateriaEmQuestao = intent.getParcelableExtra("materia");
@@ -73,7 +92,10 @@ public class MateriaDetalhes extends AppCompatActivity {
         mProfessor = intent.getBooleanExtra("isProfessor", false);
 
         mMateriaTitulo.setText(mMateriaEmQuestao.getNomeDisciplina());
-        mMateriaInfo.setText(mMateriaEmQuestao.getDescricao());
+        mMateriaInfo.setText(mMateriaEmQuestao.getProfessor().toString());
+        String turma_e_semestre = "Turma " + mMateriaEmQuestao.getTurma() + " - " +
+                mMateriaEmQuestao.getAno() + "/" + mMateriaEmQuestao.getSemestre();
+        mMateriaInfo2.setText(turma_e_semestre);
         String codigo = "Código de inscrição: " + mMateriaEmQuestao.getCodigoInscricao();
         mMateriaCodigo.setText(codigo);
         Picasso.with(this).load(mMateriaEmQuestao.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(mMateriaImagem);

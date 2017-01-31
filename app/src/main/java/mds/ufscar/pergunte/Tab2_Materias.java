@@ -228,6 +228,8 @@ public class Tab2_Materias extends Fragment {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         String email = (user != null) ? user.getEmail() : "";
 
+                        // TODO: Tratar falta de conexão à Internet aqui
+
                         try {
                             String tipo_requisicao = (mProfessor) ?
                                     RequisicaoAssincrona.DESATIVAR_MATERIA : RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA;

@@ -75,5 +75,9 @@ public class Professor extends Pessoa implements Parcelable {
             return new Professor[size];
         }
     };
+
+    public String toString() {
+        return "Ministrante: " + this.getNome() + " " + this.getSobrenome();
+    }
 }
 

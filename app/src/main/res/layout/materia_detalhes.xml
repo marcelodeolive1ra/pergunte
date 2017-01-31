@@ -6,10 +6,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:theme="?attr/actionBarTheme"
+        android:minHeight="?attr/actionBarSize"
+        android:id="@+id/materia_detalhes_toolbar" >
+
+        <!--<Button-->
+            <!--android:id="@+id/botao_cadastrar_pergunta"-->
+            <!--style="?android:attr/borderlessButtonStyle"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="start"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--android:paddingEnd="16dp"-->
+            <!--android:text="Voltar"-->
+            <!--android:textColor="@color/white" />-->
+
+    </android.support.v7.widget.Toolbar>
+
+
     <RelativeLayout
         android:id="@+id/materia_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp">
 
         <ImageView
             android:id="@+id/materia_list_thumbnail"
@@ -37,9 +61,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:textSize="20sp"
+                android:layout_marginTop="0dp"
+                android:textSize="30sp"
                 android:textColor="@color/black"
-                android:maxLines="2"
+                android:maxLines="3"
                 tools:text="Title"
                 />
 
@@ -52,7 +77,21 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="1"
+                android:textSize="20sp"
+                tools:text="Subtitle"
+                />
+
+            <TextView
+                android:id="@+id/materia_list_subtitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/materia_list_subtitle"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="16sp"
                 tools:text="Subtitle"
                 />
@@ -61,17 +100,24 @@
                 android:id="@+id/materia_list_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/materia_list_subtitle"
+                android:layout_below="@+id/materia_list_subtitle2"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:textSize="16sp"
                 tools:text="code"
                 />
 
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/materia_list_text_layout"/>
 
     </RelativeLayout>
 
