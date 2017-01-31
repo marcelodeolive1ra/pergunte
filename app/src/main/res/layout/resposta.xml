@@ -26,16 +26,6 @@
 
     </android.support.v7.widget.Toolbar>
 
-
-    <!--<android.support.v7.widget.AppCompatButton-->
-        <!--android:id="@+id/btn_responder"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom"-->
-        <!--android:layout_marginBottom="10dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:text="Responder"/>-->
-
     <TextView android:id="@+id/detalhes_materia"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

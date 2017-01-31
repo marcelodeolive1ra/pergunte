@@ -374,4 +374,10 @@ public class MainScreen extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         return (user != null) ? user.getEmail() : "";
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+    }
 }

@@ -41,6 +41,9 @@ public class PerguntaDisponivel extends AppCompatActivity {
 
 
     int total_de_respostas = 0;
+
+    static final int TEMPO_DE_ATUALIZACAO_EM_BACKGROUND = 5000;
+
     final Handler handler = new Handler();
     // Define the code block to be executed
     private Runnable runnableCode = new Runnable() {
@@ -76,7 +79,7 @@ public class PerguntaDisponivel extends AppCompatActivity {
             Log.d("Handlers", "Called on main thread");
 
             // Repeat this the same runnable code block again another 2 seconds
-            handler.postDelayed(runnableCode, 2000);
+            handler.postDelayed(runnableCode, TEMPO_DE_ATUALIZACAO_EM_BACKGROUND);
         }
     };
 

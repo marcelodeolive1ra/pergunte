@@ -60,8 +60,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/divider_pergunta_1"
             android:gravity="center"
-            android:minLines="10"
             android:text="Pergunta"
+            android:minLines="5"
+            android:maxLines="12"
             android:textSize="20sp" />
 
         <View
