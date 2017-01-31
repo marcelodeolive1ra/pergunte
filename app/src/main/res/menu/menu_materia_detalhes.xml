@@ -5,7 +5,7 @@
     <item
         android:id="@+id/atualizar_lista"
         android:orderInCategory="100"
-        android:title="Atualizar lista"
+        android:title="Atualizar lista de perguntas"
         app:showAsAction="never" />
     <item
         android:id="@+id/gerar_qr_code"

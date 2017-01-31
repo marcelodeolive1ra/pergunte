@@ -135,6 +135,9 @@ public class MateriaDetalhes extends AppCompatActivity {
                 respostaTela.putExtra("pergunta", pergunta);
                 ArrayList<Alternativa> alternativas = pergunta.getAlternativas();
                 respostaTela.putParcelableArrayListExtra("alternativas", alternativas);
+
+                respostaTela.putExtra("nome_materia", mMateriaEmQuestao.getNomeDisciplina());
+
                 startActivity(respostaTela);
                 return false;
             }

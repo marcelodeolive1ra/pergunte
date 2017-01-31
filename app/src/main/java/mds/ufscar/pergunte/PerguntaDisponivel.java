@@ -158,10 +158,9 @@ public class PerguntaDisponivel extends AppCompatActivity {
 
                             if (resultado_requisicao != null) {
                                 if (resultado_requisicao.getString("status").equals("ok")) {
-                                    // TODO: notificar o professor que a pergunta foi finalizada?
 
                                     Toast.makeText(PerguntaDisponivel.this,
-                                            "Pergunta finalizada.", Toast.LENGTH_LONG).show();
+                                            "Pergunta encerrada.", Toast.LENGTH_LONG).show();
 
                                     // Terminou o tempo de respostas da pergunta, atualiza a quantidade de respostas obtidas em cada alternativa
                                     RequisicaoAssincrona requisicao2 = new RequisicaoAssincrona();

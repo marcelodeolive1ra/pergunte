@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -28,11 +31,13 @@ import mds.ufscar.pergunte.model.Pergunta;
  * Created by Danilo on 27/01/2017.
  */
 
-public class RespostaTela extends AppCompatActivity{
+public class RespostaTela extends AppCompatActivity {
 
     private TextView mPergunta;
     private RadioGroup mAlternativas;
     private Button mResponder;
+    private Toolbar mToolbar;
+    private TextView mDetalhesMateria;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,8 +47,19 @@ public class RespostaTela extends AppCompatActivity{
         mPergunta = (TextView) findViewById(R.id.pergunta_content);
         mAlternativas = (RadioGroup) findViewById(R.id.radiogroup);
         mResponder = (Button) findViewById(R.id.btn_responder);
+        mDetalhesMateria = (TextView)findViewById(R.id.detalhes_materia);
+
+        mToolbar = (Toolbar)findViewById(R.id.tela_resposta_toolbar);
+        mToolbar.setTitle("");
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
+        setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_dark);
 
         Intent intent = getIntent();
+
         final Pergunta pergunta = intent.getParcelableExtra("pergunta");
         final ArrayList<Alternativa> alternativas = intent.getParcelableArrayListExtra("alternativas");
         pergunta.setAlternativas(alternativas);
@@ -53,6 +69,9 @@ public class RespostaTela extends AppCompatActivity{
                 nCorretas++;
             }
         }
+
+        String nomeMateria = intent.getStringExtra("nome_materia") + " - Pergunta #" + pergunta.getCodigo();
+        mDetalhesMateria.setText(nomeMateria);
 
         mPergunta.setText(pergunta.getTextoPergunta());
         for (Alternativa alternativa : alternativas) {
@@ -140,8 +159,6 @@ public class RespostaTela extends AppCompatActivity{
                     e.printStackTrace();
                 }
 
-                // TODO: Marcelo cadastrar resposta, SERÁ QUE TÁ DONE? =O
-                // as alternativas escolhidas podem ser acessadas a partir de susas posições da lista acima
                 finish();
             }
         });
@@ -150,9 +167,31 @@ public class RespostaTela extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        // Do nothing or:
-//        this will put app in background
-//        moveTaskToBack(true);
-        finish();
+        AlertDialog.Builder adb = new AlertDialog.Builder(RespostaTela.this);
+        adb.setTitle("Sair da pergunta?");
+        adb.setMessage("Sua resposta não será registrada.");
+        adb.setPositiveButton("Sair", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        adb.setNegativeButton("Voltar", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        adb.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id==android.R.id.home) {
+            onBackPressed();
+        }
+
+        return true;
     }
 }
