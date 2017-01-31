@@ -73,7 +73,7 @@ public class MateriaDetalhes extends AppCompatActivity {
         mMateriaImagem = (ImageView) findViewById(R.id.materia_list_thumbnail);
 
         mToolbar = (Toolbar)findViewById(R.id.materia_detalhes_toolbar);
-        mToolbar.setTitle("Perguntas da matéria");
+        mToolbar.setTitle("Detalhes da matéria");
         mToolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
         setSupportActionBar(mToolbar);

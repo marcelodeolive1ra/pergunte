@@ -1,78 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp"
-    android:keepScreenOn="true">
+    android:keepScreenOn="true"
+    android:orientation="vertical">
 
-    <!--Pergunta-->
-    <TextView android:id="@+id/label_pergunta"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/pergunta_disponivel_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:text="Pergunta disponibilizada"
-        android:textStyle="bold"
-        android:textSize="20sp"/>
-    <TextView android:id="@+id/pergunta_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme">
+
+        <Button
+            android:id="@+id/btn_encerrar"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="@color/colorPrimary"
+            android:paddingEnd="16dp"
+            android:text="Encerrar pergunta"
+            android:textColor="@color/white" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/materia_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minLines="10"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="30dp"
-        android:layout_below="@id/label_pergunta"
-        android:text="Pergunta"
-        android:textSize="16sp"/>
+        android:layout_marginTop="56dp"
+        android:padding="16dp">
 
-    <!--Timer-->
-    <TextView android:id="@+id/label_timer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:text="Tempo passado"
-        android:textStyle="bold"
-        android:layout_below="@id/pergunta_content"
-        android:textSize="20sp"/>
-    <TextView android:id="@+id/timer_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:gravity="center"
-        android:layout_below="@id/label_timer"
-        android:text="00:00:00"
-        android:textSize="70sp"/>
+        <!--Pergunta-->
+        <TextView
+            android:id="@+id/label_pergunta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:text="Pergunta disponível"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
-    <!--Numero respostas-->
-    <TextView android:id="@+id/label_respostas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:gravity="center"
-        android:text="Número de respostas: "
-        android:textStyle="bold"
-        android:layout_below="@id/timer_content"
-        android:textSize="18sp"/>
-    <TextView android:id="@+id/respostas_numero"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:gravity="right"
-        android:layout_alignParentEnd="true"
-        android:text="###"
-        android:layout_below="@id/timer_content"
-        android:layout_toEndOf="@id/label_respostas"
-        android:textSize="18sp"/>
+        <View
+            android:id="@+id/divider_pergunta_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/label_pergunta"
+            android:layout_marginTop="16dp"
+            android:background="?android:attr/listDivider" />
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_encerrar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="10dp"
-        android:layout_alignParentBottom="true"
-        android:text="Encerrar tempo de respostas"/>
+        <TextView
+            android:id="@+id/pergunta_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider_pergunta_1"
+            android:gravity="center"
+            android:minLines="10"
+            android:text="Pergunta"
+            android:textSize="20sp" />
 
+        <View
+            android:id="@+id/divider_pergunta_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/pergunta_content"
+            android:layout_marginBottom="30dp"
+            android:background="?android:attr/listDivider" />
+
+
+        <!--Timer-->
+        <TextView
+            android:id="@+id/label_timer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider_pergunta_2"
+            android:gravity="center"
+            android:text="Tempo decorrido"
+            android:textSize="26sp" />
+
+        <TextView
+            android:id="@+id/timer_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/label_timer"
+            android:gravity="center"
+            android:text="00:00:00"
+            android:textColor="@color/black"
+            android:textSize="70sp" />
+
+        <!--Numero respostas-->
+        <TextView
+            android:id="@+id/label_respostas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/timer_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Número de respostas até o momento: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/respostas_numero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/label_respostas"
+            android:gravity="center"
+            android:text="###"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

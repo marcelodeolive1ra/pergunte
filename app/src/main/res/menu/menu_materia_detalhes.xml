@@ -13,6 +13,11 @@
         android:title="Enviar QR code por e-mail"
         app:showAsAction="never" />
     <item
+        android:id="@+id/ver_alunos_inscritos"
+        android:orderInCategory="100"
+        android:title="Ver alunos inscritos"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/cancelar_inscricao"
         android:orderInCategory="100"
         android:title="Cancelar inscrição"

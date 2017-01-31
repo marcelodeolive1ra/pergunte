@@ -1,11 +1,14 @@
 package mds.ufscar.pergunte;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +37,9 @@ public class PerguntaDisponivel extends AppCompatActivity {
     private CountDownTimer mTimerCountUp;
     private Button mEncerrar;
     private Pergunta pergunta;
+    private Toolbar mToolbar;
+
+
     int total_de_respostas = 0;
     final Handler handler = new Handler();
     // Define the code block to be executed
@@ -86,6 +92,10 @@ public class PerguntaDisponivel extends AppCompatActivity {
         mNRespostas = (TextView) findViewById(R.id.respostas_numero);
         mEncerrar = (Button) findViewById(R.id.btn_encerrar);
 
+        mToolbar = (Toolbar)findViewById(R.id.pergunta_disponivel_toolbar);
+        mToolbar.setTitle("");
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
         // pegando dados
         Intent intent = getIntent();
         this.pergunta = intent.getParcelableExtra("pergunta");
@@ -131,58 +141,72 @@ public class PerguntaDisponivel extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO: go where from here?
-                handler.removeCallbacks(runnableCode);
 
-                RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+                AlertDialog.Builder adb = new AlertDialog.Builder(PerguntaDisponivel.this);
+//                adb.setTitle("Encerrar pergunta?");
+                adb.setMessage("Encerrar pergunta?");
+                adb.setPositiveButton("Encerrar", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        handler.removeCallbacks(runnableCode);
 
-                try {
-                    JSONObject resultado_requisicao = requisicao.execute(
-                            RequisicaoAssincrona.FINALIZAR_PERGUNTA, Integer.toString(pergunta.getCodigo())).get();
+                        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
-                    if (resultado_requisicao != null) {
-                        if (resultado_requisicao.getString("status").equals("ok")) {
-                            // TODO: notificar o professor que a pergunta foi finalizada?
+                        try {
+                            JSONObject resultado_requisicao = requisicao.execute(
+                                    RequisicaoAssincrona.FINALIZAR_PERGUNTA, Integer.toString(pergunta.getCodigo())).get();
 
-                            Toast.makeText(PerguntaDisponivel.this,
-                                    "Pergunta finalizada.", Toast.LENGTH_LONG).show();
+                            if (resultado_requisicao != null) {
+                                if (resultado_requisicao.getString("status").equals("ok")) {
+                                    // TODO: notificar o professor que a pergunta foi finalizada?
 
-                            // Terminou o tempo de respostas da pergunta, atualiza a quantidade de respostas obtidas em cada alternativa
-                            RequisicaoAssincrona requisicao2 = new RequisicaoAssincrona();
+                                    Toast.makeText(PerguntaDisponivel.this,
+                                            "Pergunta finalizada.", Toast.LENGTH_LONG).show();
 
-                            try {
-                                JSONObject resultado_requisicao2 = requisicao2.execute(
-                                        RequisicaoAssincrona.BUSCAR_QUANTIDADE_DE_RESPOSTAS_POR_ALTERNATIVA_POR_PERGUNTA,
-                                        Integer.toString(pergunta.getCodigo())).get();
+                                    // Terminou o tempo de respostas da pergunta, atualiza a quantidade de respostas obtidas em cada alternativa
+                                    RequisicaoAssincrona requisicao2 = new RequisicaoAssincrona();
 
-                                if (resultado_requisicao2 != null) {
+                                    try {
+                                        JSONObject resultado_requisicao2 = requisicao2.execute(
+                                                RequisicaoAssincrona.BUSCAR_QUANTIDADE_DE_RESPOSTAS_POR_ALTERNATIVA_POR_PERGUNTA,
+                                                Integer.toString(pergunta.getCodigo())).get();
 
-                                    JSONArray alternativas_com_respostas_json = resultado_requisicao2.getJSONArray("quantidade_respostas");
+                                        if (resultado_requisicao2 != null) {
 
-                                    for (int i = 0; i < pergunta.getAlternativas().size(); i++) {
-                                        pergunta.getAlternativas().get(i).setnRespostas(
-                                                alternativas_com_respostas_json.getJSONObject(i).getInt("quantidade_respostas"));
+                                            JSONArray alternativas_com_respostas_json = resultado_requisicao2.getJSONArray("quantidade_respostas");
+
+                                            for (int i = 0; i < pergunta.getAlternativas().size(); i++) {
+                                                pergunta.getAlternativas().get(i).setnRespostas(
+                                                        alternativas_com_respostas_json.getJSONObject(i).getInt("quantidade_respostas"));
+                                            }
+                                        } else {
+                                            // TODO: tratar falta de conexão à Internet aqui também
+                                        }
+
+                                    } catch (InterruptedException | ExecutionException | JSONException e) {
+                                        e.printStackTrace();
                                     }
                                 } else {
-                                    // TODO: tratar falta de conexão à Internet aqui também
+                                    // TODO Tratar erro: EVERYBODY CRIES
                                 }
 
-                            } catch (InterruptedException | ExecutionException | JSONException e) {
-                                e.printStackTrace();
+                            } else {
+                                // TODO: Tratar falta de conexão à Internet
                             }
-                        } else {
-                            // TODO Tratar erro: EVERYBODY CRIES
+
+                        } catch (InterruptedException | ExecutionException | JSONException e) {
+                            e.printStackTrace();
                         }
 
-                    } else {
-                        // TODO: Tratar falta de conexão à Internet
+                        finish();
                     }
+                });
+                adb.setNegativeButton("Voltar", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-                } catch (InterruptedException | ExecutionException | JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-                finish();
+                    }
+                });
+                adb.show();
             }
         });
     }
@@ -190,8 +214,7 @@ public class PerguntaDisponivel extends AppCompatActivity {
     @Override
     public void onBackPressed() {
          // Do nothing or:
-//        this will put app in background
-//        moveTaskToBack(true);
+        mEncerrar.callOnClick();
     }
 
     private CountDownTimer setTimer() {
