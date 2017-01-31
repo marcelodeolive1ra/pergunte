@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -35,6 +37,9 @@ import mds.ufscar.pergunte.model.Pergunta;
 import mds.ufscar.pergunte.model.Professor;
 
 import static mds.ufscar.pergunte.MainScreen.cadastroPerguntaCode;
+import static mds.ufscar.pergunte.MainScreen.getEmailDoUsuarioAtual;
+import static mds.ufscar.pergunte.MainScreen.perfilAluno;
+import static mds.ufscar.pergunte.MainScreen.perfilProfessor;
 
 /**
  * Created by Danilo on 28/01/2017.
@@ -165,19 +170,8 @@ public class MateriaDetalhes extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         Log.v("resultCode", String.valueOf(resultCode));
         if (requestCode == cadastroPerguntaCode) {
-            prepareListData();
-            listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
 
-            // setting list adapter
-            expListView.setAdapter(listAdapter);
-
-            // opening groups with something in it
-            int count = listAdapter.getGroupCount();
-            for (int position = 0; position < count; position++) {
-                if (listAdapter.getChildrenCount(position) > 0) {
-                    expListView.expandGroup(position);
-                }
-            }
+            carregarExpandableList();
 
             Intent returnIntent = new Intent();
             setResult(resultCode, returnIntent);
@@ -290,6 +284,72 @@ public class MateriaDetalhes extends AppCompatActivity {
         listDataChild.put(listDataHeader.get(0), perguntasAtivas); // Header, Child data
         listDataChild.put(listDataHeader.get(1), proximasPerguntas);
         listDataChild.put(listDataHeader.get(2), perguntasRespondidas);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_materia_detalhes, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.atualizar_lista) {
+            carregarExpandableList();
+
+            Toast.makeText(MateriaDetalhes.this, "Lista de perguntas atualizada.",
+                    Toast.LENGTH_LONG).show();
+        } else if (id == R.id.gerar_qr_code) {
+            RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+
+            try {
+                JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.ENVIAR_QR_CODE_POR_EMAIL,
+                        getEmailDoUsuarioAtual(), Integer.toString(mMateriaEmQuestao.getCodigo())).get();
+
+                if (resultado_requisicao != null) {
+                    if (resultado_requisicao.getString("status").equals("ok")) {
+                        Toast.makeText(MateriaDetalhes.this, "QR code desta matéria enviado com sucesso para o seu e-mail." +
+                                "Verifique seu e-mail em instantes.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(MateriaDetalhes.this, resultado_requisicao.getString("descricao"),
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    // TODO: Tratar falta de conexão à internet
+                }
+            } catch (InterruptedException | ExecutionException | JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else if (id == R.id.cancelar_inscricao) {
+            // TODO: implementar cancelar inscrição aqui?
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void carregarExpandableList() {
+        prepareListData();
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+
+        // opening groups with something in it
+        int count = listAdapter.getGroupCount();
+        for (int position = 0; position < count; position++) {
+            if (listAdapter.getChildrenCount(position) > 0) {
+                expListView.expandGroup(position);
+            }
+        }
     }
 
     @Override
