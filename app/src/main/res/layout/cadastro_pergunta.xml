@@ -45,20 +45,13 @@
                 android:paddingEnd="16dp"
                 android:paddingTop="10dp">
 
-                <TextView
-                    android:id="@+id/label_tags"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="Digite o título ou tags para sua pergunta:"
-                    android:textSize="16sp" />
-
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <EditText
                         android:id="@+id/input_title"
+                        android:hint="Título ou tag para sua pergunta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text" />

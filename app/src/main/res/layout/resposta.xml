@@ -38,7 +38,8 @@
         android:textSize="26sp"
         android:textColor="@color/black"
         android:layout_below="@+id/tela_resposta_toolbar"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"/>
 
     <TextView android:id="@+id/pergunta_content"
         android:layout_width="match_parent"
@@ -46,10 +47,13 @@
         android:minLines="2"
         android:gravity="center"
         android:text="Pergunta"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:layout_marginTop="26dp"
         android:textSize="20sp"
         android:layout_below="@+id/detalhes_materia"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"/>
 
     <!--Pergunta-->
     <RadioGroup

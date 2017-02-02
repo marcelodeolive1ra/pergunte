@@ -76,7 +76,6 @@ public class MainScreen extends AppCompatActivity {
 
         // setting selected profile
         mPerfil = this.getIntent().getStringExtra("perfil");
-//        Toast.makeText(this, "Bem vindo(a) " + mPerfil, Toast.LENGTH_SHORT).show();
         if (mPerfil.equalsIgnoreCase(perfilProfessor)) {
             mProfessor = true;
         } else {
@@ -84,6 +83,7 @@ public class MainScreen extends AppCompatActivity {
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.blue_grey_500));
         setSupportActionBar(toolbar);
         if ((getSupportActionBar() != null) && (isProfessor())) {
             getSupportActionBar().setTitle("Pergunte - Perfil Professor");
@@ -99,6 +99,7 @@ public class MainScreen extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.blue_grey_500));
         tabLayout.setupWithViewPager(mViewPager);
         mViewPager.setCurrentItem(1);   // tab Materias is the default tab
         final Activity activity = this;

@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,20 +14,7 @@
         android:minHeight="?attr/actionBarSize"
         android:id="@+id/materia_detalhes_toolbar"
         android:elevation="5dp">
-
-        <!--<Button-->
-            <!--android:id="@+id/botao_cadastrar_pergunta"-->
-            <!--style="?android:attr/borderlessButtonStyle"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="start"-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:paddingEnd="16dp"-->
-            <!--android:text="Voltar"-->
-            <!--android:textColor="@color/white" />-->
-
     </android.support.v7.widget.Toolbar>
-
 
     <RelativeLayout
         android:id="@+id/materia_detail"
@@ -66,6 +52,7 @@
                 android:textSize="30sp"
                 android:textColor="@color/black"
                 android:maxLines="3"
+                android:textStyle="bold"
                 tools:text="Title"
                 />
 
@@ -76,10 +63,10 @@
                 android:layout_below="@+id/materia_list_title"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textSize="20sp"
+                android:textStyle="bold|italic"
                 tools:text="Subtitle"
                 />
 
@@ -90,11 +77,11 @@
                 android:layout_below="@+id/materia_list_subtitle"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textSize="16sp"
                 tools:text="Subtitle"
+                android:textStyle="bold|italic"
                 />
 
             <TextView
@@ -104,11 +91,11 @@
                 android:layout_below="@+id/materia_list_subtitle2"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="2dp"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textSize="16sp"
                 tools:text="code"
+                android:textStyle="bold|italic"
                 />
 
         </RelativeLayout>
