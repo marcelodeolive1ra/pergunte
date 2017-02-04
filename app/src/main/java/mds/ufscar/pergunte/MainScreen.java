@@ -14,10 +14,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -25,14 +27,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
@@ -63,14 +64,21 @@ public class MainScreen extends AppCompatActivity {
     private ZXingScannerView mScanner;
     private Materia materiaScanneada;
     static Pessoa usuarioAtual;
+    private SparseArrayCompat<Fragment> mPageReferenceMap;
 
-    private Map<Integer, Fragment> mPageReferenceMap;
+    // padronizações
+    static final int cadastroMateriaCode = 2;   // for differentiate at onResultActivity
+    static final int cadastroPerguntaCode = 3;  // for differentiate at onResultActivity
+    static final int materiaDetalhesCode = 4;   // for differentiate at onResultActivity
+    static final String perfilProfessor = "professor(a)";
+    static final String perfilAluno = "aluno(a)";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 
+        mPageReferenceMap = new SparseArrayCompat<>();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -83,16 +91,20 @@ public class MainScreen extends AppCompatActivity {
         mPageReferenceMap = new HashMap<>();
         // setting selected profile
         mPerfil = this.getIntent().getStringExtra("perfil");
-        Toast.makeText(this, "Bem vindo(a) " + mPerfil, Toast.LENGTH_SHORT).show();
-        if (mPerfil.equalsIgnoreCase("professor(a)")) {
+        if (mPerfil.equalsIgnoreCase(perfilProfessor)) {
             mProfessor = true;
         } else {
             mProfessor = false;
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.blue_grey_500));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Pergunte - Perfil " + mPerfil);
+        if ((getSupportActionBar() != null) && (isProfessor())) {
+            getSupportActionBar().setTitle("Pergunte - Perfil Professor");
+        } else {
+            getSupportActionBar().setTitle("Pergunte - Perfil Aluno");
+        }
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -102,6 +114,7 @@ public class MainScreen extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.blue_grey_500));
         tabLayout.setupWithViewPager(mViewPager);
         mViewPager.setCurrentItem(1);   // tab Materias is the default tab
         final Activity activity = this;
@@ -121,87 +134,106 @@ public class MainScreen extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
-        if(result != null){
-            if(result.getContents()==null){
-                Toast.makeText(this, "Voce cancelou o scanning", Toast.LENGTH_LONG).show();
-            }
-            else {
-                RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
-                final String codigoInscricao = result.getContents();
-
-                try {
-                    JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIA_POR_QR_CODE,
-                            getEmailDoUsuarioAtual(), codigoInscricao).get();
-
-                    String status_requisicao = resultado_requisicao.getString("status");
-
-                    if (!status_requisicao.equals("ok")) {
-                        new AlertDialog.Builder(this)
-                                .setTitle("Erro!")
-                                .setMessage(resultado_requisicao.getString("descricao"))
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                })
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
-                    } else {
-                        new AlertDialog.Builder(this)
-                                .setTitle(codigoInscricao)
-                                .setMessage("Tem certeza que deseja se cadastrar na matéria \"" +
-                                        resultado_requisicao.getString("nome_materia") + "\"?")
-                                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
-
-                                        try {
-                                            JSONObject resultado_requisicao =
-                                                    requisicao.execute(RequisicaoAssincrona.INSCREVER_ALUNO_EM_MATERIA,
-                                                            getEmailDoUsuarioAtual(), codigoInscricao).get();
-
-                                            if (resultado_requisicao.getString("status").equals("ok")) {
-                                                materiaScanneada = new Materia();
-                                                if (materiaScanneada.construirObjetoComJSON(resultado_requisicao)) {
-                                                    int indexCurrentTab = mViewPager.getCurrentItem();
-                                                    SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
-                                                    Tab2_Materias fragment = (Tab2_Materias) adapter.getFragment(indexCurrentTab);
-                                                    if (fragment != null) {
-                                                        fragment.addMateria(materiaScanneada);
-                                                    } else {
-                                                        Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                    Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(MainScreen.this, "Erro ao cadastrar a matéria.", Toast.LENGTH_SHORT).show();
-                                                }
-                                            } else {
-                                                Toast.makeText(MainScreen.this, "Erro ao cadastrar, status: ", Toast.LENGTH_SHORT).show();
-                                            }
-                                        } catch (InterruptedException | ExecutionException | JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                })
-                                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                })
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
-                    }
-
-                } catch (InterruptedException | ExecutionException | JSONException e) {
-                    e.printStackTrace();
+        Log.v("resultCode", String.valueOf(resultCode));
+        if (requestCode == cadastroMateriaCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                Materia materiaASerAdd = data.getParcelableExtra("materia");
+                if (adicionouMateria(materiaASerAdd, true)) { // true = é professor (linkar com o professor)
+                    Toast.makeText(this, "Matéria cadastrada com sucesso!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Erro ao atualizar lista de matérias", Toast.LENGTH_LONG).show();
                 }
             }
+        } else if (requestCode == materiaDetalhesCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (!refreshPerguntasTab1()) {
+                    Toast.makeText(this, "Não foi possível atualizar a lista de perguntas neste momento", Toast.LENGTH_LONG).show();
+                }
+            }
+            // TODO: Tratar "Loading"
+//            findViewById(R.id.progress_overlay).setVisibility(View.GONE);
+//        }
+//            if (resultCode == Activity.RESULT_OK) {
+//                findViewById(R.id.progress_overlay).setVisibility(View.GONE);
+//            } else {
+        } else {    // TODO: Thiago, seria legal ser else if (requestCode == ScannerRequestCode) algo assim
+            if(result != null){
+                if(result.getContents() == null && data == null){
+                    Toast.makeText(this, "Voce cancelou o scanning", Toast.LENGTH_LONG).show();
+                }
+                else if (result.getContents() != null || data.hasExtra("scan")){
+                    final String codigoInscricao;
+                    if (data.hasExtra("scan")) {
+                        codigoInscricao = data.getStringExtra("scan");
+                    } else {
+                        codigoInscricao = result.getContents();
+                    }
+                    RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+                    try {
+                        JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIA_POR_QR_CODE,
+                                getEmailDoUsuarioAtual(), codigoInscricao).get();
+
+                        String status_requisicao = resultado_requisicao.getString("status");
+
+                        if (!status_requisicao.equals("ok")) {
+                            new AlertDialog.Builder(this)
+                                    .setTitle("Erro!")
+                                    .setMessage(resultado_requisicao.getString("descricao"))
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {}
+                                    })
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                        } else {
+                            new AlertDialog.Builder(this)
+                                    .setTitle(codigoInscricao)
+                                    .setMessage("Tem certeza que deseja se cadastrar na matéria \"" +
+                                            resultado_requisicao.getString("nome_materia") + "\"?")
+                                    .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+
+                                            try {
+                                                JSONObject resultado_requisicao =
+                                                        requisicao.execute(RequisicaoAssincrona.INSCREVER_ALUNO_EM_MATERIA,
+                                                                getEmailDoUsuarioAtual(), codigoInscricao).get();
+
+                                                if (resultado_requisicao.getString("status").equals("ok")) {
+                                                    materiaScanneada = new Materia(resultado_requisicao);
+                                                    if (!adicionouMateria(materiaScanneada, false)) {   // false = é aluno
+                                                        Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
+                                                        FirebaseMessaging.getInstance().subscribeToTopic(materiaScanneada.getCodigoInscricao());
+                                                    }
+                                                } else {
+                                                    Toast.makeText(MainScreen.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_SHORT).show();
+                                                }
+                                            } catch (InterruptedException | ExecutionException | JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    })
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                        }
+
+                    } catch (InterruptedException | ExecutionException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
         }
-        else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+
     }
 
     @Override
@@ -223,11 +255,53 @@ public class MainScreen extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.logout) {
             mAuth.signOut();
+        } else if (id == R.id.change_profile) {
+            finish();
+            if (!isProfessor()) { //se não é professor
+                startActivity(getIntent().putExtra("perfil", perfilProfessor)); // agora é
+            } else {
+                startActivity(getIntent().putExtra("perfil", perfilAluno)); // agora é professor então
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean adicionouMateria(Materia materia, boolean linkProfessor) {
+        int indexCurrentTab = mViewPager.getCurrentItem();
+        SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
+        Tab2_Materias fragment = (Tab2_Materias) adapter.getFragment(indexCurrentTab);
+        if (fragment == null) {
+            return false;
+        } else {
+            if (linkProfessor) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String nomeProfessor = user.getDisplayName();
+                String[] nomes = nomeProfessor.split(" ");
+                StringBuilder sobrenome = new StringBuilder();
+                for (int i = 1; i<nomes.length; i++) {
+                    sobrenome.append(nomes[i]).append(" ");
+                }
+                // TODO: universidade truncada no código, mudar isso
+                Professor professor = new Professor(nomes[0], sobrenome.toString(), user.getEmail(), "UFSCar");
+                materia.setProfessor(professor);
+            }
+            fragment.addMateria(materia);
+        }
+        return true;
+    }
+
+    public boolean refreshPerguntasTab1() {
+        SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
+        Tab1_Perguntas fragment = (Tab1_Perguntas) adapter.getFragment(0);  // cuidado aqui, sempre 0?
+        if (fragment == null) {
+            return false;
+        } else {
+            fragment.buscaPerguntasServidor();
+        }
+        return true;
     }
 
     /**
@@ -249,7 +323,7 @@ public class MainScreen extends AppCompatActivity {
             // return the current tab
             switch (position) {
                 case 0:
-                    Tab1_Respondidas tab1Respondidas = new Tab1_Respondidas();
+                    Tab1_Perguntas tab1Respondidas = new Tab1_Perguntas();
                     mPageReferenceMap.put(position, tab1Respondidas);
                     return tab1Respondidas;
                 case 1:
@@ -315,5 +389,11 @@ public class MainScreen extends AppCompatActivity {
     public static String getEmailDoUsuarioAtual() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         return (user != null) ? user.getEmail() : "";
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
     }
 }

@@ -61,7 +61,8 @@ public class Tab3_Estatisticas extends Fragment {
                     .into(user_foto);
 
             Picasso.with(this.getContext())
-                    .load("http://files.vividscreen.info/soft/cee54d62fbd8200f5da70bad775a7c22/Google-Abstract-wide-l.jpg")
+//                    .load("http://files.vividscreen.info/soft/cee54d62fbd8200f5da70bad775a7c22/Google-Abstract-wide-l.jpg")
+                    .load("http://mds.secompufscar.com.br/static/admin/img/fundo_perfil.png")
                     .into(header_foto);
 
             // The user's ID, unique to the Firebase project. Do NOT use this value to

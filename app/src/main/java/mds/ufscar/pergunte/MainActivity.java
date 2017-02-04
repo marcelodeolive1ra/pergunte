@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
@@ -35,23 +36,28 @@ public class MainActivity extends AppCompatActivity {
     // seleção do perfil
     private RadioGroup radioGroupPerfil;
     private RadioButton radioButtonPerfil;
+    private Toolbar mToolbar;
+
+    static String perfilUsuario = "aluno(a)";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mToolbar = (Toolbar)findViewById(R.id.main_toolbar);
+        mToolbar.setTitle("Pergunte");
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser() != null){
                     Intent tabsScreen = new Intent(MainActivity.this, MainScreen.class);
-                    // seleção do perfil
-                    radioGroupPerfil = (RadioGroup) findViewById(R.id.radio_group_perfil);
-                    int selectedId = radioGroupPerfil.getCheckedRadioButtonId();
-                    radioButtonPerfil = (RadioButton) findViewById(selectedId);
-                    tabsScreen.putExtra("perfil", radioButtonPerfil.getText().toString());
-//                    Toast.makeText(MainActivity.this, radioButtonPerfil.getText(), Toast.LENGTH_SHORT).show();
+
+                    // Passando o perfil obtido no momento do clique no botão Sign-in
+                    tabsScreen.putExtra("perfil", perfilUsuario);
                     startActivity(tabsScreen);
                 } else
                     Log.w("firebase", "firebaseAuth.getCurrentUser is null");
@@ -91,6 +97,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signIn() {
+        radioGroupPerfil = (RadioGroup) findViewById(R.id.radio_group_perfil);
+        int selectedId = radioGroupPerfil.getCheckedRadioButtonId();
+        radioButtonPerfil = (RadioButton) findViewById(selectedId);
+
+        perfilUsuario = radioButtonPerfil.getText().toString();
+
+        setContentView(R.layout.loading);
+        findViewById(R.id.progress_overlay).setVisibility(View.VISIBLE);
+
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -128,11 +143,12 @@ public class MainActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Sucesso: tire o indicador de carregando da tela
+                            findViewById(R.id.progress_overlay).setVisibility(View.GONE);
                         }
                         // ...
                     }
                 });
     }
-
-
 }

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tela_resposta_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        android:elevation="5dp">
+
+    <Button
+        android:id="@+id/btn_responder"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="@color/colorPrimary"
+        android:paddingEnd="16dp"
+        android:text="Responder"
+        android:textColor="@color/white" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <TextView android:id="@+id/detalhes_materia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="3"
+        android:gravity="center"
+        android:text="Matéria"
+        android:paddingTop="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textSize="26sp"
+        android:textColor="@color/black"
+        android:layout_below="@+id/tela_resposta_toolbar"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"/>
+
+    <TextView android:id="@+id/pergunta_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minLines="2"
+        android:gravity="center"
+        android:text="Pergunta"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="26dp"
+        android:textSize="20sp"
+        android:layout_below="@+id/detalhes_materia"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"/>
+
+    <!--Pergunta-->
+    <RadioGroup
+        android:id="@+id/radiogroup"
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:layout_marginTop="26dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/pergunta_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        />
+</RelativeLayout>

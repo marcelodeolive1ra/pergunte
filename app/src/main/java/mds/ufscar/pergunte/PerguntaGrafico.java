@@ -1,12 +1,10 @@
 package mds.ufscar.pergunte;
 
+import android.content.Intent;
 import android.graphics.Color;
-import android.icu.text.NumberFormat;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.ValueDependentColor;
@@ -14,21 +12,31 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
+import java.util.ArrayList;
+
+import mds.ufscar.pergunte.model.Alternativa;
+import mds.ufscar.pergunte.model.Pergunta;
+
 /**
- * Created by Danilo on 24/12/2016.
+ * Created by Danilo on 21/01/2017.
  */
 
-public class Tab1_Respondidas extends Fragment {
+public class PerguntaGrafico extends AppCompatActivity {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab1_respondidas, container, false);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.pergunta_grafico);
 
+        // pegando dados
+        Intent intent = getIntent();
+        Pergunta pergunta = intent.getParcelableExtra("pergunta");
+        ArrayList<Alternativa> alternativas = intent.getParcelableArrayListExtra("alternativas");
+        pergunta.setAlternativas(alternativas);
 
-        /*  GRAFICO */
-        GraphView graph = (GraphView) rootView.findViewById(R.id.graph);
+         /*  GRAFICO */
+        GraphView graph = (GraphView) findViewById(R.id.graph);
         graph.setTitle("Respostas");
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
                 //new DataPoint(X, Y) -> X: 1=A, 2=B, 3=C, 4=D, 5=E
@@ -67,9 +75,6 @@ public class Tab1_Respondidas extends Fragment {
         series.setValuesOnTopColor(Color.RED);
 
         /*  GRAFICO */
-
-        return rootView;
-
 
     }
 }

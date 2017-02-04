@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -12,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 import org.json.JSONArray;
@@ -27,7 +28,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
-import mds.ufscar.pergunte.model.Professor;
 
 /**
  * Created by Danilo on 24/12/2016.
@@ -37,66 +37,144 @@ public class Tab2_Materias extends Fragment {
 
     private ListView mListView;
     private boolean mProfessor;
-    private ArrayList<Materia> mMaterias;
+    private ArrayList<ListItem> mListItems;
     private MateriaAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
+        final View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
-        mProfessor = ((MainScreen)this.getActivity()).isProfessor();
+        final MainScreen mainScreen = (MainScreen)this.getActivity();
+        mProfessor = mainScreen.isProfessor();
         String emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
-        mMaterias =  new ArrayList<>();
+        mListItems =  new ArrayList<>();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
 
         try {
-            JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIAS,
-                    emailUsuarioAtual, RequisicaoAssincrona.Parametros.PERFIL_ALUNO,
-                    RequisicaoAssincrona.Parametros.STATUS_MATERIA_ATIVA).get();
-            JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
+            String perfil_usuario = (mProfessor) ?
+                    RequisicaoAssincrona.Parametros.PERFIL_PROFESSOR : RequisicaoAssincrona.Parametros.PERFIL_ALUNO;
 
-            for (int i = 0; i < materias_json.length(); i++) {
-                Materia materia = new Materia();
-                if (materia.construirObjetoComJSON(materias_json.getJSONObject(i))) {
-                    mMaterias.add(materia);
+            JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_MATERIAS,
+                    emailUsuarioAtual, perfil_usuario,
+                    RequisicaoAssincrona.Parametros.STATUS_MATERIA_ATIVA).get();
+
+            if (resultado_requisicao != null) {
+                if (resultado_requisicao.getString("status").equals("ok")) {
+                    JSONArray materias_json = resultado_requisicao.getJSONArray("materias");
+
+                    if (materias_json.length() > 0) {
+                        ArrayList<Materia> materias = new ArrayList<>();
+                        for (int i = 0; i < materias_json.length(); i++) {
+                            materias.add(new Materia(materias_json.getJSONObject(i)));
+                        }
+                        mListItems = addSections(materias);
+                    } else {
+                        String mensagem_de_erro = mProfessor ?
+                                "Você ainda não cadastrou nenhuma matéria." :
+                                "Você ainda não está inscrito(a) em nenhuma matéria.";
+
+                        Toast.makeText(Tab2_Materias.this.getActivity(),
+                                mensagem_de_erro, Toast.LENGTH_LONG).show();
+                    }
                 } else {
+                    Log.w("REQUISICAO", resultado_requisicao.toString());
                     Toast.makeText(Tab2_Materias.this.getActivity(),
-                            "Erro ao carregar matéria.",
-                            Toast.LENGTH_LONG).show();
+                            resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
                 }
+            } else {
+                AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
+                adb.setTitle("Erro");
+                adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
+                adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        System.exit(0);
+                    }
+                });
+                adb.show();
             }
 
         } catch (InterruptedException | ExecutionException | JSONException e) {
             e.printStackTrace();
         }
 
-        adapter = new MateriaAdapter(getActivity(), mMaterias);
+        adapter = new MateriaAdapter(getActivity(), mListItems);
         mListView.setAdapter(adapter);
 
         // fab button
         final Activity activity = this.getActivity();
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        final com.getbase.floatingactionbutton.FloatingActionsMenu fabMain =
+                (com.getbase.floatingactionbutton.FloatingActionsMenu) rootView.findViewById(R.id.multiple_actions);
+
+        final com.getbase.floatingactionbutton.FloatingActionButton fabScan =
+                (com.getbase.floatingactionbutton.FloatingActionButton) rootView.findViewById(R.id.action_a);
+        fabScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMain.collapse();
+
+                IntentIntegrator integrator = new IntentIntegrator(activity);
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                integrator.setPrompt("Scan");
+                integrator.setCameraId(0);
+                integrator.setOrientationLocked(false);
+                integrator.setBeepEnabled(false);
+                integrator.setBarcodeImageEnabled(false);
+                integrator.initiateScan();
+
+            }
+        });
+
+        final com.getbase.floatingactionbutton.FloatingActionButton fabType =
+                (com.getbase.floatingactionbutton.FloatingActionButton) rootView.findViewById(R.id.action_b);
+        fabType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fabMain.collapse();
                 if (mProfessor) {
                     Intent cadastroMateria = new Intent(Tab2_Materias.this.getActivity(), CadastroMateria.class);
-                    startActivity(cadastroMateria);
+                    getActivity().startActivityForResult(cadastroMateria, MainScreen.cadastroMateriaCode);
                 } else {
-                    IntentIntegrator integrator = new IntentIntegrator(activity);
-                    integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-                    integrator.setPrompt("Scan");
-                    integrator.setCameraId(0);
-                    integrator.setOrientationLocked(false);
-                    integrator.setBeepEnabled(false);
-                    integrator.setBarcodeImageEnabled(false);
-                    integrator.initiateScan();
+
+                    LayoutInflater factory = LayoutInflater.from(getContext());
+                    final View dialogView = factory.inflate(R.layout.digitar_codigo_inscricao, null);
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext());
+                    alertDialog.setView(dialogView);
+                    alertDialog.setTitle("Inscrição em matéria");
+
+                    final EditText input = (EditText)dialogView.findViewById(R.id.input_codigo_inscricao_materia);
+
+                    // TODO: (DANILO, HELP!) abrir o teclado automaticamente com foco no EditText input
+
+                    alertDialog.setPositiveButton("Inscrever", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("scan", input.getText().toString());
+                            mainScreen.onActivityResult(49374, Activity.RESULT_OK, returnIntent);
+                        }
+                    });
+                    alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    alertDialog.show();
                 }
             }
         });
+
+        if (mProfessor) {
+            fabScan.setVisibility(View.GONE);
+            fabType.setTitle("Nova matéria");
+        }
 
         // setting one click on an item of the list view
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -104,10 +182,16 @@ public class Tab2_Materias extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3)
             {
-                if (mProfessor) {
-                    Intent cadastroPergunta = new Intent(Tab2_Materias.this.getActivity(), CadastroPergunta.class);
-                    startActivity(cadastroPergunta);
-                }
+                Intent materiaDetalhes = new Intent(Tab2_Materias.this.getActivity(), MateriaDetalhes.class);
+                materiaDetalhes.putExtra("materia", (Materia) mListItems.get(pos));
+                materiaDetalhes.putExtra("nome", ((Materia) mListItems.get(pos)).getProfessor().getNome());
+                materiaDetalhes.putExtra("sobrenome", ((Materia) mListItems.get(pos)).getProfessor().getSobrenome());
+                materiaDetalhes.putExtra("email", ((Materia) mListItems.get(pos)).getProfessor().getEmail());
+                materiaDetalhes.putExtra("universidade", ((Materia) mListItems.get(pos)).getProfessor().getUniversidade());
+                materiaDetalhes.putExtra("isProfessor", mProfessor);
+//                    getActivity().findViewById(R.id.progress_overlay).setVisibility(View.VISIBLE);
+                getActivity().startActivityForResult(materiaDetalhes, MainScreen.materiaDetalhesCode);
+
             }
         });
 
@@ -118,16 +202,19 @@ public class Tab2_Materias extends Fragment {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
 
                 AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
-                adb.setTitle("Remover?");
+
                 if (mProfessor) {
-                    adb.setMessage("Tem certeza que deseja apagar a disciplina \"" +
-                            mMaterias.get(pos).getNomeDisciplina() + "\"?");
+                    adb.setTitle("Desativar a matéria");
+                    adb.setMessage("Tem certeza que deseja desativar a matéria \"" +
+                            ((Materia) mListItems.get(pos)).getNomeDisciplina() + "\"?\n\n" +
+                            "Os alunos cadastrados não poderão mais acessar os dados da matéria.");
                 } else {
+                    adb.setTitle("Cancelar inscrição");
                     adb.setMessage("Tem certeza que deseja sair da disciplina \"" +
-                            mMaterias.get(pos).getNomeDisciplina() + "\"?");
+                            ((Materia) mListItems.get(pos)).getNomeDisciplina() + "\"?");
                 }
                 final int positionToRemove = pos;
-                adb.setNegativeButton("Cancelar", null);
+                adb.setNegativeButton("Não", null);
                 adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -136,30 +223,44 @@ public class Tab2_Materias extends Fragment {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         String email = (user != null) ? user.getEmail() : "";
 
-                        if (mProfessor) {
-                            // TODO: Caso Professor - Marcelo desabilite ou remova a matéria (materiaASerRemovida) do BD por favore
-                        } else {
-                            try {
-                                JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA,
-                                        email, Integer.toString(mMaterias.get(positionToRemove).getCodigo())).get();
+                        // TODO: Tratar falta de conexão à Internet aqui
 
-                                if (resultado_requisicao.getString("status").equals("ok")) {
-                                    Log.w("REQUISICAO", resultado_requisicao.toString());
-                                    mMaterias.remove(positionToRemove); // removing from the interface
-                                    Toast.makeText(Tab2_Materias.this.getActivity(),
-                                            "Matéria cancelada - você não receberá mais notificações dela",
-                                            Toast.LENGTH_LONG).show();
-                                } else {
-                                    Log.w("REQUISICAO", resultado_requisicao.toString());
-                                    Toast.makeText(Tab2_Materias.this.getActivity(),
-                                            "Ocorreu um erro na operação com status: " +
-                                                    resultado_requisicao.getString("descricao"),
-                                            Toast.LENGTH_LONG).show();
+                        try {
+                            String tipo_requisicao = (mProfessor) ?
+                                    RequisicaoAssincrona.DESATIVAR_MATERIA : RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA;
+
+                            JSONObject resultado_requisicao = requisicao.execute(tipo_requisicao,
+                                    email, Integer.toString(((Materia) mListItems.get(positionToRemove)).getCodigo())).get();
+
+                            if (resultado_requisicao.getString("status").equals("ok")) {
+
+                                if (!mProfessor) {
+                                    FirebaseMessaging.getInstance().unsubscribeFromTopic(((Materia) mListItems.get(positionToRemove)).getCodigoInscricao());
                                 }
 
-                            } catch (InterruptedException | ExecutionException | JSONException e) {
-                                e.printStackTrace();
+                                Log.w("REQUISICAO", resultado_requisicao.toString());
+                                mListItems.remove(positionToRemove); // removing from the interface
+
+                                String mensagemDeFeedback = (mProfessor) ?
+                                        "Matéria desativada com sucesso!" :
+                                        "Matéria cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.";
+
+                                Toast.makeText(Tab2_Materias.this.getActivity(),
+                                        mensagemDeFeedback,
+                                        Toast.LENGTH_LONG).show();
+
+                                ArrayList<Materia> materias = extrairMaterias(mListItems);
+                                // has to keep the same object
+                                mListItems.clear();
+                                mListItems.addAll(addSections(materias));
+                            } else {
+                                Log.w("REQUISICAO", resultado_requisicao.toString());
+                                Toast.makeText(Tab2_Materias.this.getActivity(),
+                                        resultado_requisicao.getString("descricao"),
+                                        Toast.LENGTH_LONG).show();
                             }
+                        } catch (InterruptedException | ExecutionException | JSONException e) {
+                            e.printStackTrace();
                         }
                         adapter.notifyDataSetChanged();
                     }});
@@ -171,40 +272,82 @@ public class Tab2_Materias extends Fragment {
         return rootView;
     }
 
+    public ArrayList<Materia> extrairMaterias(ArrayList<ListItem> listItems) {
+        ArrayList<Materia> materias = new ArrayList<>();
+        for (ListItem listItem : listItems) {
+            if (!listItem.isSection()) {
+                materias.add((Materia) listItem);
+            }
+        }
+        return materias;
+    }
+
+    public ArrayList<ListItem> addSections(ArrayList<Materia> materias) {
+        ArrayList<ListItem> listItems = new ArrayList<>();
+        if (materias.size() > 0) {
+            String lastYearSemesterAdded;
+            lastYearSemesterAdded = getSectionTitle(materias.get(0));
+            listItems.add(new Section(lastYearSemesterAdded));
+            for (Materia materia : materias) {
+                if (!lastYearSemesterAdded.equals(getSectionTitle(materia))) {
+                    lastYearSemesterAdded = getSectionTitle(materia);
+                    listItems.add(new Section(lastYearSemesterAdded));
+                }
+                listItems.add(materia);
+            }
+        }
+        return listItems;
+    }
+
+    public String getSectionTitle(Materia materia) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(materia.getAno());
+        stringBuilder.append("/").append(materia.getSemestre());
+        return stringBuilder.toString();
+    }
+
     public void addMateria(Materia materiaAdicionada){
         int index = 0;
         boolean adicionada = false;
-        for (Materia materia : mMaterias) {
-            // verify year
-            if (materia.getAno() < materiaAdicionada.getAno()){
-                mMaterias.add(index, materiaAdicionada);
-                adicionada = true;
-                break;
-            }
-            else if (materia.getAno() == materiaAdicionada.getAno()){
-                //verify semester
-                if (materia.getSemestre() < materiaAdicionada.getSemestre()) {
-                    mMaterias.add(index, materiaAdicionada);
+        for (ListItem listItem : mListItems) {
+            if (listItem.isSection()) {
+                index++;
+                continue;
+            } else {
+                Materia materia = (Materia) listItem;
+                // verify year
+                if (materia.getAno() < materiaAdicionada.getAno()) {
+                    mListItems.add(index-1, new Section(getSectionTitle(materiaAdicionada)));
+                    mListItems.add(index, materiaAdicionada);
                     adicionada = true;
                     break;
-                }
-                else if (materia.getSemestre() == materiaAdicionada.getSemestre()) {
-                    adicionada = true;
-                    // verify alphabet
-                    if (materia.getNomeDisciplina().compareToIgnoreCase(materiaAdicionada.getNomeDisciplina()) > 0){
-                        mMaterias.add(index, materiaAdicionada);
+                } else if (materia.getAno() == materiaAdicionada.getAno()) {
+                    //verify semester
+                    if (materia.getSemestre() < materiaAdicionada.getSemestre()) {
+                        mListItems.add(index-1, new Section(getSectionTitle(materiaAdicionada)));
+                        mListItems.add(index, materiaAdicionada);
+                        adicionada = true;
                         break;
-                    }
-                    else {
-                        mMaterias.add(index+1, materiaAdicionada);
-                        break;
+                    } else if (materia.getSemestre() == materiaAdicionada.getSemestre()) {
+                        // verify alphabet
+                        if (materia.getNomeDisciplina().compareToIgnoreCase(materiaAdicionada.getNomeDisciplina()) > 0) {
+                            mListItems.add(index, materiaAdicionada);
+                            adicionada = true;
+                            break;
+                        } else if (index >= (mListItems.size()-1) || mListItems.get(index+1).isSection()){ // acabou a seção
+                            mListItems.add(index + 1, materiaAdicionada);
+                            adicionada = true;
+                            break;
+                        }
                     }
                 }
             }
             index++;
         }
-        if (!adicionada)
-            mMaterias.add(materiaAdicionada);
+        if (!adicionada) {
+            mListItems.add(new Section(getSectionTitle(materiaAdicionada)));
+            mListItems.add(materiaAdicionada);
+        }
         adapter.notifyDataSetChanged();
     }
 }
