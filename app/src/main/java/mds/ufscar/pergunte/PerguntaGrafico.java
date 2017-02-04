@@ -41,6 +41,7 @@ public class PerguntaGrafico extends AppCompatActivity {
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
                 //new DataPoint(X, Y) -> X: 1=A, 2=B, 3=C, 4=D, 5=E
                 //new DataPoint(X, Y) -> Y: value
+                //TODO colocar valores certos das respostas
                 new DataPoint(1, 1),
                 new DataPoint(2, 5),
                 new DataPoint(3, 3),
