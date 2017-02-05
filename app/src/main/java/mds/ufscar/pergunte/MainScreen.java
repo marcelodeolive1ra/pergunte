@@ -89,7 +89,7 @@ public class MainScreen extends AppCompatActivity {
 
         }
 
-        mPageReferenceMap = new HashMap<>();
+        mPageReferenceMap = new SparseArrayCompat<>();
         // setting selected profile
         mPerfil = this.getIntent().getStringExtra("perfil");
         if (mPerfil.equalsIgnoreCase(perfilProfessor)) {
