@@ -156,7 +156,7 @@ public class Tab2_Materias extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             Intent returnIntent = new Intent();
                             returnIntent.putExtra("scan", input.getText().toString());
-                            mainScreen.onActivityResult(49374, Activity.RESULT_OK, returnIntent);
+                            mainScreen.onActivityResult(MainScreen.scannerCode, Activity.RESULT_OK, returnIntent);
                         }
                     });
                     alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
