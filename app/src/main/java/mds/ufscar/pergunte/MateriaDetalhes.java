@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,11 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.vision.text.Text;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.squareup.picasso.Picasso;
@@ -38,8 +35,6 @@ import mds.ufscar.pergunte.model.Professor;
 
 import static mds.ufscar.pergunte.MainScreen.cadastroPerguntaCode;
 import static mds.ufscar.pergunte.MainScreen.getEmailDoUsuarioAtual;
-import static mds.ufscar.pergunte.MainScreen.perfilAluno;
-import static mds.ufscar.pergunte.MainScreen.perfilProfessor;
 
 /**
  * Created by Danilo on 28/01/2017.
@@ -144,19 +139,19 @@ public class MateriaDetalhes extends AppCompatActivity {
         });
 
         // fab
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final com.getbase.floatingactionbutton.FloatingActionsMenu fabMain =
+                (com.getbase.floatingactionbutton.FloatingActionsMenu) findViewById(R.id.multiple_actions);
+
+        final com.getbase.floatingactionbutton.FloatingActionButton fabPergunta =
+                (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.action_a);
+
         // case professor - show fab
-        if (mProfessor) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) fab.getLayoutParams();
-            fab.requestLayout();
-            fab.setVisibility(View.VISIBLE);
-        } else { // case student - hide it
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) fab.getLayoutParams();
-            fab.requestLayout();
-            fab.setVisibility(View.GONE);
+        if (!mProfessor) {
+            fabMain.setVisibility(View.GONE);
         }
+
         // on click
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabPergunta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent cadastroPergunta = new Intent(view.getContext(), CadastroPergunta.class);
