@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -144,12 +145,11 @@ public class Tab2_Materias extends Fragment {
                     final View dialogView = factory.inflate(R.layout.digitar_codigo_inscricao, null);
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext());
+                    AlertDialog dialog;
                     alertDialog.setView(dialogView);
                     alertDialog.setTitle("Inscrição em matéria");
 
                     final EditText input = (EditText)dialogView.findViewById(R.id.input_codigo_inscricao_materia);
-
-                    // TODO: (DANILO, HELP!) abrir o teclado automaticamente com foco no EditText input
 
                     alertDialog.setPositiveButton("Inscrever", new DialogInterface.OnClickListener() {
                         @Override
@@ -165,8 +165,9 @@ public class Tab2_Materias extends Fragment {
                             dialog.cancel();
                         }
                     });
-
-                    alertDialog.show();
+                    dialog = alertDialog.create();
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                    dialog.show();
                 }
             }
         });
