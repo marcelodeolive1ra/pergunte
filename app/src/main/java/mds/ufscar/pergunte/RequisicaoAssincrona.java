@@ -63,6 +63,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
     static final String DISPONIBILIZAR_PERGUNTA = "19";
     static final String FINALIZAR_PERGUNTA = "20";
     static final String REGISTRAR_RESPOSTA = "21";
+    static final String BUSCAR_RESPOSTAS_POR_PERGUNTA = "22";
 
     private Object objetoGenerico;
 
@@ -231,6 +232,11 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                     }
 
                     request = HttpRequest.post(Parametros.URL_SERVIDOR + "registrarresposta/").form(parametros);
+                    break;
+
+                case BUSCAR_RESPOSTAS_POR_PERGUNTA:
+                    parametros.put("codigo", params[1]);
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "buscarrespostasporpergunta/").form(parametros);
                     break;
 
                 default:
