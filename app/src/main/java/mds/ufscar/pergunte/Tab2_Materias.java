@@ -211,12 +211,12 @@ public class Tab2_Materias extends Fragment {
                             "Os alunos cadastrados não poderão mais acessar os dados da matéria.");
                 } else {
                     adb.setTitle("Cancelar inscrição");
-                    adb.setMessage("Tem certeza que deseja sair da disciplina \"" +
+                    adb.setMessage("Tem certeza que deseja cancelar sua inscrição na disciplina \"" +
                             ((Materia) mListItems.get(pos)).getNomeDisciplina() + "\"?");
                 }
                 final int positionToRemove = pos;
-                adb.setNegativeButton("Não", null);
-                adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
+                adb.setNegativeButton("Voltar", null);
+                adb.setPositiveButton(mProfessor ? "Desativar" : "Cancelar inscrição", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
@@ -244,7 +244,7 @@ public class Tab2_Materias extends Fragment {
 
                                 String mensagemDeFeedback = (mProfessor) ?
                                         "Matéria desativada com sucesso!" :
-                                        "Matéria cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.";
+                                        "Inscrição cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.";
 
                                 Toast.makeText(Tab2_Materias.this.getActivity(),
                                         mensagemDeFeedback,

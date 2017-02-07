@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="mds.ufscar.pergunte.MateriaDetalhes">
+    <item
+        android:id="@+id/editar_materia"
+        android:orderInCategory="100"
+        android:title="Editar matéria"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/ver_alunos_inscritos"
+        android:orderInCategory="100"
+        android:title="Ver alunos inscritos"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/gerar_qr_code"
+        android:orderInCategory="100"
+        android:title="Enviar QR code por e-mail"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/cancelar_inscricao"
+        android:orderInCategory="100"
+        android:title="Desativar matéria"
+        app:showAsAction="never" />
+</menu>
