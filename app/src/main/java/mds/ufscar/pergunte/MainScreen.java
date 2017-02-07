@@ -99,7 +99,6 @@ public class MainScreen extends AppCompatActivity {
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.blue_grey_500));
         setSupportActionBar(toolbar);
         if ((getSupportActionBar() != null) && (isProfessor())) {
             getSupportActionBar().setTitle("Pergunte - Perfil Professor");
@@ -115,7 +114,7 @@ public class MainScreen extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.blue_grey_500));
+        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.white));
         tabLayout.setupWithViewPager(mViewPager);
         mViewPager.setCurrentItem(1);   // tab Materias is the default tab
         final Activity activity = this;
@@ -160,7 +159,7 @@ public class MainScreen extends AppCompatActivity {
         } else if (requestCode == scannerCode) {
             if(result != null){
                 if(result.getContents() == null && data == null){
-                    Toast.makeText(this, "Voce cancelou o scanning", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Inscrição por QR code cancelada.", Toast.LENGTH_LONG).show();
                 }
                 else if (result.getContents() != null || data.hasExtra("scan")){
                     final String codigoInscricao;
