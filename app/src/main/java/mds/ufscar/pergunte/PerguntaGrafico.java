@@ -12,6 +12,8 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import mds.ufscar.pergunte.model.Alternativa;
@@ -23,6 +25,7 @@ import mds.ufscar.pergunte.model.Pergunta;
 
 public class PerguntaGrafico extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,25 +35,28 @@ public class PerguntaGrafico extends AppCompatActivity {
         // pegando dados
         Intent intent = getIntent();
         Pergunta pergunta = intent.getParcelableExtra("pergunta");
+
         ArrayList<Alternativa> alternativas = intent.getParcelableArrayListExtra("alternativas");
         pergunta.setAlternativas(alternativas);
+        System.out.println(pergunta.getCodigo());
+        System.out.println(pergunta.getTextoPergunta());
+        DataPoint[] dataPoint = new DataPoint[alternativas.size()];
+
+        for(int i =0;i<alternativas.size();i++){
+            System.out.println(alternativas.get(i).getnRespostas());
+            dataPoint[i] = new DataPoint(i,alternativas.get(i).getnRespostas());
+
+        }
+
+
 
          /*  GRAFICO */
         GraphView graph = (GraphView) findViewById(R.id.graph);
-        graph.setTitle("Respostas");
-        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
-                //new DataPoint(X, Y) -> X: 1=A, 2=B, 3=C, 4=D, 5=E
-                //new DataPoint(X, Y) -> Y: value
-                //TODO colocar valores certos das respostas
-                new DataPoint(1, 1),
-                new DataPoint(2, 5),
-                new DataPoint(3, 3),
-                new DataPoint(4, 2),
-                new DataPoint(5, 6)
-        });
+        graph.setTitle(pergunta.getTextoPergunta());
+        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(dataPoint);
         graph.addSeries(series);
         graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(series.getHighestValueX()+1);
+        //graph.getViewport().setMaxX(series.getHighestValueX()+1);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(series.getHighestValueY()+0.5);
         graph.getViewport().setYAxisBoundsManual(true);
@@ -58,7 +64,12 @@ public class PerguntaGrafico extends AppCompatActivity {
 
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
         //coloquei esses espaços no começo e no fim para ele n ficar "colado" nas bordas
-        staticLabelsFormatter.setHorizontalLabels(new String[] {" ","A", "B", "C","D","E"," "});
+        String[] respostas =  new String[alternativas.size()];
+        for(int i =0;i<alternativas.size();i++){
+            respostas[i] = new String(alternativas.get(i).getLetra());
+        }
+        //staticLabelsFormatter.setHorizontalLabels(new String[] {" ","A", "B", "C","D","E"," "});
+        staticLabelsFormatter.setHorizontalLabels(respostas);
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
         // styling

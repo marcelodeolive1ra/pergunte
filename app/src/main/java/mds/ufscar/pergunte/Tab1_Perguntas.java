@@ -80,7 +80,9 @@ public class Tab1_Perguntas extends Fragment {
                                     // vai precisar passar a materia tambem? Espero que não. haha
                                     perguntaGrafico.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
                                     ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
+                                    //essas alternativas não tem valor nessa requisição
                                     perguntaGrafico.putParcelableArrayListExtra("alternativas", alternativas);
+                                    //foi feita uma nova requisicao dentro do PerguntaGrafico. Para cada pergunta.
                                     getActivity().startActivity(perguntaGrafico);
                                 } else if (opcoes[which].toString().equals(disponibilizarPergunta)) {
                                     Intent perguntaDisponivel = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaDisponivel.class);
