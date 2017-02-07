@@ -1,11 +1,15 @@
 package mds.ufscar.pergunte;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -29,6 +33,7 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
@@ -65,6 +70,7 @@ public class MainScreen extends AppCompatActivity {
     static final int cadastroMateriaCode = 2;   // for differentiate at onResultActivity
     static final int cadastroPerguntaCode = 3;  // for differentiate at onResultActivity
     static final int materiaDetalhesCode = 4;   // for differentiate at onResultActivity
+    static final int scannerCode = 49374;
     static final String perfilProfessor = "professor(a)";
     static final String perfilAluno = "aluno(a)";
 
@@ -72,8 +78,18 @@ public class MainScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
+
         mPageReferenceMap = new SparseArrayCompat<>();
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET, Manifest.permission.CAMERA}
+                        ,10);
+            }
+
+        }
+
+        mPageReferenceMap = new SparseArrayCompat<>();
         // setting selected profile
         mPerfil = this.getIntent().getStringExtra("perfil");
         if (mPerfil.equalsIgnoreCase(perfilProfessor)) {
@@ -141,7 +157,7 @@ public class MainScreen extends AppCompatActivity {
 //            if (resultCode == Activity.RESULT_OK) {
 //                findViewById(R.id.progress_overlay).setVisibility(View.GONE);
 //            } else {
-        } else {    // TODO: Thiago, seria legal ser else if (requestCode == ScannerRequestCode) algo assim
+        } else if (requestCode == scannerCode) {
             if(result != null){
                 if(result.getContents() == null && data == null){
                     Toast.makeText(this, "Voce cancelou o scanning", Toast.LENGTH_LONG).show();
@@ -217,8 +233,9 @@ public class MainScreen extends AppCompatActivity {
             else {
                 super.onActivityResult(requestCode, resultCode, data);
             }
+        } else {
+            Log.e("MainScreen", "RequestCode não tratado: " + requestCode);
         }
-
     }
 
     @Override
