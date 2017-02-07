@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.ValueDependentColor;
@@ -29,12 +32,27 @@ import mds.ufscar.pergunte.model.Pergunta;
 
 public class PerguntaGrafico extends AppCompatActivity {
 
+    private Toolbar mPerguntaGraficoToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.pergunta_grafico);
+
+        mPerguntaGraficoToolbar = (Toolbar)findViewById(R.id.pergunta_grafico_toolbar);
+        mPerguntaGraficoToolbar.setTitle("Respostas obtidas");
+        mPerguntaGraficoToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
+        setSupportActionBar(mPerguntaGraficoToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mPerguntaGraficoToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         // pegando dados
         Intent intent = getIntent();
@@ -125,5 +143,10 @@ public class PerguntaGrafico extends AppCompatActivity {
             // TODO: Informar que ainda não existem respostas para esta pergunta
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
