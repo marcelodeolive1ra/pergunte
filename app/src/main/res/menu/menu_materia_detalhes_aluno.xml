@@ -3,24 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="mds.ufscar.pergunte.MateriaDetalhes">
     <item
-        android:id="@+id/editar_materia"
-        android:orderInCategory="100"
-        android:title="Editar matéria"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/atualizar_lista"
         android:orderInCategory="100"
         android:title="Atualizar lista de perguntas"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/ver_alunos_inscritos"
-        android:orderInCategory="100"
-        android:title="Ver alunos inscritos"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/gerar_qr_code"
-        android:orderInCategory="100"
-        android:title="Enviar QR code por e-mail"
         app:showAsAction="never" />
     <item
         android:id="@+id/cancelar_inscricao"

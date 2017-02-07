@@ -187,7 +187,7 @@ public class MainScreen extends AppCompatActivity {
                         } else {
                             new AlertDialog.Builder(this)
                                     .setTitle(codigoInscricao)
-                                    .setMessage("Tem certeza que deseja se cadastrar na matéria \"" +
+                                    .setMessage("Tem certeza que deseja se inscrever na matéria \"" +
                                             resultado_requisicao.getString("nome_materia") + "\"?")
                                     .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
@@ -204,7 +204,7 @@ public class MainScreen extends AppCompatActivity {
                                                     if (!adicionouMateria(materiaScanneada, false)) {   // false = é aluno
                                                         Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
                                                     } else {
-                                                        Toast.makeText(MainScreen.this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(MainScreen.this, "Inscrição realizada com sucesso.", Toast.LENGTH_SHORT).show();
                                                         FirebaseMessaging.getInstance().subscribeToTopic(materiaScanneada.getCodigoInscricao());
                                                     }
                                                 } else {

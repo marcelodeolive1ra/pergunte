@@ -1,9 +1,11 @@
 package mds.ufscar.pergunte;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -15,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.squareup.picasso.Picasso;
@@ -35,6 +40,7 @@ import mds.ufscar.pergunte.model.Professor;
 
 import static mds.ufscar.pergunte.MainScreen.cadastroPerguntaCode;
 import static mds.ufscar.pergunte.MainScreen.getEmailDoUsuarioAtual;
+import static mds.ufscar.pergunte.MainScreen.perfilAluno;
 
 /**
  * Created by Danilo on 28/01/2017.
@@ -287,7 +293,13 @@ public class MateriaDetalhes extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_materia_detalhes, menu);
+
+        if (mProfessor) {
+            getMenuInflater().inflate(R.menu.menu_materia_detalhes_professor, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.menu_materia_detalhes_aluno, menu);
+        }
+
         return true;
     }
 
@@ -328,7 +340,67 @@ public class MateriaDetalhes extends AppCompatActivity {
             }
 
         } else if (id == R.id.cancelar_inscricao) {
-            // TODO: implementar cancelar inscrição aqui?
+            AlertDialog.Builder adb = new AlertDialog.Builder(MateriaDetalhes.this);
+
+            if (mProfessor) {
+                adb.setTitle("Desativar matéria");
+                adb.setMessage("Tem certeza que deseja desativar a matéria \"" +
+                        (mMateriaEmQuestao.getNomeDisciplina() + "\"?\n\n" +
+                        "Os alunos cadastrados não poderão mais acessar os dados da matéria."));
+            } else {
+                adb.setTitle("Cancelar inscrição");
+                adb.setMessage("Tem certeza que deseja cancelar sua inscrição na disciplina \"" +
+                        (mMateriaEmQuestao.getNomeDisciplina() + "\"?"));
+            }
+            adb.setNegativeButton("Voltar", null);
+            adb.setPositiveButton(mProfessor ? "Desativar" : "Cancelar inscrição", new AlertDialog.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+
+                    RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String email = (user != null) ? user.getEmail() : "";
+
+                    // TODO: Tratar falta de conexão à Internet aqui
+
+                    try {
+                        String tipo_requisicao = (mProfessor) ?
+                                RequisicaoAssincrona.DESATIVAR_MATERIA : RequisicaoAssincrona.CANCELAR_INSCRICAO_EM_MATERIA;
+
+                        JSONObject resultado_requisicao = requisicao.execute(tipo_requisicao,
+                                email, Integer.toString(mMateriaEmQuestao.getCodigo())).get();
+
+                        if (resultado_requisicao.getString("status").equals("ok")) {
+
+                            if (!mProfessor) {
+                                FirebaseMessaging.getInstance().unsubscribeFromTopic(mMateriaEmQuestao.getCodigoInscricao());
+                            }
+
+                            Log.w("REQUISICAO", resultado_requisicao.toString());
+
+
+                            String mensagemDeFeedback = (mProfessor) ?
+                                    "Matéria desativada com sucesso!" :
+                                    "Inscrição cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.";
+
+                            Toast.makeText(MateriaDetalhes.this,
+                                    mensagemDeFeedback,
+                                    Toast.LENGTH_LONG).show();
+
+                            // TODO: Danilo, neste ponto precisa remover a matéria do mListItems da activity anterior (Tab2_Materias)
+
+                            onBackPressed();
+                        } else {
+                            Log.w("REQUISICAO", resultado_requisicao.toString());
+                            Toast.makeText(MateriaDetalhes.this,
+                                    resultado_requisicao.getString("descricao"),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (InterruptedException | ExecutionException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                }});
+            adb.show();
         }
 
         return super.onOptionsItemSelected(item);
