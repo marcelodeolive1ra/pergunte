@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,14 +22,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Alternativa;
-import mds.ufscar.pergunte.model.Pergunta;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.models.Alternativa;
+import mds.ufscar.pergunte.models.Pergunta;
 
 /**
  * Created by Danilo on 24/01/2017.
  */
 
-public class PerguntaDisponivel extends AppCompatActivity {
+public class PerguntaDisponivelActivity extends AppCompatActivity {
 
     private TextView mNRespostas;
     private TextView mPergunta;
@@ -115,7 +117,7 @@ public class PerguntaDisponivel extends AppCompatActivity {
 
             if (resultado_requisicao != null) {
                 if (resultado_requisicao.getString("status").equals("ok")) {
-                    Toast.makeText(PerguntaDisponivel.this,
+                    Toast.makeText(PerguntaDisponivelActivity.this,
                             "Pergunta disponibilizada.", Toast.LENGTH_LONG).show();
 
                     // setting timer count up
@@ -123,7 +125,7 @@ public class PerguntaDisponivel extends AppCompatActivity {
                     mTimerCountUp.start();
 
                 } else {
-                    Toast.makeText(PerguntaDisponivel.this,
+                    Toast.makeText(PerguntaDisponivelActivity.this,
                             resultado_requisicao.getString("error"), Toast.LENGTH_LONG).show();
                     // TODO: tratar melhor esse caso, quando deu erro na disponibilização da pergunta
                 }
@@ -145,7 +147,7 @@ public class PerguntaDisponivel extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO: go where from here?
 
-                AlertDialog.Builder adb = new AlertDialog.Builder(PerguntaDisponivel.this);
+                AlertDialog.Builder adb = new AlertDialog.Builder(PerguntaDisponivelActivity.this);
 //                adb.setTitle("Encerrar pergunta?");
                 adb.setMessage("Encerrar pergunta?");
                 adb.setPositiveButton("Encerrar", new AlertDialog.OnClickListener() {
@@ -162,7 +164,7 @@ public class PerguntaDisponivel extends AppCompatActivity {
                             if (resultado_requisicao != null) {
                                 if (resultado_requisicao.getString("status").equals("ok")) {
 
-                                    Toast.makeText(PerguntaDisponivel.this,
+                                    Toast.makeText(PerguntaDisponivelActivity.this,
                                             "Pergunta encerrada.", Toast.LENGTH_LONG).show();
 
                                     // Terminou o tempo de respostas da pergunta, atualiza a quantidade de respostas obtidas em cada alternativa

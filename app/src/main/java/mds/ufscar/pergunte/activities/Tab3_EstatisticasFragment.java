@@ -1,21 +1,16 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,9 +18,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
+import mds.ufscar.pergunte.helpers.CircleTransform;
+import mds.ufscar.pergunte.R;
+
 import static android.content.Context.LOCATION_SERVICE;
 
-public class Tab3_Estatisticas extends Fragment {
+public class Tab3_EstatisticasFragment extends Fragment {
     TextView user_name;
     TextView user_email;
     ImageView user_foto;

@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte.model;
+package mds.ufscar.pergunte.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import mds.ufscar.pergunte.ListItem;
+import mds.ufscar.pergunte.helpers.ListItem;
 
 public class Pergunta implements Parcelable, ListItem {
 

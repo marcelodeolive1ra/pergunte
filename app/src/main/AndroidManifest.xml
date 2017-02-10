@@ -15,23 +15,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".MainScreen"
+        <activity android:name=".activities.MainScreenActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".CadastroMateria"
+        <activity android:name=".activities.CadastrarMateriaActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".CadastroPergunta"
+        <activity android:name=".activities.CadastrarPerguntaActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".PerguntaGrafico"
+        <activity android:name=".activities.GraficoDeRespostasActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".PerguntaDisponivel"
+        <activity android:name=".activities.PerguntaDisponivelActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".RespostaTela"
+        <activity android:name=".activities.ResponderPerguntaActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".MateriaDetalhes"
+        <activity android:name=".activities.MateriaDetalhes"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
@@ -40,7 +40,7 @@
 
         <!-- Splash screen -->
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".activities.SplashScreenActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -51,7 +51,7 @@
         </activity>
 
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".helpers.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>

@@ -1,12 +1,10 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -40,8 +38,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Alternativa;
-import mds.ufscar.pergunte.model.Pergunta;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.models.Alternativa;
+import mds.ufscar.pergunte.models.Pergunta;
 
 import static mds.ufscar.pergunte.R.id.radiogroup;
 
@@ -49,7 +49,7 @@ import static mds.ufscar.pergunte.R.id.radiogroup;
  * Created by Danilo on 15/01/2017.
  */
 
-public class CadastroPergunta extends AppCompatActivity {
+public class CadastrarPerguntaActivity extends AppCompatActivity {
 
     private EditText mInputTitle;
     private EditText mInputQuestion;
@@ -196,7 +196,7 @@ public class CadastroPergunta extends AppCompatActivity {
                     if (algumaCorreta) {
                         cadastrarPergunta();
                     } else {
-                        AlertDialog.Builder adb = new AlertDialog.Builder(CadastroPergunta.this);
+                        AlertDialog.Builder adb = new AlertDialog.Builder(CadastrarPerguntaActivity.this);
                         adb.setTitle("Nenhuma alternativa marcada como correta");
                         adb.setMessage("Você não marcou nenhuma alternativa como correta.\n\n" +
                                 "Tem certeza que deseja cadastrar a pergunta assim mesmo?");
@@ -246,21 +246,21 @@ public class CadastroPergunta extends AppCompatActivity {
 
                 try {
                     JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.CADASTRAR_NOVA_PERGUNTA,
-                            MainScreen.getEmailDoUsuarioAtual(), Integer.toString(mCodigoMateria)).get();
+                            MainScreenActivity.getEmailDoUsuarioAtual(), Integer.toString(mCodigoMateria)).get();
 
                     if (resultado_requisicao != null) {
                         Intent returnIntent = new Intent();
                         if (resultado_requisicao.getString("status").equals("ok")) {
-                            Toast.makeText(CadastroPergunta.this, "Pergunta cadastrada com sucesso.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CadastrarPerguntaActivity.this, "Pergunta cadastrada com sucesso.", Toast.LENGTH_LONG).show();
                             setResult(Activity.RESULT_OK, returnIntent);
                             finish();
                         } else {
                             Log.w("REQUISICAO", resultado_requisicao.toString());
-                            Toast.makeText(CadastroPergunta.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
+                            Toast.makeText(CadastrarPerguntaActivity.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
                             setResult(Activity.RESULT_CANCELED, returnIntent);
                         }
                     } else {
-                        AlertDialog.Builder adb = new AlertDialog.Builder(CadastroPergunta.this);
+                        AlertDialog.Builder adb = new AlertDialog.Builder(CadastrarPerguntaActivity.this);
                         adb.setTitle("Erro");
                         adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
                         adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
@@ -272,12 +272,12 @@ public class CadastroPergunta extends AppCompatActivity {
                         });
                         adb.setNegativeButton("Cancelar", new AlertDialog.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                AlertDialog.Builder adb2 = new AlertDialog.Builder(CadastroPergunta.this);
+                                AlertDialog.Builder adb2 = new AlertDialog.Builder(CadastrarPerguntaActivity.this);
                                 adb2.setTitle("Cancelar cadastro de pergunta?");
                                 adb2.setMessage("Tem certeza que deseja cancelar o cadastro? Os dados informados serão perdidos.");
                                 adb2.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(CadastroPergunta.this, "Cadastro de pergunta cancelado.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(CadastrarPerguntaActivity.this, "Cadastro de pergunta cancelado.", Toast.LENGTH_LONG).show();
                                         finish();
                                     }
                                 });
@@ -420,7 +420,7 @@ public class CadastroPergunta extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         dismissKeyboard();
-        AlertDialog.Builder adb = new AlertDialog.Builder(CadastroPergunta.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(CadastrarPerguntaActivity.this);
         adb.setTitle("Descartar nova pergunta?");
         adb.setMessage("Os dados digitados serão perdidos.");
         adb.setPositiveButton("Descartar", new AlertDialog.OnClickListener() {

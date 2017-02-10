@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import mds.ufscar.pergunte.model.Pergunta;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.models.Pergunta;
 
 /**
  * Created by Danilo on 28/01/2017.

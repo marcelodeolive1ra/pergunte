@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,15 +20,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Alternativa;
-import mds.ufscar.pergunte.model.Materia;
-import mds.ufscar.pergunte.model.Pergunta;
+import mds.ufscar.pergunte.helpers.ListItem;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.helpers.Section;
+import mds.ufscar.pergunte.adapters.PerguntaAdapter;
+import mds.ufscar.pergunte.models.Alternativa;
+import mds.ufscar.pergunte.models.Materia;
+import mds.ufscar.pergunte.models.Pergunta;
 
 /**
  * Created by Danilo on 24/12/2016.
  */
 
-public class Tab1_Perguntas extends Fragment {
+public class Tab1_PerguntasFragment extends Fragment {
 
     private ListView mListView;
     private boolean mProfessor;
@@ -48,7 +53,7 @@ public class Tab1_Perguntas extends Fragment {
         View rootView = inflater.inflate(R.layout.tab1_perguntas, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.pergunta_list_view);
-        mProfessor = ((MainScreen)this.getActivity()).isProfessor();
+        mProfessor = ((MainScreenActivity)this.getActivity()).isProfessor();
         mListItems = new ArrayList<>();
         mMaterias = new ArrayList<>();
         adapter = new PerguntaAdapter(getActivity(), mListItems);
@@ -70,22 +75,22 @@ public class Tab1_Perguntas extends Fragment {
                                 excluirPergunta
                         };
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Tab1_Perguntas.this.getActivity());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Tab1_PerguntasFragment.this.getActivity());
                         builder.setTitle("Selecione uma opção");
                         builder.setItems(opcoes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (opcoes[which].toString().equals(visualizarGrafico)) {
-                                    Intent perguntaGrafico = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaGrafico.class);
+                                    Intent perguntaGrafico = new Intent(Tab1_PerguntasFragment.this.getActivity(), GraficoDeRespostasActivity.class);
                                     // vai precisar passar a materia tambem? Espero que não. haha
                                     perguntaGrafico.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
                                     ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
                                     //essas alternativas não tem valor nessa requisição
                                     perguntaGrafico.putParcelableArrayListExtra("alternativas", alternativas);
-                                    //foi feita uma nova requisicao dentro do PerguntaGrafico. Para cada pergunta.
+                                    //foi feita uma nova requisicao dentro do GraficoDeRespostasActivity. Para cada pergunta.
                                     getActivity().startActivity(perguntaGrafico);
                                 } else if (opcoes[which].toString().equals(disponibilizarPergunta)) {
-                                    Intent perguntaDisponivel = new Intent(Tab1_Perguntas.this.getActivity(), PerguntaDisponivel.class);
+                                    Intent perguntaDisponivel = new Intent(Tab1_PerguntasFragment.this.getActivity(), PerguntaDisponivelActivity.class);
                                     perguntaDisponivel.putExtra("pergunta", (Pergunta) mListItems.get(posicao));
                                     ArrayList<Alternativa> alternativas = ((Pergunta) mListItems.get(posicao)).getAlternativas();
                                     perguntaDisponivel.putParcelableArrayListExtra("alternativas", alternativas);
@@ -118,7 +123,7 @@ public class Tab1_Perguntas extends Fragment {
 
         try {
             JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_PERGUNTAS_POR_PROFESSOR,
-                    MainScreen.getEmailDoUsuarioAtual()).get();
+                    MainScreenActivity.getEmailDoUsuarioAtual()).get();
 
             if (resultado_requisicao != null) {
                 if (resultado_requisicao.getString("status").equals("ok")) {
@@ -153,16 +158,16 @@ public class Tab1_Perguntas extends Fragment {
                             mMaterias.add(materia);
                         }
                     } else {
-                        Toast.makeText(Tab1_Perguntas.this.getActivity(),
+                        Toast.makeText(Tab1_PerguntasFragment.this.getActivity(),
                                 "Você ainda não cadastrou nenhuma pergunta.", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Log.w("REQUISICAO", resultado_requisicao.toString());
-                    Toast.makeText(Tab1_Perguntas.this.getActivity(),
+                    Toast.makeText(Tab1_PerguntasFragment.this.getActivity(),
                             resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
                 }
             } else {
-                AlertDialog.Builder adb = new AlertDialog.Builder(Tab1_Perguntas.this.getActivity());
+                AlertDialog.Builder adb = new AlertDialog.Builder(Tab1_PerguntasFragment.this.getActivity());
                 adb.setTitle("Erro");
                 adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
                 adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {

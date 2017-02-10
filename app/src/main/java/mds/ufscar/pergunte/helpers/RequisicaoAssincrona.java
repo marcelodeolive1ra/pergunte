@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.helpers;
 
 import android.os.AsyncTask;
 
@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import mds.ufscar.pergunte.model.Materia;
-import mds.ufscar.pergunte.model.Pergunta;
+import mds.ufscar.pergunte.models.Materia;
+import mds.ufscar.pergunte.models.Pergunta;
 
 /**
  * Created by marcelodeoliveiradasilva on 13/01/17.
@@ -24,46 +24,46 @@ import mds.ufscar.pergunte.model.Pergunta;
 public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
 
     public class Parametros {
-        static final String EMAIL_USUARIO = "email";
-        static final String TIPO_USUARIO = "tipo";
-        static final String PERFIL_ALUNO = "aluno";
-        static final String PERFIL_PROFESSOR = "professor";
-        static final String STATUS_MATERIA = "status_materia";
-        static final String STATUS_MATERIA_ATIVA = "ativa";
-        static final String STATUS_MATERIA_INATIVA = "inativa";
-        static final String CODIGO_MATERIA = "codigo";
-        static final String NOME_MATERIA = "nome_materia";
-        static final String TURMA_MATERIA = "turma";
-        static final String CODIGO_INSCRICAO_MATERIA = "codigo_inscricao";
-        static final String ANO_MATERIA = "ano";
-        static final String SEMESTRE_MATERIA = "semestre";
-        static final String CODIGO_PERGUNTA = "codigo";
+        public static final String EMAIL_USUARIO = "email";
+        public static final String TIPO_USUARIO = "tipo";
+        public static final String PERFIL_ALUNO = "aluno";
+        public static final String PERFIL_PROFESSOR = "professor";
+        public static final String STATUS_MATERIA = "status_materia";
+        public static final String STATUS_MATERIA_ATIVA = "ativa";
+        public static final String STATUS_MATERIA_INATIVA = "inativa";
+        public static final String CODIGO_MATERIA = "codigo";
+        public static final String NOME_MATERIA = "nome_materia";
+        public static final String TURMA_MATERIA = "turma";
+        public static final String CODIGO_INSCRICAO_MATERIA = "codigo_inscricao";
+        public static final String ANO_MATERIA = "ano";
+        public static final String SEMESTRE_MATERIA = "semestre";
+        public static final String CODIGO_PERGUNTA = "codigo";
 
         static final String URL_SERVIDOR = "http://mds.secompufscar.com.br/";
     }
 
-    static final String BUSCAR_ALUNO = "1";
-    static final String BUSCAR_MATERIAS = "2";
-    static final String BUSCAR_MATERIA_POR_QR_CODE = "3";
-    static final String CADASTRAR_NOVA_MATERIA = "4";
-    static final String INSCREVER_ALUNO_EM_MATERIA = "5";
-    static final String CANCELAR_INSCRICAO_EM_MATERIA = "6";
-    static final String BUSCAR_PERFIL_DO_USUARIO = "7";
-    static final String DESATIVAR_MATERIA = "8";
-    static final String CADASTRAR_NOVA_PERGUNTA = "9";
-    static final String BUSCAR_PERGUNTAS_POR_MATERIA = "10";
-    static final String BUSCAR_PERGUNTAS_POR_PROFESSOR = "11";
-    static final String BUSCAR_ALTERNATIVAS_POR_PERGUNTA = "12";
-    static final String BUSCAR_QUANTIDADE_DE_RESPOSTAS_POR_ALTERNATIVA_POR_PERGUNTA = "13";
-    static final String BUSCAR_QUANTIDADE_DE_RESPOSTAS_TOTAIS_POR_PERGUNTA = "14";
-    static final String ENVIAR_QR_CODE_POR_EMAIL = "15";
-    static final String BUSCAR_PERGUNTAS_ATIVAS_POR_MATERIA = "16";
-    static final String BUSCAR_PROXIMAS_PERGUNTAS_POR_MATERIA = "17";
-    static final String BUSCAR_PERGUNTAS_RESPONDIDAS_POR_MATERIA = "18";
-    static final String DISPONIBILIZAR_PERGUNTA = "19";
-    static final String FINALIZAR_PERGUNTA = "20";
-    static final String REGISTRAR_RESPOSTA = "21";
-    static final String BUSCAR_RESPOSTAS_POR_PERGUNTA = "22";
+    public static final String BUSCAR_ALUNO = "1";
+    public static final String BUSCAR_MATERIAS = "2";
+    public static final String BUSCAR_MATERIA_POR_QR_CODE = "3";
+    public static final String CADASTRAR_NOVA_MATERIA = "4";
+    public static final String INSCREVER_ALUNO_EM_MATERIA = "5";
+    public static final String CANCELAR_INSCRICAO_EM_MATERIA = "6";
+    public static final String BUSCAR_PERFIL_DO_USUARIO = "7";
+    public static final String DESATIVAR_MATERIA = "8";
+    public static final String CADASTRAR_NOVA_PERGUNTA = "9";
+    public static final String BUSCAR_PERGUNTAS_POR_MATERIA = "10";
+    public static final String BUSCAR_PERGUNTAS_POR_PROFESSOR = "11";
+    public static final String BUSCAR_ALTERNATIVAS_POR_PERGUNTA = "12";
+    public static final String BUSCAR_QUANTIDADE_DE_RESPOSTAS_POR_ALTERNATIVA_POR_PERGUNTA = "13";
+    public static final String BUSCAR_QUANTIDADE_DE_RESPOSTAS_TOTAIS_POR_PERGUNTA = "14";
+    public static final String ENVIAR_QR_CODE_POR_EMAIL = "15";
+    public static final String BUSCAR_PERGUNTAS_ATIVAS_POR_MATERIA = "16";
+    public static final String BUSCAR_PROXIMAS_PERGUNTAS_POR_MATERIA = "17";
+    public static final String BUSCAR_PERGUNTAS_RESPONDIDAS_POR_MATERIA = "18";
+    public static final String DISPONIBILIZAR_PERGUNTA = "19";
+    public static final String FINALIZAR_PERGUNTA = "20";
+    public static final String REGISTRAR_RESPOSTA = "21";
+    public static final String BUSCAR_RESPOSTAS_POR_PERGUNTA = "22";
 
     private Object objetoGenerico;
 

@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte.model;
+package mds.ufscar.pergunte.models;
 
 public class Aluno extends Pessoa {
 

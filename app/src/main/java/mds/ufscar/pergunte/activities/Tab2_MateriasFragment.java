@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -28,13 +28,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Materia;
+import mds.ufscar.pergunte.helpers.ListItem;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.helpers.Section;
+import mds.ufscar.pergunte.adapters.MateriaAdapter;
+import mds.ufscar.pergunte.models.Materia;
 
 /**
  * Created by Danilo on 24/12/2016.
  */
 
-public class Tab2_Materias extends Fragment {
+public class Tab2_MateriasFragment extends Fragment {
 
     private ListView mListView;
     private boolean mProfessor;
@@ -47,9 +52,9 @@ public class Tab2_Materias extends Fragment {
         final View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
-        final MainScreen mainScreen = (MainScreen)this.getActivity();
+        final MainScreenActivity mainScreen = (MainScreenActivity)this.getActivity();
         mProfessor = mainScreen.isProfessor();
-        String emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
+        String emailUsuarioAtual = MainScreenActivity.getEmailDoUsuarioAtual();
         mListItems =  new ArrayList<>();
 
         RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
@@ -77,16 +82,16 @@ public class Tab2_Materias extends Fragment {
                                 "Você ainda não cadastrou nenhuma matéria." :
                                 "Você ainda não está inscrito(a) em nenhuma matéria.";
 
-                        Toast.makeText(Tab2_Materias.this.getActivity(),
+                        Toast.makeText(Tab2_MateriasFragment.this.getActivity(),
                                 mensagem_de_erro, Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Log.w("REQUISICAO", resultado_requisicao.toString());
-                    Toast.makeText(Tab2_Materias.this.getActivity(),
+                    Toast.makeText(Tab2_MateriasFragment.this.getActivity(),
                             resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
                 }
             } else {
-                AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
+                AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_MateriasFragment.this.getActivity());
                 adb.setTitle("Erro");
                 adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
                 adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
@@ -137,8 +142,8 @@ public class Tab2_Materias extends Fragment {
             public void onClick(View view) {
                 fabMain.collapse();
                 if (mProfessor) {
-                    Intent cadastroMateria = new Intent(Tab2_Materias.this.getActivity(), CadastroMateria.class);
-                    getActivity().startActivityForResult(cadastroMateria, MainScreen.cadastroMateriaCode);
+                    Intent cadastroMateria = new Intent(Tab2_MateriasFragment.this.getActivity(), CadastrarMateriaActivity.class);
+                    getActivity().startActivityForResult(cadastroMateria, MainScreenActivity.cadastroMateriaCode);
                 } else {
 
                     LayoutInflater factory = LayoutInflater.from(getContext());
@@ -156,7 +161,7 @@ public class Tab2_Materias extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             Intent returnIntent = new Intent();
                             returnIntent.putExtra("scan", input.getText().toString());
-                            mainScreen.onActivityResult(MainScreen.scannerCode, Activity.RESULT_OK, returnIntent);
+                            mainScreen.onActivityResult(MainScreenActivity.scannerCode, Activity.RESULT_OK, returnIntent);
                         }
                     });
                     alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -183,7 +188,7 @@ public class Tab2_Materias extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3)
             {
-                Intent materiaDetalhes = new Intent(Tab2_Materias.this.getActivity(), MateriaDetalhes.class);
+                Intent materiaDetalhes = new Intent(Tab2_MateriasFragment.this.getActivity(), MateriaDetalhes.class);
                 materiaDetalhes.putExtra("materia", (Materia) mListItems.get(pos));
                 materiaDetalhes.putExtra("nome", ((Materia) mListItems.get(pos)).getProfessor().getNome());
                 materiaDetalhes.putExtra("sobrenome", ((Materia) mListItems.get(pos)).getProfessor().getSobrenome());
@@ -191,7 +196,7 @@ public class Tab2_Materias extends Fragment {
                 materiaDetalhes.putExtra("universidade", ((Materia) mListItems.get(pos)).getProfessor().getUniversidade());
                 materiaDetalhes.putExtra("isProfessor", mProfessor);
 //                    getActivity().findViewById(R.id.progress_overlay).setVisibility(View.VISIBLE);
-                getActivity().startActivityForResult(materiaDetalhes, MainScreen.materiaDetalhesCode);
+                getActivity().startActivityForResult(materiaDetalhes, MainScreenActivity.materiaDetalhesCode);
 
             }
         });
@@ -202,7 +207,7 @@ public class Tab2_Materias extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
 
-                AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_Materias.this.getActivity());
+                AlertDialog.Builder adb = new AlertDialog.Builder(Tab2_MateriasFragment.this.getActivity());
 
                 if (mProfessor) {
                     adb.setTitle("Desativar a matéria");
@@ -246,7 +251,7 @@ public class Tab2_Materias extends Fragment {
                                         "Matéria desativada com sucesso!" :
                                         "Inscrição cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.";
 
-                                Toast.makeText(Tab2_Materias.this.getActivity(),
+                                Toast.makeText(Tab2_MateriasFragment.this.getActivity(),
                                         mensagemDeFeedback,
                                         Toast.LENGTH_LONG).show();
 
@@ -256,7 +261,7 @@ public class Tab2_Materias extends Fragment {
                                 mListItems.addAll(addSections(materias));
                             } else {
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
-                                Toast.makeText(Tab2_Materias.this.getActivity(),
+                                Toast.makeText(Tab2_MateriasFragment.this.getActivity(),
                                         resultado_requisicao.getString("descricao"),
                                         Toast.LENGTH_LONG).show();
                             }

@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -23,13 +23,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Materia;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.models.Materia;
 
 /**
  * Created by Danilo on 14/01/2017.
  */
 
-public class CadastroMateria extends AppCompatActivity {
+public class CadastrarMateriaActivity extends AppCompatActivity {
 
     private Button mBtnCadastrarMat;
     private EditText mClassName;
@@ -48,7 +50,7 @@ public class CadastroMateria extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cadastro_materia);
 
-        emailUsuarioAtual = MainScreen.getEmailDoUsuarioAtual();
+        emailUsuarioAtual = MainScreenActivity.getEmailDoUsuarioAtual();
 
         // bounding code with interface
 //        mBtnCadastrarMat = (Button)findViewById(R.id.btn_cadastrar);
@@ -139,11 +141,11 @@ public class CadastroMateria extends AppCompatActivity {
                                 setResult(Activity.RESULT_OK, returnIntent);
                                 finish();
                             } else {
-                                Toast.makeText(CadastroMateria.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
+                                Toast.makeText(CadastrarMateriaActivity.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
                                 setResult(Activity.RESULT_CANCELED, returnIntent);
                             }
                         } else {
-                            AlertDialog.Builder adb = new AlertDialog.Builder(CadastroMateria.this);
+                            AlertDialog.Builder adb = new AlertDialog.Builder(CadastrarMateriaActivity.this);
                             adb.setTitle("Sem acesso à Internet");
                             adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
                             adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
@@ -155,12 +157,12 @@ public class CadastroMateria extends AppCompatActivity {
                             });
                             adb.setNegativeButton("Cancelar", new AlertDialog.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    AlertDialog.Builder adb2 = new AlertDialog.Builder(CadastroMateria.this);
+                                    AlertDialog.Builder adb2 = new AlertDialog.Builder(CadastrarMateriaActivity.this);
                                     adb2.setTitle("Cancelar cadastro de matéria?");
                                     adb2.setMessage("Tem certeza que deseja cancelar o cadastro? Os dados informados serão perdidos.");
                                     adb2.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
-                                            Toast.makeText(CadastroMateria.this, "Cadastro de matéria cancelado.", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(CadastrarMateriaActivity.this, "Cadastro de matéria cancelado.", Toast.LENGTH_LONG).show();
                                             finish();
                                         }
                                     });
@@ -179,7 +181,7 @@ public class CadastroMateria extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    new AlertDialog.Builder(CadastroMateria.this)
+                    new AlertDialog.Builder(CadastrarMateriaActivity.this)
                             .setTitle("Atenção")
                             .setMessage(warning)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -205,7 +207,7 @@ public class CadastroMateria extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         dismissKeyboard();
-        AlertDialog.Builder adb = new AlertDialog.Builder(CadastroMateria.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(CadastrarMateriaActivity.this);
         adb.setTitle("Descartar nova matéria?");
         adb.setMessage("Os dados digitados serão perdidos.");
         adb.setPositiveButton("Descartar", new AlertDialog.OnClickListener() {

@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,19 +19,20 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Alternativa;
-import mds.ufscar.pergunte.model.Pergunta;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.models.Alternativa;
+import mds.ufscar.pergunte.models.Pergunta;
 
 /**
  * Created by Danilo on 27/01/2017.
  */
 
-public class RespostaTela extends AppCompatActivity {
+public class ResponderPerguntaActivity extends AppCompatActivity {
 
     private TextView mPergunta;
     private RadioGroup mAlternativas;
@@ -112,19 +113,19 @@ public class RespostaTela extends AppCompatActivity {
 
                 try {
                     JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.REGISTRAR_RESPOSTA,
-                            MainScreen.getEmailDoUsuarioAtual(), Integer.toString(pergunta.getCodigo())).get();
+                            MainScreenActivity.getEmailDoUsuarioAtual(), Integer.toString(pergunta.getCodigo())).get();
 
                     if (resultado_requisicao != null) {
                         if (resultado_requisicao.getString("status").equals("ok")) {
-                            Toast.makeText(RespostaTela.this,
+                            Toast.makeText(ResponderPerguntaActivity.this,
                                     "Resposta registrada!", Toast.LENGTH_LONG).show();
                         } else {
                             Log.w("REQUISICAO", resultado_requisicao.toString());
-                            Toast.makeText(RespostaTela.this,
+                            Toast.makeText(ResponderPerguntaActivity.this,
                                     resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        AlertDialog.Builder adb = new AlertDialog.Builder(RespostaTela.this);
+                        AlertDialog.Builder adb = new AlertDialog.Builder(ResponderPerguntaActivity.this);
                         adb.setTitle("Erro");
                         adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
                         adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
@@ -136,12 +137,12 @@ public class RespostaTela extends AppCompatActivity {
                         });
                         adb.setNegativeButton("Cancelar", new AlertDialog.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                AlertDialog.Builder adb2 = new AlertDialog.Builder(RespostaTela.this);
+                                AlertDialog.Builder adb2 = new AlertDialog.Builder(ResponderPerguntaActivity.this);
                                 adb2.setTitle("Abandonar questionário?");
                                 adb2.setMessage("Tem certeza que deseja abandonar o questionário? A sua resposta não será gravada.");
                                 adb2.setPositiveButton("Abandonar", new AlertDialog.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(RespostaTela.this, "Questionário abandonado.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(ResponderPerguntaActivity.this, "Questionário abandonado.", Toast.LENGTH_LONG).show();
                                         finish();
                                     }
                                 });
@@ -167,7 +168,7 @@ public class RespostaTela extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder adb = new AlertDialog.Builder(RespostaTela.this);
+        AlertDialog.Builder adb = new AlertDialog.Builder(ResponderPerguntaActivity.this);
         adb.setTitle("Sair da pergunta?");
         adb.setMessage("Sua resposta não será registrada.");
         adb.setPositiveButton("Sair", new AlertDialog.OnClickListener() {

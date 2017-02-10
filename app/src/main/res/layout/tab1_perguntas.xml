@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="mds.ufscar.pergunte.MainActivity">
+    tools:context="mds.ufscar.pergunte.activities.LoginActivity">
 
     <ListView
         android:id="@+id/pergunta_list_view"

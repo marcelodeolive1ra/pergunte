@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +25,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class MainActivity extends AppCompatActivity {
+import mds.ufscar.pergunte.R;
+
+public class LoginActivity extends AppCompatActivity {
 
     private SignInButton mGoogleBtn;
     private static final int RC_SIGN_IN = 1;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser() != null){
-                    Intent tabsScreen = new Intent(MainActivity.this, MainScreen.class);
+                    Intent tabsScreen = new Intent(LoginActivity.this, MainScreenActivity.class);
 
                     // Passando o perfil obtido no momento do clique no botão Sign-in
                     tabsScreen.putExtra("perfil", perfilUsuario);
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener(){
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult){
-                        Toast.makeText(MainActivity.this,"Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this,"Error", Toast.LENGTH_LONG).show();
 
                     }
                 })
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // Sucesso: tire o indicador de carregando da tela

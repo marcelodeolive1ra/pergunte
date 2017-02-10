@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -33,14 +33,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Alternativa;
-import mds.ufscar.pergunte.model.Materia;
-import mds.ufscar.pergunte.model.Pergunta;
-import mds.ufscar.pergunte.model.Professor;
+import mds.ufscar.pergunte.adapters.ExpandableListAdapter;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.models.Alternativa;
+import mds.ufscar.pergunte.models.Materia;
+import mds.ufscar.pergunte.models.Pergunta;
+import mds.ufscar.pergunte.models.Professor;
 
-import static mds.ufscar.pergunte.MainScreen.cadastroPerguntaCode;
-import static mds.ufscar.pergunte.MainScreen.getEmailDoUsuarioAtual;
-import static mds.ufscar.pergunte.MainScreen.perfilAluno;
+import static mds.ufscar.pergunte.activities.MainScreenActivity.cadastroPerguntaCode;
+import static mds.ufscar.pergunte.activities.MainScreenActivity.getEmailDoUsuarioAtual;
 
 /**
  * Created by Danilo on 28/01/2017.
@@ -131,7 +133,7 @@ public class MateriaDetalhes extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 // TODO: fazer isso apenas para pergunta ativa e se mPerfilUsuario aluno
-                Intent respostaTela = new Intent(v.getContext(), RespostaTela.class);
+                Intent respostaTela = new Intent(v.getContext(), ResponderPerguntaActivity.class);
                 Pergunta pergunta = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
                 respostaTela.putExtra("pergunta", pergunta);
                 ArrayList<Alternativa> alternativas = pergunta.getAlternativas();
@@ -160,7 +162,7 @@ public class MateriaDetalhes extends AppCompatActivity {
         fabPergunta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cadastroPergunta = new Intent(view.getContext(), CadastroPergunta.class);
+                Intent cadastroPergunta = new Intent(view.getContext(), CadastrarPerguntaActivity.class);
                 cadastroPergunta.putExtra("materiaID", mMateriaEmQuestao.getCodigo());
                 startActivityForResult(cadastroPergunta, cadastroPerguntaCode);
             }
@@ -261,7 +263,7 @@ public class MateriaDetalhes extends AppCompatActivity {
 
         try {
             JSONObject resultado_requisicao = requisicao3.execute(RequisicaoAssincrona.BUSCAR_PERGUNTAS_RESPONDIDAS_POR_MATERIA,
-                    MainScreen.getEmailDoUsuarioAtual()).get();
+                    MainScreenActivity.getEmailDoUsuarioAtual()).get();
 
             if (resultado_requisicao.getString("status").equals("ok")) {
 
@@ -387,7 +389,7 @@ public class MateriaDetalhes extends AppCompatActivity {
                                     mensagemDeFeedback,
                                     Toast.LENGTH_LONG).show();
 
-                            // TODO: Danilo, neste ponto precisa remover a matéria do mListItems da activity anterior (Tab2_Materias)
+                            // TODO: Danilo, neste ponto precisa remover a matéria do mListItems da activity anterior (Tab2_MateriasFragment)
 
                             onBackPressed();
                         } else {

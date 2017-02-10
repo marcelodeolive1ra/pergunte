@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte.model;
+package mds.ufscar.pergunte.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import mds.ufscar.pergunte.ListItem;
+import mds.ufscar.pergunte.helpers.ListItem;
 
 public class Materia implements Parcelable, ListItem {
     private int codigo;

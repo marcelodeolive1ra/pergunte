@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -33,15 +33,16 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Materia;
-import mds.ufscar.pergunte.model.Pessoa;
-import mds.ufscar.pergunte.model.Professor;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.models.Materia;
+import mds.ufscar.pergunte.models.Pessoa;
+import mds.ufscar.pergunte.models.Professor;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class MainScreen extends AppCompatActivity {
+public class MainScreenActivity extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -67,12 +68,12 @@ public class MainScreen extends AppCompatActivity {
     private SparseArrayCompat<Fragment> mPageReferenceMap;
 
     // padronizações
-    static final int cadastroMateriaCode = 2;   // for differentiate at onResultActivity
-    static final int cadastroPerguntaCode = 3;  // for differentiate at onResultActivity
-    static final int materiaDetalhesCode = 4;   // for differentiate at onResultActivity
-    static final int scannerCode = 49374;
-    static final String perfilProfessor = "professor(a)";
-    static final String perfilAluno = "aluno(a)";
+    public static final int cadastroMateriaCode = 2;   // for differentiate at onResultActivity
+    public static final int cadastroPerguntaCode = 3;  // for differentiate at onResultActivity
+    public static final int materiaDetalhesCode = 4;   // for differentiate at onResultActivity
+    public static final int scannerCode = 49374;
+    public static final String perfilProfessor = "professor(a)";
+    public static final String perfilAluno = "aluno(a)";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +126,7 @@ public class MainScreen extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser() == null){
-                    startActivity(new Intent(MainScreen.this, MainActivity.class));
+                    startActivity(new Intent(MainScreenActivity.this, LoginActivity.class));
                 }
             }
         };
@@ -202,13 +203,13 @@ public class MainScreen extends AppCompatActivity {
                                                 if (resultado_requisicao.getString("status").equals("ok")) {
                                                     materiaScanneada = new Materia(resultado_requisicao);
                                                     if (!adicionouMateria(materiaScanneada, false)) {   // false = é aluno
-                                                        Toast.makeText(MainScreen.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(MainScreenActivity.this, "Erro ao atualizar lista de matérias.", Toast.LENGTH_SHORT).show();
                                                     } else {
-                                                        Toast.makeText(MainScreen.this, "Inscrição realizada com sucesso.", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(MainScreenActivity.this, "Inscrição realizada com sucesso.", Toast.LENGTH_SHORT).show();
                                                         FirebaseMessaging.getInstance().subscribeToTopic(materiaScanneada.getCodigoInscricao());
                                                     }
                                                 } else {
-                                                    Toast.makeText(MainScreen.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(MainScreenActivity.this, resultado_requisicao.getString("descricao"), Toast.LENGTH_SHORT).show();
                                                 }
                                             } catch (InterruptedException | ExecutionException | JSONException e) {
                                                 e.printStackTrace();
@@ -233,7 +234,7 @@ public class MainScreen extends AppCompatActivity {
                 super.onActivityResult(requestCode, resultCode, data);
             }
         } else {
-            Log.e("MainScreen", "RequestCode não tratado: " + requestCode);
+            Log.e("MainScreenActivity", "RequestCode não tratado: " + requestCode);
         }
     }
 
@@ -273,7 +274,7 @@ public class MainScreen extends AppCompatActivity {
     public boolean adicionouMateria(Materia materia, boolean linkProfessor) {
         int indexCurrentTab = mViewPager.getCurrentItem();
         SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
-        Tab2_Materias fragment = (Tab2_Materias) adapter.getFragment(indexCurrentTab);
+        Tab2_MateriasFragment fragment = (Tab2_MateriasFragment) adapter.getFragment(indexCurrentTab);
         if (fragment == null) {
             return false;
         } else {
@@ -296,7 +297,7 @@ public class MainScreen extends AppCompatActivity {
 
     public boolean refreshPerguntasTab1() {
         SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
-        Tab1_Perguntas fragment = (Tab1_Perguntas) adapter.getFragment(0);  // cuidado aqui, sempre 0?
+        Tab1_PerguntasFragment fragment = (Tab1_PerguntasFragment) adapter.getFragment(0);  // cuidado aqui, sempre 0?
         if (fragment == null) {
             return false;
         } else {
@@ -324,15 +325,15 @@ public class MainScreen extends AppCompatActivity {
             // return the current tab
             switch (position) {
                 case 0:
-                    Tab1_Perguntas tab1Respondidas = new Tab1_Perguntas();
+                    Tab1_PerguntasFragment tab1Respondidas = new Tab1_PerguntasFragment();
                     mPageReferenceMap.put(position, tab1Respondidas);
                     return tab1Respondidas;
                 case 1:
-                    Tab2_Materias tab2Materias = new Tab2_Materias();
+                    Tab2_MateriasFragment tab2Materias = new Tab2_MateriasFragment();
                     mPageReferenceMap.put(position, tab2Materias);
                     return tab2Materias;
                 case 2:
-                    Tab3_Estatisticas tab3Estatisticas = new Tab3_Estatisticas();
+                    Tab3_EstatisticasFragment tab3Estatisticas = new Tab3_EstatisticasFragment();
                     mPageReferenceMap.put(position, tab3Estatisticas);
                     return tab3Estatisticas;
                 default:

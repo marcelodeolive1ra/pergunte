@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.helpers;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -27,6 +27,9 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.activities.MainScreenActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -75,7 +78,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainScreen.class);
+        Intent intent = new Intent(this, MainScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

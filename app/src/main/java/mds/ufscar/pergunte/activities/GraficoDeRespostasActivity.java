@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.ValueDependentColor;
@@ -24,13 +23,15 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Pergunta;
+import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.models.Pergunta;
 
 /**
  * Created by Danilo on 21/01/2017.
  */
 
-public class PerguntaGrafico extends AppCompatActivity {
+public class GraficoDeRespostasActivity extends AppCompatActivity {
 
     private Toolbar mPerguntaGraficoToolbar;
 
@@ -80,11 +81,11 @@ public class PerguntaGrafico extends AppCompatActivity {
                     }
                 } else {
                     Log.w("REQUISICAO", resultado_requisicao.toString());
-                    Toast.makeText(PerguntaGrafico.this,
+                    Toast.makeText(GraficoDeRespostasActivity.this,
                             resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
                 }
             } else {
-                AlertDialog.Builder adb = new AlertDialog.Builder(PerguntaGrafico.this);
+                AlertDialog.Builder adb = new AlertDialog.Builder(GraficoDeRespostasActivity.this);
                 adb.setTitle("Erro");
                 adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
                 adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {

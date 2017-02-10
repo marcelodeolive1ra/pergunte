@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte.model;
+package mds.ufscar.pergunte.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

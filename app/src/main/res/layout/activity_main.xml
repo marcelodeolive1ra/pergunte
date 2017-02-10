@@ -27,7 +27,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:background="@color/white"
-        tools:context="mds.ufscar.pergunte.MainActivity">
+        tools:context="mds.ufscar.pergunte.activities.LoginActivity">
 
 
         <com.google.android.gms.common.SignInButton

@@ -1,4 +1,4 @@
-package mds.ufscar.pergunte;
+package mds.ufscar.pergunte.helpers;
 
 /**
  * Created by Danilo on 19/01/2017.
