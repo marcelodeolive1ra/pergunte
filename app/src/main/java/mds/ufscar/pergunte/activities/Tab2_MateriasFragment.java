@@ -49,7 +49,7 @@ public class Tab2_MateriasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.tab2_materia, container, false);
+        final View rootView = inflater.inflate(R.layout.tab2_materia_fragment, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.materia_list_view);
         final MainScreenActivity mainScreen = (MainScreenActivity)this.getActivity();
@@ -147,7 +147,7 @@ public class Tab2_MateriasFragment extends Fragment {
                 } else {
 
                     LayoutInflater factory = LayoutInflater.from(getContext());
-                    final View dialogView = factory.inflate(R.layout.digitar_codigo_inscricao, null);
+                    final View dialogView = factory.inflate(R.layout.digitar_codigo_inscricao_dialog, null);
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext());
                     AlertDialog dialog;
@@ -188,7 +188,7 @@ public class Tab2_MateriasFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3)
             {
-                Intent materiaDetalhes = new Intent(Tab2_MateriasFragment.this.getActivity(), MateriaDetalhes.class);
+                Intent materiaDetalhes = new Intent(Tab2_MateriasFragment.this.getActivity(), MateriaDetalhesActivity.class);
                 materiaDetalhes.putExtra("materia", (Materia) mListItems.get(pos));
                 materiaDetalhes.putExtra("nome", ((Materia) mListItems.get(pos)).getProfessor().getNome());
                 materiaDetalhes.putExtra("sobrenome", ((Materia) mListItems.get(pos)).getProfessor().getSobrenome());

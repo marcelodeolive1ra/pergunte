@@ -31,7 +31,7 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.ResponderPerguntaActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.MateriaDetalhes"
+        <activity android:name=".activities.MateriaDetalhesActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"

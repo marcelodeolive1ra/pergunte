@@ -38,7 +38,7 @@ public class Tab3_EstatisticasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab3_estatisticas, container, false);
+        View rootView = inflater.inflate(R.layout.tab3_estatisticas_fragment, container, false);
 
         user_name = (TextView) rootView.findViewById(R.id.user_profile_name);
         user_email = (TextView) rootView.findViewById(R.id.user_profile_email);

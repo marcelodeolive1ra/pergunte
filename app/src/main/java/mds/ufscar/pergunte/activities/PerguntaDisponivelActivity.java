@@ -89,7 +89,7 @@ public class PerguntaDisponivelActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pergunta_disponivel);
+        setContentView(R.layout.pergunta_disponivel_activity);
 
         // bounding the interface components
         mPergunta = (TextView) findViewById(R.id.pergunta_content);
@@ -167,7 +167,7 @@ public class PerguntaDisponivelActivity extends AppCompatActivity {
                                     Toast.makeText(PerguntaDisponivelActivity.this,
                                             "Pergunta encerrada.", Toast.LENGTH_LONG).show();
 
-                                    // Terminou o tempo de respostas da pergunta, atualiza a quantidade de respostas obtidas em cada alternativa
+                                    // Terminou o tempo de respostas da pergunta, atualiza a quantidade de respostas obtidas em cada cadastrar_alternativa_dialog
                                     RequisicaoAssincrona requisicao2 = new RequisicaoAssincrona();
 
                                     try {

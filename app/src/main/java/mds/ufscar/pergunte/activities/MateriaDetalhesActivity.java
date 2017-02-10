@@ -48,7 +48,7 @@ import static mds.ufscar.pergunte.activities.MainScreenActivity.getEmailDoUsuari
  * Created by Danilo on 28/01/2017.
  */
 
-public class MateriaDetalhes extends AppCompatActivity {
+public class MateriaDetalhesActivity extends AppCompatActivity {
 
     private TextView mMateriaTitulo;
     private TextView mMateriaInfo;
@@ -68,7 +68,7 @@ public class MateriaDetalhes extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.materia_detalhes);
+        setContentView(R.layout.materia_detalhes_activity);
         mMateriaTitulo = (TextView) findViewById(R.id.materia_list_title);
         mMateriaInfo = (TextView) findViewById(R.id.materia_list_subtitle);
         mMateriaInfo2 = (TextView)findViewById(R.id.materia_list_subtitle2);
@@ -220,7 +220,7 @@ public class MateriaDetalhes extends AppCompatActivity {
 
             } else {
                 Log.w("REQUISICAO", resultado_requisicao.toString());
-                Toast.makeText(MateriaDetalhes.this,
+                Toast.makeText(MateriaDetalhesActivity.this,
                         resultado_requisicao.getString("descricao"),
                         Toast.LENGTH_LONG).show();
             }
@@ -248,7 +248,7 @@ public class MateriaDetalhes extends AppCompatActivity {
 
             } else {
                 Log.w("REQUISICAO", resultado_requisicao.toString());
-                Toast.makeText(MateriaDetalhes.this,
+                Toast.makeText(MateriaDetalhesActivity.this,
                         resultado_requisicao.getString("descricao"),
                         Toast.LENGTH_LONG).show();
             }
@@ -279,7 +279,7 @@ public class MateriaDetalhes extends AppCompatActivity {
 
             } else {
                 Log.w("REQUISICAO", resultado_requisicao.toString());
-                Toast.makeText(MateriaDetalhes.this,
+                Toast.makeText(MateriaDetalhesActivity.this,
                         resultado_requisicao.getString("descricao"),
                         Toast.LENGTH_LONG).show();
             }
@@ -316,7 +316,7 @@ public class MateriaDetalhes extends AppCompatActivity {
         if (id == R.id.atualizar_lista) {
             carregarExpandableList();
 
-            Toast.makeText(MateriaDetalhes.this, "Lista de perguntas atualizada.",
+            Toast.makeText(MateriaDetalhesActivity.this, "Lista de perguntas atualizada.",
                     Toast.LENGTH_LONG).show();
         } else if (id == R.id.gerar_qr_code) {
             RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
@@ -327,11 +327,11 @@ public class MateriaDetalhes extends AppCompatActivity {
 
                 if (resultado_requisicao != null) {
                     if (resultado_requisicao.getString("status").equals("ok")) {
-                        Toast.makeText(MateriaDetalhes.this, "QR code desta matéria enviado com sucesso para o seu e-mail." +
+                        Toast.makeText(MateriaDetalhesActivity.this, "QR code desta matéria enviado com sucesso para o seu e-mail." +
                                 "Verifique seu e-mail em instantes.",
                                 Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(MateriaDetalhes.this, resultado_requisicao.getString("descricao"),
+                        Toast.makeText(MateriaDetalhesActivity.this, resultado_requisicao.getString("descricao"),
                                 Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -342,7 +342,7 @@ public class MateriaDetalhes extends AppCompatActivity {
             }
 
         } else if (id == R.id.cancelar_inscricao) {
-            AlertDialog.Builder adb = new AlertDialog.Builder(MateriaDetalhes.this);
+            AlertDialog.Builder adb = new AlertDialog.Builder(MateriaDetalhesActivity.this);
 
             if (mProfessor) {
                 adb.setTitle("Desativar matéria");
@@ -385,7 +385,7 @@ public class MateriaDetalhes extends AppCompatActivity {
                                     "Matéria desativada com sucesso!" :
                                     "Inscrição cancelada com sucesso! A partir de agora, você não receberá mais notificações desta matéria.";
 
-                            Toast.makeText(MateriaDetalhes.this,
+                            Toast.makeText(MateriaDetalhesActivity.this,
                                     mensagemDeFeedback,
                                     Toast.LENGTH_LONG).show();
 
@@ -394,7 +394,7 @@ public class MateriaDetalhes extends AppCompatActivity {
                             onBackPressed();
                         } else {
                             Log.w("REQUISICAO", resultado_requisicao.toString());
-                            Toast.makeText(MateriaDetalhes.this,
+                            Toast.makeText(MateriaDetalhesActivity.this,
                                     resultado_requisicao.getString("descricao"),
                                     Toast.LENGTH_LONG).show();
                         }

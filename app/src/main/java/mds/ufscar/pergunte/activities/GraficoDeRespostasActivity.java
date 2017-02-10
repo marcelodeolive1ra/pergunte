@@ -39,7 +39,7 @@ public class GraficoDeRespostasActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.pergunta_grafico);
+        setContentView(R.layout.grafico_de_respostas_activity);
 
         mPerguntaGraficoToolbar = (Toolbar)findViewById(R.id.pergunta_grafico_toolbar);
         mPerguntaGraficoToolbar.setTitle("Respostas obtidas");

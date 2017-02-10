@@ -50,7 +50,7 @@ public class Tab1_PerguntasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab1_perguntas, container, false);
+        View rootView = inflater.inflate(R.layout.tab1_perguntas_fragment, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.pergunta_list_view);
         mProfessor = ((MainScreenActivity)this.getActivity()).isProfessor();

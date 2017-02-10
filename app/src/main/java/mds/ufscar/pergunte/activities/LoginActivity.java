@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login_activity);
 
         mToolbar = (Toolbar)findViewById(R.id.main_toolbar);
         mToolbar.setTitle("Pergunte");

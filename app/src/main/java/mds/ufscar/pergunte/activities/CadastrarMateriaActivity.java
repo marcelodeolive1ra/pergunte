@@ -48,7 +48,7 @@ public class CadastrarMateriaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cadastro_materia);
+        setContentView(R.layout.cadastrar_materia_activity);
 
         emailUsuarioAtual = MainScreenActivity.getEmailDoUsuarioAtual();
 
