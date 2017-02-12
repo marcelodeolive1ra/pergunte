@@ -310,7 +310,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
     public boolean removeListItem(String codigoInscricao) {
         SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
-        Tab2_Materias fragment = (Tab2_Materias) adapter.getFragment(1);  // cuidado aqui, sempre 0?
+        Tab2_MateriasFragment fragment = (Tab2_MateriasFragment) adapter.getFragment(1);  // cuidado aqui, sempre 0?
         if (fragment == null) {
             return false;
         } else {
