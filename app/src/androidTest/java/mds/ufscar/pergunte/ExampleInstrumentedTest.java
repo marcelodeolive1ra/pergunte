@@ -1,7 +1,5 @@
 package mds.ufscar.pergunte;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.json.JSONException;
@@ -11,8 +9,9 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.model.Materia;
-import mds.ufscar.pergunte.model.Professor;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
+import mds.ufscar.pergunte.models.Materia;
+import mds.ufscar.pergunte.models.Professor;
 
 import static org.junit.Assert.*;
 
