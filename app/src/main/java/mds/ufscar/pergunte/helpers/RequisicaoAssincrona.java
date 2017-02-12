@@ -229,7 +229,7 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                     parametros.put("quantidade_alternativas", Integer.toString(alternativasEscolhidas.length));
 
                     for (int i = 0; i < alternativasEscolhidas.length; i++) {
-                        parametros.put("cadastrar_alternativa_dialog" + Integer.toString(i) + "_codigo", alternativasEscolhidas[i]);
+                        parametros.put("alternativa" + Integer.toString(i) + "_codigo", alternativasEscolhidas[i]);
                     }
 
                     request = HttpRequest.post(Parametros.URL_SERVIDOR + "registrarresposta/").form(parametros);
