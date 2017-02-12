@@ -145,34 +145,89 @@
             android:layout_marginTop="5dp"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="#fff"
-                android:clickable="true"
-                android:padding="20dp"
-                android:text="Matérias inscritas" />
 
-            <TextView
-                android:layout_width="fill_parent"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_marginBottom="3dp"
-                android:layout_marginTop="3dp"
                 android:background="#fff"
+                >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/materia"
+                android:layout_margin="5dp"
                 android:clickable="true"
                 android:padding="20dp"
-                android:text="Perguntas respondidas" />
+                android:text="Matérias inscritas:" />
 
-            <TextView
-                android:layout_width="fill_parent"
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/NumMateria"
+                    android:gravity="right"
+                    android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:padding="20dp"
+                    android:layout_toRightOf="@+id/materia"
+                    android:text="Num" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:background="#fff"
-                android:clickable="true"
-                android:padding="20dp"
-                android:text="Porcentagem de respostas corretas" />
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/perguntaRespondida"
+                    android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:padding="20dp"
+                    android:text="Perguntas respondidas:" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/NumPerguntaRespondida"
+                    android:gravity="right"
+                    android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:padding="20dp"
+                    android:layout_toRightOf="@+id/perguntaRespondida"
+                    android:text="Num" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="#fff"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/certas"
+                    android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:padding="20dp"
+                    android:text="Respostas corretas:" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/NumCertas"
+                    android:gravity="right"
+                    android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:padding="20dp"
+                    android:layout_toRightOf="@+id/certas"
+                    android:text="Num" />
+
+            </RelativeLayout>
+
 
             <TextView
                 android:layout_width="fill_parent"
