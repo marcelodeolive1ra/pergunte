@@ -33,7 +33,6 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import mds.ufscar.pergunte.model.Materia;
@@ -67,9 +66,9 @@ public class MainScreen extends AppCompatActivity {
     private SparseArrayCompat<Fragment> mPageReferenceMap;
 
     // padronizações
-    static final int cadastroMateriaCode = 2;   // for differentiate at onResultActivity
-    static final int cadastroPerguntaCode = 3;  // for differentiate at onResultActivity
-    static final int materiaDetalhesCode = 4;   // for differentiate at onResultActivity
+    static final int cadastroMateriaCode = 2;           // for differentiate at onResultActivity
+    static final int cadastroPerguntaCode = 3;          // for differentiate at onResultActivity
+    static final int materiaDetalhesCode = 4;           // for differentiate at onResultActivity
     static final int scannerCode = 49374;
     static final String perfilProfessor = "professor(a)";
     static final String perfilAluno = "aluno(a)";
@@ -146,7 +145,9 @@ public class MainScreen extends AppCompatActivity {
             }
         } else if (requestCode == materiaDetalhesCode) {
             if (resultCode == Activity.RESULT_OK) {
-                if (!refreshPerguntasTab1()) {
+                if (data.hasExtra("cancelouMateria")) {
+                    removeListItem(data.getStringExtra("codigoInscricao"));
+                } else if (!refreshPerguntasTab1()) {
                     Toast.makeText(this, "Não foi possível atualizar a lista de perguntas neste momento", Toast.LENGTH_LONG).show();
                 }
             }
@@ -303,6 +304,20 @@ public class MainScreen extends AppCompatActivity {
             fragment.buscaPerguntasServidor();
         }
         return true;
+    }
+
+    public boolean removeListItem(String codigoInscricao) {
+        SectionsPagerAdapter adapter = ((SectionsPagerAdapter) mViewPager.getAdapter());
+        Tab2_Materias fragment = (Tab2_Materias) adapter.getFragment(1);  // cuidado aqui, sempre 0?
+        if (fragment == null) {
+            return false;
+        } else {
+            int pos = fragment.getPositionMateria(codigoInscricao);
+            if (pos < 0) {
+                return false;
+            }
+            return fragment.removerMateriaDaLista(pos);
+        }
     }
 
     /**

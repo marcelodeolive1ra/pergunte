@@ -240,7 +240,8 @@ public class Tab2_Materias extends Fragment {
                                 }
 
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
-                                mListItems.remove(positionToRemove); // removing from the interface
+
+
 
                                 String mensagemDeFeedback = (mProfessor) ?
                                         "Matéria desativada com sucesso!" :
@@ -250,10 +251,9 @@ public class Tab2_Materias extends Fragment {
                                         mensagemDeFeedback,
                                         Toast.LENGTH_LONG).show();
 
-                                ArrayList<Materia> materias = extrairMaterias(mListItems);
-                                // has to keep the same object
-                                mListItems.clear();
-                                mListItems.addAll(addSections(materias));
+                                // TODO: make function here
+                                removerMateriaDaLista(positionToRemove);
+
                             } else {
                                 Log.w("REQUISICAO", resultado_requisicao.toString());
                                 Toast.makeText(Tab2_Materias.this.getActivity(),
@@ -263,7 +263,6 @@ public class Tab2_Materias extends Fragment {
                         } catch (InterruptedException | ExecutionException | JSONException e) {
                             e.printStackTrace();
                         }
-                        adapter.notifyDataSetChanged();
                     }});
                 adb.show();
                 return true;    // true means it won't call another click listener
@@ -350,5 +349,30 @@ public class Tab2_Materias extends Fragment {
             mListItems.add(materiaAdicionada);
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public boolean removerMateriaDaLista(int positionToRemove) {
+        mListItems.remove(positionToRemove); // removing from the interface
+        ArrayList<Materia> materias = extrairMaterias(mListItems);
+        // has to keep the same object
+        mListItems.clear();
+        mListItems.addAll(addSections(materias));
+        adapter.notifyDataSetChanged();
+        return true;
+    }
+
+    public int getPositionMateria(String codigoInscr) {
+        int pos = 0;
+        boolean encontrada = false;
+        while (pos < mListItems.size() && !encontrada) {
+            if (mListItems.get(pos) instanceof Materia) {
+                Materia materia = (Materia)mListItems.get(pos);
+                if (materia.getCodigoInscricao().equals(codigoInscr)) {
+                    encontrada = true;
+                }
+            }
+            pos++;
+        }
+        return encontrada ? (pos-1) : -1;   // retorna -1 caso nao encontrar materia
     }
 }

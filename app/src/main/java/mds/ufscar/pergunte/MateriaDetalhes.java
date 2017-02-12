@@ -40,7 +40,6 @@ import mds.ufscar.pergunte.model.Professor;
 
 import static mds.ufscar.pergunte.MainScreen.cadastroPerguntaCode;
 import static mds.ufscar.pergunte.MainScreen.getEmailDoUsuarioAtual;
-import static mds.ufscar.pergunte.MainScreen.perfilAluno;
 
 /**
  * Created by Danilo on 28/01/2017.
@@ -387,9 +386,11 @@ public class MateriaDetalhes extends AppCompatActivity {
                                     mensagemDeFeedback,
                                     Toast.LENGTH_LONG).show();
 
-                            // TODO: Danilo, neste ponto precisa remover a matéria do mListItems da activity anterior (Tab2_Materias)
-
-                            onBackPressed();
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra("cancelouMateria", true);
+                            returnIntent.putExtra("codigoInscricao", mMateriaEmQuestao.getCodigoInscricao());
+                            setResult(Activity.RESULT_OK, returnIntent);
+                            finish();
                         } else {
                             Log.w("REQUISICAO", resultado_requisicao.toString());
                             Toast.makeText(MateriaDetalhes.this,

@@ -133,7 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/red_700"
-            fab:fab_title="Cadastrar nova pergunta"
+            fab:fab_title="Nova pergunta"
             fab:fab_colorPressed="@color/red_900"
             fab:fab_icon="@drawable/ic_school"/>
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
