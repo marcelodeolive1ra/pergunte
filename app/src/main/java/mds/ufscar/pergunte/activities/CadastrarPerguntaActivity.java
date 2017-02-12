@@ -75,7 +75,7 @@ public class CadastrarPerguntaActivity extends AppCompatActivity {
         setContentView(R.layout.cadastrar_pergunta_activity);
         mDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.CANADA);
         final Context context = this;
-        index = 0;  // para letra da cadastrar_alternativa_dialog
+        index = 0;  // para letra da alternativa
         mAlternativas = new ArrayList<>();
         // -1 = erro, alguem chamou essa activity sem passar o codigo da materia
         mCodigoMateria = this.getIntent().getIntExtra("materiaID", -1);
@@ -138,7 +138,7 @@ public class CadastrarPerguntaActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String textoAlternativa = alternativa.getText().toString();
-                            // criando objecto cadastrar_alternativa_dialog
+                            // criando objecto alternativa
                             Alternativa alternativa = new Alternativa(mAlternativeLetters[index],
                                     textoAlternativa, correta.isChecked());
                             mAlternativas.add(alternativa);
@@ -175,7 +175,7 @@ public class CadastrarPerguntaActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String warning = null;
                 if (mAlternativas.size() == 0) {
-                    warning = "Deve existir pelo menos uma cadastrar_alternativa_dialog.";
+                    warning = "Deve existir pelo menos uma alternativa.";
                 }
                 if (mInputQuestion.getText().toString().trim().length() == 0) {
                     warning = "Pergunta deve ser preenchida.";
@@ -197,8 +197,8 @@ public class CadastrarPerguntaActivity extends AppCompatActivity {
                         cadastrarPergunta();
                     } else {
                         AlertDialog.Builder adb = new AlertDialog.Builder(CadastrarPerguntaActivity.this);
-                        adb.setTitle("Nenhuma cadastrar_alternativa_dialog marcada como correta");
-                        adb.setMessage("Você não marcou nenhuma cadastrar_alternativa_dialog como correta.\n\n" +
+                        adb.setTitle("Nenhuma alternativa marcada como correta");
+                        adb.setMessage("Você não marcou nenhuma alternativa como correta.\n\n" +
                                 "Tem certeza que deseja cadastrar a pergunta assim mesmo?");
                         adb.setPositiveButton("Sim", new AlertDialog.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -324,7 +324,7 @@ public class CadastrarPerguntaActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String textoAlternativa = alternativa.getText().toString();
-                            // criando objeto cadastrar_alternativa_dialog
+                            // criando objeto alternativa
                             Alternativa alternativa = new Alternativa(mAlternativeLetters[index],
                                     textoAlternativa, correta.isChecked());
                             mAlternativas.add(alternativa);
@@ -333,8 +333,8 @@ public class CadastrarPerguntaActivity extends AppCompatActivity {
                         }
                     });
 
-                    // excluir cadastrar_alternativa_dialog
-                    alertDialog.setNegativeButton("Excluir cadastrar_alternativa_dialog", new DialogInterface.OnClickListener() {
+                    // excluir alternativa
+                    alertDialog.setNegativeButton("Excluir alternativa", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mAlternativas.remove(pos);

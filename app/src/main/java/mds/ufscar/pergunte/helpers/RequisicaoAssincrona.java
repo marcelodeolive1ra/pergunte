@@ -145,9 +145,9 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                     parametros.put("data_aproximada", pergunta.getDataAproximadaString());
 
                     for (int i = 0; i < quantidadeAlternativas; i++) {
-                        parametros.put("cadastrar_alternativa_dialog" + Integer.toString(i) + "_letra", pergunta.getAlternativas().get(i).getLetra());
-                        parametros.put("cadastrar_alternativa_dialog" + Integer.toString(i) + "_texto_alternativa", pergunta.getAlternativas().get(i).getTextoAlternativa());
-                        parametros.put("cadastrar_alternativa_dialog" + Integer.toString(i) + "_correta", (pergunta.getAlternativas().get(i).isCorreta() ? "true" : "false"));
+                        parametros.put("alternativa" + Integer.toString(i) + "_letra", pergunta.getAlternativas().get(i).getLetra());
+                        parametros.put("alternativa" + Integer.toString(i) + "_texto_alternativa", pergunta.getAlternativas().get(i).getTextoAlternativa());
+                        parametros.put("alternativa" + Integer.toString(i) + "_correta", (pergunta.getAlternativas().get(i).isCorreta() ? "true" : "false"));
                     }
 
                     request = HttpRequest.post("http://mds.secompufscar.com.br/cadastrarpergunta/").form(parametros);
