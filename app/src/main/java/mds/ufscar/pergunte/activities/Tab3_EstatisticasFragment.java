@@ -1,5 +1,6 @@
 package mds.ufscar.pergunte.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -8,18 +9,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
+
 import mds.ufscar.pergunte.helpers.CircleTransform;
 import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -46,6 +56,50 @@ public class Tab3_EstatisticasFragment extends Fragment {
         header_foto = (ImageView) rootView.findViewById(R.id.header_cover_image);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        int quantidade_materias_inscritas = 0;
+        int quantidade_perguntas_respondidas = 0;
+        int quantidade_perguntas_respondidas_corretamente = 0;
+
+        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+
+        try {
+            JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_ESTATISTICAS,
+                    MainScreenActivity.getEmailDoUsuarioAtual()).get();
+
+            if (resultado_requisicao != null) {
+                if (resultado_requisicao.getString("status").equals("ok")) {
+                    quantidade_materias_inscritas = resultado_requisicao.getInt("quantidade_materias_inscritas");
+                    quantidade_perguntas_respondidas = resultado_requisicao.getInt("quantidade_perguntas_respondidas");
+                    quantidade_perguntas_respondidas_corretamente = resultado_requisicao.getInt("quantidade_perguntas_respondidas_corretamente");
+                } else {
+                    Log.w("REQUISICAO", resultado_requisicao.toString());
+                    Toast.makeText(Tab3_EstatisticasFragment.this.getActivity(),
+                            resultado_requisicao.getString("descricao"), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                AlertDialog.Builder adb = new AlertDialog.Builder(Tab3_EstatisticasFragment.this.getActivity());
+                adb.setTitle("Erro");
+                adb.setMessage("Não foi possível conectar à Internet.\n\nVerifique sua conexão e tente novamente.");
+                adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        System.exit(0);
+                    }
+                });
+                adb.show();
+            }
+
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Thiago, dados das estatísticas aqui:
+        System.out.println(quantidade_materias_inscritas);
+        System.out.println(quantidade_perguntas_respondidas);
+        System.out.println(quantidade_perguntas_respondidas_corretamente);
+
+
         if (user != null) {
             // Name, email address, and profile photo Url
             String name = user.getDisplayName();

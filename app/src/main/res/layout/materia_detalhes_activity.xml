@@ -121,9 +121,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        fab:fab_addButtonColorNormal="@color/red_700"
-        fab:fab_addButtonColorPressed="@color/red_900"
-        fab:fab_addButtonPlusIconColor="@color/white"
+        fab:fab_addButtonColorNormal="@color/fab_colorNormal"
+        fab:fab_addButtonColorPressed="@color/fab_colorPressed"
+        fab:fab_addButtonPlusIconColor="@color/fab_plusIconColor"
         fab:fab_labelStyle="@style/menu_labels_style"
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="8dp">
@@ -132,9 +132,9 @@
             android:id="@+id/action_a"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/red_700"
+            fab:fab_colorNormal="@color/fab_colorNormal"
+            fab:fab_colorPressed="@color/fab_colorPressed"
             fab:fab_title="Cadastrar nova pergunta"
-            fab:fab_colorPressed="@color/red_900"
             fab:fab_icon="@drawable/ic_school"/>
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
