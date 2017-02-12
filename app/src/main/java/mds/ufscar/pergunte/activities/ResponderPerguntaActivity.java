@@ -131,7 +131,7 @@ public class ResponderPerguntaActivity extends AppCompatActivity {
                         adb.setPositiveButton("Tentar novamente", new AlertDialog.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                // Não faz nada aqui para voltar à tela de responder_pergunta_activity da pergunta,
+                                // Não faz nada aqui para voltar à tela de resposta da pergunta,
                                 // permitindo uma nova tentativa de requisição
                             }
                         });
@@ -139,7 +139,7 @@ public class ResponderPerguntaActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 AlertDialog.Builder adb2 = new AlertDialog.Builder(ResponderPerguntaActivity.this);
                                 adb2.setTitle("Abandonar questionário?");
-                                adb2.setMessage("Tem certeza que deseja abandonar o questionário? A sua responder_pergunta_activity não será gravada.");
+                                adb2.setMessage("Tem certeza que deseja abandonar o questionário? A sua resposta não será gravada.");
                                 adb2.setPositiveButton("Abandonar", new AlertDialog.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(ResponderPerguntaActivity.this, "Questionário abandonado.", Toast.LENGTH_LONG).show();
@@ -170,7 +170,7 @@ public class ResponderPerguntaActivity extends AppCompatActivity {
     public void onBackPressed() {
         AlertDialog.Builder adb = new AlertDialog.Builder(ResponderPerguntaActivity.this);
         adb.setTitle("Sair da pergunta?");
-        adb.setMessage("Sua responder_pergunta_activity não será registrada.");
+        adb.setMessage("Sua resposta não será registrada.");
         adb.setPositiveButton("Sair", new AlertDialog.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
