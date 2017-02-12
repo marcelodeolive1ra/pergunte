@@ -77,7 +77,7 @@ public class GraficoDeRespostasActivity extends AppCompatActivity {
                     dataPoint = new DataPoint[quantidade_alternativas];
 
                     for (int i = 0; i < quantidade_alternativas; i++) {
-                        dataPoint[i] = new DataPoint(i, resultado_requisicao.getInt(letras[i]));
+                        dataPoint[i] = new DataPoint(i+1, resultado_requisicao.getInt(letras[i]));
                     }
                 } else {
                     Log.w("REQUISICAO", resultado_requisicao.toString());
@@ -109,7 +109,7 @@ public class GraficoDeRespostasActivity extends AppCompatActivity {
             BarGraphSeries<DataPoint> series = new BarGraphSeries<>(dataPoint);
             graph.addSeries(series);
             graph.getViewport().setMinX(0);
-            //graph.getViewport().setMaxX(series.getHighestValueX()+1);
+            graph.getViewport().setMaxX(series.getHighestValueX()+1);
             graph.getViewport().setMinY(0);
             graph.getViewport().setMaxY(series.getHighestValueY() + 0.5);
             graph.getViewport().setYAxisBoundsManual(true);
@@ -117,10 +117,20 @@ public class GraficoDeRespostasActivity extends AppCompatActivity {
 
             StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
             //coloquei esses espaços no começo e no fim para ele n ficar "colado" nas bordas
-            String[] respostas = new String[quantidade_alternativas];
+            System.out.println("*********************************"+quantidade_alternativas);
+            String[] respostas = new String[quantidade_alternativas+2];
+            respostas[0] = " ";
+
+
             for (int i = 0; i < quantidade_alternativas; i++) {
-                respostas[i] = letras[i];
+                respostas[i+1] = letras[i];
             }
+            respostas[quantidade_alternativas+1] = " ";
+
+            for (int i = 0; i <= quantidade_alternativas+1; i++) {
+                System.out.println("*********************************"+ i +" "+ respostas[i] );
+            }
+
             //staticLabelsFormatter.setHorizontalLabels(new String[] {" ","A", "B", "C","D","E"," "});
             staticLabelsFormatter.setHorizontalLabels(respostas);
             graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
@@ -133,7 +143,7 @@ public class GraficoDeRespostasActivity extends AppCompatActivity {
                 }
             });
 
-            series.setSpacing(20);
+            series.setSpacing(10);
 
             // draw values on top
             series.setDrawValuesOnTop(true);
@@ -141,7 +151,7 @@ public class GraficoDeRespostasActivity extends AppCompatActivity {
 
         /*  GRAFICO */
         } else {
-            // TODO: Informar que ainda não existem respostas para esta pergunta
+            Toast.makeText(this, "Ainda não exite resposta para essa pergunta", Toast.LENGTH_LONG).show();
         }
 
     }
