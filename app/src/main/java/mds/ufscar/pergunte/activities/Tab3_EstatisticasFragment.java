@@ -36,6 +36,9 @@ import static android.content.Context.LOCATION_SERVICE;
 public class Tab3_EstatisticasFragment extends Fragment {
     TextView user_name;
     TextView user_email;
+    TextView NumMaterias;
+    TextView NumCertas;
+    TextView NumPerguntas;
     ImageView user_foto;
     ImageView header_foto;
 
@@ -52,6 +55,9 @@ public class Tab3_EstatisticasFragment extends Fragment {
 
         user_name = (TextView) rootView.findViewById(R.id.user_profile_name);
         user_email = (TextView) rootView.findViewById(R.id.user_profile_email);
+        NumMaterias = (TextView) rootView.findViewById(R.id.NumMateria);
+        NumCertas = (TextView) rootView.findViewById(R.id.NumCertas);
+        NumPerguntas = (TextView) rootView.findViewById(R.id.NumPerguntaRespondida);
         user_foto = (ImageView) rootView.findViewById(R.id.user_profile_photo);
         header_foto = (ImageView) rootView.findViewById(R.id.header_cover_image);
 
@@ -98,7 +104,10 @@ public class Tab3_EstatisticasFragment extends Fragment {
         System.out.println(quantidade_materias_inscritas);
         System.out.println(quantidade_perguntas_respondidas);
         System.out.println(quantidade_perguntas_respondidas_corretamente);
-
+       NumMaterias.setText(Integer.toString(quantidade_materias_inscritas));
+        NumCertas.setText(Integer.toString(quantidade_perguntas_respondidas_corretamente));
+        NumPerguntas.setText(Integer.toString(quantidade_perguntas_respondidas));
+        //NumMaterias.setText("0");
 
         if (user != null) {
             // Name, email address, and profile photo Url
