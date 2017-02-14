@@ -106,7 +106,7 @@ public class MateriaDetalhesActivity extends AppCompatActivity {
         mMateriaInfo2.setText(turma_e_semestre);
         String codigo = "Código de inscrição: " + mMateriaEmQuestao.getCodigoInscricao();
         mMateriaCodigo.setText(codigo);
-        Picasso.with(this).load(mMateriaEmQuestao.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(mMateriaImagem);
+        Picasso.with(this).load(mMateriaEmQuestao.getImageUrl()).placeholder(R.drawable.ic_materia).into(mMateriaImagem);
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.lvExp);

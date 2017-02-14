@@ -68,7 +68,7 @@ public class AlunoAdapter extends BaseAdapter {
             titleTextView.setText(aluno.getNome());
             subtitleTextView.setText(aluno.getEmail());
 
-            Picasso.with(mContext).load("photoURL").placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+            Picasso.with(mContext).load("photoURL").placeholder(R.drawable.ic_materia).into(thumbnailImageView);
         }
         return rowView;
     }

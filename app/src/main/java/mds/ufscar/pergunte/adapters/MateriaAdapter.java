@@ -90,7 +90,7 @@ public class MateriaAdapter extends BaseAdapter {
                     detailTextView.setText(String.valueOf(materia.getPerguntas().size()));
                 }
 
-                Picasso.with(mContext).load(materia.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+                Picasso.with(mContext).load(materia.getImageUrl()).placeholder(R.drawable.ic_materia).into(thumbnailImageView);
             }
         }
         return rowView;
