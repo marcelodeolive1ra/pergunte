@@ -137,17 +137,17 @@ public class Pergunta implements Parcelable, ListItem {
         this.dataAproximada = dataAproximada;
     }
 
-    @Override
-    public boolean isSection() {
-        return false;
-    }
-
     public int getNumRespostas() {
         return numRespostas;
     }
 
     public void setNumRespostas(int numRespostas) {
         this.numRespostas = numRespostas;
+    }
+
+    @Override
+    public boolean isSection() {
+        return false;
     }
 
     @Override

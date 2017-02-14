@@ -39,21 +39,6 @@ public class Professor extends Pessoa implements Parcelable {
         this.universidade = universidade;
     }
 
-    public void verRelatorios() {
-
-    }
-
-    public void notificarTurma(Materia materia) {
-
-    }
-
-    public Materia[] consultarDisciplinasVinculadas() {
-        return null;
-    }
-
-    public void salvarRelatorio(Pergunta pergunta) {
-
-    }
 
     @Override
     public int describeContents() {

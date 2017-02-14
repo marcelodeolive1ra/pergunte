@@ -47,16 +47,6 @@ public class Pessoa implements Parcelable{
         this.email = email;
     }
 
-    public boolean login() {
-        // conexão com o banco de dados + autenticação Google
-        return true;
-    }
-
-    public boolean logout() {
-        // encerrar sessão do Google
-        return true;
-    }
-
     @Override
     public int describeContents() {
         return 0;

@@ -169,18 +169,6 @@ public class Materia implements Parcelable, ListItem {
         this.imageUrl = imageUrl;
     }
 
-    public void excluirMateria() {
-        // conexão com o banco
-    }
-
-    public void inscreverAluno(Aluno aluno) {
-        // conexão com o banco
-    }
-
-    public void gerarQRCode() {
-
-    }
-
     public String getDescricao() {
         String newLine = System.getProperty("line.separator");
         StringBuilder descricao = new StringBuilder();
