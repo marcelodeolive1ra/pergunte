@@ -124,6 +124,22 @@ public class PerguntaDisponivelActivity extends AppCompatActivity {
                     mTimerCountUp = setTimer();
                     mTimerCountUp.start();
 
+                    RequisicaoAssincrona requisicao2 = new RequisicaoAssincrona();
+
+                    try {
+                        JSONObject resultado_requisicao2 = requisicao2.execute(RequisicaoAssincrona.NOTIFICAR_USUARIOS,
+                                Integer.toString(pergunta.getCodigo())).get();
+
+                        if (resultado_requisicao2 != null) {
+                            // Notificação enviada
+                        } else {
+                            Toast.makeText(PerguntaDisponivelActivity.this,
+                                    "Erro ao notificar usuários.", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+
                 } else {
                     Toast.makeText(PerguntaDisponivelActivity.this,
                             resultado_requisicao.getString("error"), Toast.LENGTH_LONG).show();
