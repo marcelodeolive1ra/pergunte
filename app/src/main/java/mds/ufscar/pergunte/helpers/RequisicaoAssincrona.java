@@ -66,6 +66,8 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
     public static final String BUSCAR_RESPOSTAS_POR_PERGUNTA = "22";
     public static final String BUSCAR_ESTATISTICAS = "23";
     public static final String NOTIFICAR_USUARIOS = "24";
+    public static final String BUSCAR_ALUNOS_INSCRITOS_POR_MATERIA = "25";
+    public static final String SETAR_TOKEN_E_FOTO = "26";
 
     private Object objetoGenerico;
 
@@ -249,6 +251,17 @@ public class RequisicaoAssincrona extends AsyncTask<String, Void, JSONObject> {
                 case NOTIFICAR_USUARIOS:
                     parametros.put(Parametros.CODIGO_MATERIA, params[1]);
                     request = HttpRequest.post(Parametros.URL_SERVIDOR + "enviarnotificacao/").form(parametros);
+                    break;
+
+                case BUSCAR_ALUNOS_INSCRITOS_POR_MATERIA:
+                    parametros.put(Parametros.CODIGO_MATERIA, params[1]);
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "buscaralunosinscritospormateria/").form(parametros);
+                    break;
+
+                case SETAR_TOKEN_E_FOTO:
+                    parametros.put(Parametros.EMAIL_USUARIO, params[1]);
+                    parametros.put("foto", params[2]);
+                    request = HttpRequest.post(Parametros.URL_SERVIDOR + "setartokenefoto/").form(parametros);
                     break;
 
                 default:

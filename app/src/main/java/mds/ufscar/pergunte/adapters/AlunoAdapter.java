@@ -65,7 +65,7 @@ public class AlunoAdapter extends BaseAdapter {
                     (ImageView) rowView.findViewById(R.id.aluno_list_thumbnail);
 
             // Populando dados
-            titleTextView.setText(aluno.getNome());
+            titleTextView.setText(aluno.getNome() + " " + aluno.getSobrenome());
             subtitleTextView.setText(aluno.getEmail());
 
             Picasso.with(mContext).load("photoURL").placeholder(R.drawable.ic_materia).into(thumbnailImageView);

@@ -26,10 +26,14 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:textSize="20sp"
-            android:text="Alunos inscritos"
+            android:textSize="26sp"
+            android:text="Disciplina"
             android:textStyle="bold"
             android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:maxLines="3"
             />
 
         <ListView
