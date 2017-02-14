@@ -33,8 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import mds.ufscar.pergunte.adapters.ExpandableListAdapter;
 import mds.ufscar.pergunte.R;
+import mds.ufscar.pergunte.adapters.ExpandableListAdapter;
 import mds.ufscar.pergunte.helpers.RequisicaoAssincrona;
 import mds.ufscar.pergunte.models.Alternativa;
 import mds.ufscar.pergunte.models.Materia;
@@ -424,6 +424,11 @@ public class MateriaDetalhesActivity extends AppCompatActivity {
                     }
                 }});
             adb.show();
+        } else if (id == R.id.ver_alunos_inscritos) {
+            Intent alunosInscritos = new Intent(this, AlunosInscritosActivity.class);
+            alunosInscritos.putExtra("tituloDisciplina", mMateriaEmQuestao.getNomeDisciplina());
+            alunosInscritos.putExtra("codigoDisciplina", mMateriaEmQuestao.getCodigo());
+            startActivity(alunosInscritos);
         }
 
         return super.onOptionsItemSelected(item);
