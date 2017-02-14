@@ -169,6 +169,7 @@ public class MateriaDetalhesActivity extends AppCompatActivity {
         fabPergunta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMain.collapse();
                 Intent cadastroPergunta = new Intent(view.getContext(), CadastrarPerguntaActivity.class);
                 cadastroPergunta.putExtra("materiaID", mMateriaEmQuestao.getCodigo());
                 startActivityForResult(cadastroPergunta, cadastroPerguntaCode);
