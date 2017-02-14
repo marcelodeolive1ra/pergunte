@@ -132,16 +132,23 @@ public class MateriaDetalhesActivity extends AppCompatActivity {
 
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                // TODO: fazer isso apenas para pergunta ativa e se mPerfilUsuario aluno
-                Intent respostaTela = new Intent(v.getContext(), ResponderPerguntaActivity.class);
-                Pergunta pergunta = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
-                respostaTela.putExtra("pergunta", pergunta);
-                ArrayList<Alternativa> alternativas = pergunta.getAlternativas();
-                respostaTela.putParcelableArrayListExtra("alternativas", alternativas);
+                // TODO: tratar o caso quando usuário clicar em uma pergunta da seção "Respondidas"
+                // Neste caso, poderia abrir a questão respondida, com as alternativas do usuário selecionadas
 
-                respostaTela.putExtra("nome_materia", mMateriaEmQuestao.getNomeDisciplina());
+                System.out.println(listDataHeader.get(groupPosition));
 
-                startActivity(respostaTela);
+                if (listDataHeader.get(groupPosition).equals("Ativas")) {
+
+                    Intent respostaTela = new Intent(v.getContext(), ResponderPerguntaActivity.class);
+                    Pergunta pergunta = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
+                    respostaTela.putExtra("pergunta", pergunta);
+                    ArrayList<Alternativa> alternativas = pergunta.getAlternativas();
+                    respostaTela.putParcelableArrayListExtra("alternativas", alternativas);
+
+                    respostaTela.putExtra("nome_materia", mMateriaEmQuestao.getNomeDisciplina());
+
+                    startActivity(respostaTela);
+                }
                 return false;
             }
         });
@@ -192,40 +199,45 @@ public class MateriaDetalhesActivity extends AppCompatActivity {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, ArrayList<Pergunta>>();
 
-        // Adding child data
-        listDataHeader.add("Ativas");
-        listDataHeader.add("Próximas");
-        listDataHeader.add("Respondidas");
+        if (!mProfessor) {
+            listDataHeader.add("Ativas");
+            listDataHeader.add("Próximas");
+            listDataHeader.add("Respondidas");
+        } else {
+            listDataHeader.add("Próximas");
+        }
 
         // TODO: Tratar falta de internet para as três requisições
 
-        // Adding child data
         ArrayList<Pergunta> perguntasAtivas = new ArrayList<>();
-        RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
-        requisicao.setObject(mMateriaEmQuestao);
-        System.out.println("CODIGO = " + mMateriaEmQuestao.getCodigo());
 
-        try {
-            JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_PERGUNTAS_ATIVAS_POR_MATERIA).get();
+        if (!mProfessor) {
+            RequisicaoAssincrona requisicao = new RequisicaoAssincrona();
+            requisicao.setObject(mMateriaEmQuestao);
+            System.out.println("CODIGO = " + mMateriaEmQuestao.getCodigo());
 
-            if (resultado_requisicao.getString("status").equals("ok")) {
+            try {
+                JSONObject resultado_requisicao = requisicao.execute(RequisicaoAssincrona.BUSCAR_PERGUNTAS_ATIVAS_POR_MATERIA).get();
 
-                JSONArray perguntas_ativas_json = resultado_requisicao.getJSONArray("perguntas");
+                if (resultado_requisicao.getString("status").equals("ok")) {
 
-                for (int i = 0; i < perguntas_ativas_json.length(); i++) {
-                    JSONObject pergunta_json = perguntas_ativas_json.getJSONObject(i);
-                    Pergunta pergunta = new Pergunta(pergunta_json);
-                    perguntasAtivas.add(pergunta);
+                    JSONArray perguntas_ativas_json = resultado_requisicao.getJSONArray("perguntas");
+
+                    for (int i = 0; i < perguntas_ativas_json.length(); i++) {
+                        JSONObject pergunta_json = perguntas_ativas_json.getJSONObject(i);
+                        Pergunta pergunta = new Pergunta(pergunta_json);
+                        perguntasAtivas.add(pergunta);
+                    }
+
+                } else {
+                    Log.w("REQUISICAO", resultado_requisicao.toString());
+                    Toast.makeText(MateriaDetalhesActivity.this,
+                            resultado_requisicao.getString("descricao"),
+                            Toast.LENGTH_LONG).show();
                 }
-
-            } else {
-                Log.w("REQUISICAO", resultado_requisicao.toString());
-                Toast.makeText(MateriaDetalhesActivity.this,
-                        resultado_requisicao.getString("descricao"),
-                        Toast.LENGTH_LONG).show();
+            } catch (InterruptedException | ExecutionException | JSONException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException | ExecutionException | JSONException e) {
-            e.printStackTrace();
         }
 
 
@@ -258,38 +270,45 @@ public class MateriaDetalhesActivity extends AppCompatActivity {
 
 
         ArrayList<Pergunta> perguntasRespondidas = new ArrayList<>();
-        RequisicaoAssincrona requisicao3 = new RequisicaoAssincrona();
-        requisicao3.setObject(mMateriaEmQuestao);
 
-        try {
-            JSONObject resultado_requisicao = requisicao3.execute(RequisicaoAssincrona.BUSCAR_PERGUNTAS_RESPONDIDAS_POR_MATERIA,
-                    MainScreenActivity.getEmailDoUsuarioAtual()).get();
+        if (!mProfessor) {
+            RequisicaoAssincrona requisicao3 = new RequisicaoAssincrona();
+            requisicao3.setObject(mMateriaEmQuestao);
 
-            if (resultado_requisicao.getString("status").equals("ok")) {
+            try {
+                JSONObject resultado_requisicao = requisicao3.execute(RequisicaoAssincrona.BUSCAR_PERGUNTAS_RESPONDIDAS_POR_MATERIA,
+                        MainScreenActivity.getEmailDoUsuarioAtual()).get();
 
-                JSONArray perguntas_respondidas_json = resultado_requisicao.getJSONArray("perguntas");
+                if (resultado_requisicao.getString("status").equals("ok")) {
 
-                System.out.println(perguntas_respondidas_json);
+                    JSONArray perguntas_respondidas_json = resultado_requisicao.getJSONArray("perguntas");
 
-                for (int i = 0; i < perguntas_respondidas_json.length(); i++) {
-                    JSONObject pergunta_json = perguntas_respondidas_json.getJSONObject(i);
-                    Pergunta pergunta = new Pergunta(pergunta_json);
-                    perguntasRespondidas.add(pergunta);
+                    System.out.println(perguntas_respondidas_json);
+
+                    for (int i = 0; i < perguntas_respondidas_json.length(); i++) {
+                        JSONObject pergunta_json = perguntas_respondidas_json.getJSONObject(i);
+                        Pergunta pergunta = new Pergunta(pergunta_json);
+                        perguntasRespondidas.add(pergunta);
+                    }
+
+                } else {
+                    Log.w("REQUISICAO", resultado_requisicao.toString());
+                    Toast.makeText(MateriaDetalhesActivity.this,
+                            resultado_requisicao.getString("descricao"),
+                            Toast.LENGTH_LONG).show();
                 }
-
-            } else {
-                Log.w("REQUISICAO", resultado_requisicao.toString());
-                Toast.makeText(MateriaDetalhesActivity.this,
-                        resultado_requisicao.getString("descricao"),
-                        Toast.LENGTH_LONG).show();
+            } catch (InterruptedException | ExecutionException | JSONException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException | ExecutionException | JSONException e) {
-            e.printStackTrace();
         }
 
-        listDataChild.put(listDataHeader.get(0), perguntasAtivas); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), proximasPerguntas);
-        listDataChild.put(listDataHeader.get(2), perguntasRespondidas);
+        if (!mProfessor) {
+            listDataChild.put(listDataHeader.get(0), perguntasAtivas); // Header, Child data
+            listDataChild.put(listDataHeader.get(1), proximasPerguntas);
+            listDataChild.put(listDataHeader.get(2), perguntasRespondidas);
+        } else {
+            listDataChild.put(listDataHeader.get(0), proximasPerguntas);
+        }
     }
 
     @Override
