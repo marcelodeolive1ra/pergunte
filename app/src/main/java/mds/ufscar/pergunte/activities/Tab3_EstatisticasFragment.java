@@ -63,6 +63,7 @@ public class Tab3_EstatisticasFragment extends Fragment {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+
         int quantidade_materias_inscritas = 0;
         int quantidade_perguntas_respondidas = 0;
         int quantidade_perguntas_respondidas_corretamente = 0;
@@ -104,15 +105,17 @@ public class Tab3_EstatisticasFragment extends Fragment {
         System.out.println(quantidade_materias_inscritas);
         System.out.println(quantidade_perguntas_respondidas);
         System.out.println(quantidade_perguntas_respondidas_corretamente);
-       NumMaterias.setText(Integer.toString(quantidade_materias_inscritas));
+        NumMaterias.setText(Integer.toString(quantidade_materias_inscritas));
         NumCertas.setText(Integer.toString(quantidade_perguntas_respondidas_corretamente));
         NumPerguntas.setText(Integer.toString(quantidade_perguntas_respondidas));
         //NumMaterias.setText("0");
 
         if (user != null) {
             // Name, email address, and profile photo Url
+
             String name = user.getDisplayName();
-            user_name.setText(name);
+           user_name.setText(name);
+           // user_name.setText(FirebaseInstanceId.getInstance().getToken());
             String email = user.getEmail();
             user_email.setText(email);
             Uri photoUrl = user.getPhotoUrl();
@@ -172,18 +175,9 @@ public class Tab3_EstatisticasFragment extends Fragment {
         return rootView;
     }
 
-/* acho q sei como resolver o problema de permissão do danilo.
- @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case 10:
-                    configure_button();
-                break;
-            default:
-                break;
-        }
-    }
 
-*/
+
+
 
 }
+
